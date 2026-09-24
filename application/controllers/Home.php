@@ -1,0 +1,295 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Home extends CI_Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+    }
+
+    // Helper: ambil identitas & sosmed (dipakai semua method)
+    private function _base_data()
+    {
+        // Query menus TERPISAH dulu agar kondisi where tidak bocor ke query lain
+        $menus = $this->db
+            ->where('is_frontend', 1)
+            ->where('is_active', 1)
+            ->order_by('menu_order', 'ASC')
+            ->get('menus')
+            ->result_array();
+
+        return [
+            'identitas'   => $this->db->get('identitas')->row_array(),
+            'sosmeds'     => $this->db->get_where('sosmed', ['status' => 'aktif'])->result_array(),
+            'menus'       => $menus,
+            'is_homepage' => false,
+        ];
+    }
+
+    // ── Beranda ────────────────────────────────────────────────
+    public function index()
+    {
+        $data = $this->_base_data();
+        $data['page_title']  = 'Beranda';
+        $data['is_homepage'] = true;
+
+        // Slider aktif
+        $this->db->where('status', 'aktif')->order_by('urutan', 'ASC');
+        $data['sliders'] = $this->db->get('slider')->result_array();
+
+        // Artikel terbaru (kecuali kategori News) — filter per kategori di view
+        $this->db->select('artikel.*, kategori.nama_kategori')
+            ->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left')
+            ->where('artikel.status', 'Publish')
+            ->where('kategori.nama_kategori !=', 'News')
+            ->order_by('artikel.tanggal_dibuat', 'DESC');
+        $data['artikel_terbaru'] = $this->db->get('artikel')->result_array();
+        $data['artikel_populer'] = []; // tidak dipakai, News section menggantikan
+
+        // Agenda mendatang (3 terdekat)
+        $this->db->where('status_kegiatan', 'mendatang')
+            // ->where('tanggal >=', date('Y-m-d')) // dinonaktifkan sementara agar data tes tampil
+            ->order_by('tanggal', 'DESC')->limit(3);
+        $data['agenda'] = $this->db->get('agenda')->result_array();
+
+        // Galeri terbaru (8 foto agar sesuai dengan asimetris grid homepage)
+        $this->db->order_by('id_galeri', 'DESC')->limit(8);
+        $data['galeri'] = $this->db->get('galeri')->result_array();
+
+        // News terbaru (3 artikel berkategori News)
+        $this->db->select('artikel.*, kategori.nama_kategori')
+            ->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left')
+            ->where('artikel.status', 'Publish')
+            ->where('kategori.nama_kategori', 'News')
+            ->order_by('artikel.tanggal_dibuat', 'DESC')
+            ->limit(3);
+        $data['artikel_news'] = $this->db->get('artikel')->result_array();
+
+        // Video Dakwah (limit 5 untuk layout asimetris)
+        $this->db->order_by('tanggal_input', 'DESC')->limit(5);
+        $data['videos'] = $this->db->get('video')->result_array();
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Home', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Halaman Amalan ─────────────────────────────────────────
+    public function amalan()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Amalan Ibadah';
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Halaman Galeri ─────────────────────────────────────────
+    public function galeri()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Galeri Kegiatan';
+
+        $this->db->order_by('id_galeri', 'DESC');
+        $data['galeri'] = $this->db->get('galeri')->result_array();
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Galeri', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Halaman Kumpulan Artikel (Karya Tulis - Exclude News) ────
+    public function artikel($cat_param = NULL)
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Artikel & Khazanah';
+
+        // 1. Ambil daftar kategori KECUALI News untuk Pill Navigation
+        $this->db->where('nama_kategori !=', 'News');
+        $data['categories'] = $this->db->get('kategori')->result_array();
+
+        // 2. Filter Keyword Pencarian & Kategori
+        $keyword = $this->input->get('q', TRUE);
+        $cat_selected = !empty($cat_param) ? urldecode($cat_param) : null;
+        $data['keyword'] = $keyword;
+        $data['selected_category'] = $cat_selected;
+
+        // Base Query Artikel (HANYA KARYA TULIS — KECUALI NEWS)
+        $this->db->select('artikel.*, kategori.nama_kategori, users.full_name as nama_penulis');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->join('users', 'artikel.id_user = users.id', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->where('kategori.nama_kategori !=', 'News');
+
+        if (!empty($cat_selected)) {
+            $this->db->where('kategori.nama_kategori', $cat_selected);
+        }
+
+        if (!empty($keyword)) {
+            $this->db->group_start();
+            $this->db->like('artikel.judul_artikel', $keyword);
+            $this->db->or_like('artikel.ringkasan', $keyword);
+            $this->db->or_like('artikel.konten', $keyword);
+            $this->db->group_end();
+        }
+
+        $this->db->order_by('artikel.tanggal_dibuat', 'DESC');
+        $all_articles = $this->db->get()->result_array();
+
+        // Pisahkan Artikel Utama (Headline) & Artikel List
+        if (!empty($all_articles)) {
+            if (!empty($cat_selected) || !empty($keyword)) {
+                // Jika sedang filter, semua artikel masuk ke list
+                $data['featured_artikel'] = null;
+                $data['artikel_list']     = $all_articles;
+            } else {
+                $data['featured_artikel'] = $all_articles[0];
+                $data['artikel_list']     = array_slice($all_articles, 1);
+            }
+        } else {
+            $data['featured_artikel'] = null;
+            $data['artikel_list']     = [];
+        }
+
+        // 3. Sidebar: Artikel Terpopuler (Karya Tulis, Kecuali News)
+        $this->db->select('artikel.*, kategori.nama_kategori');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->where('kategori.nama_kategori !=', 'News');
+        $this->db->order_by('artikel.dibaca', 'DESC');
+        $this->db->limit(6);
+        $data['artikel_populer'] = $this->db->get()->result_array();
+
+        // 4. Sidebar: Artikel Terkini (5 Terbaru, Kecuali News)
+        $this->db->select('artikel.*, kategori.nama_kategori');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->where('kategori.nama_kategori !=', 'News');
+        $this->db->order_by('artikel.tanggal_dibuat', 'DESC');
+        $this->db->limit(5);
+        $data['artikel_terkini'] = $this->db->get()->result_array();
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Artikel', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Halaman Khusus News & Berita Majelis ───────────────────
+    public function news()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Warta & Berita Majelis';
+
+        $keyword = $this->input->get('q', TRUE);
+        $data['keyword'] = $keyword;
+
+        // Query artikel khusus berkategori News
+        $this->db->select('artikel.*, kategori.nama_kategori, users.full_name as nama_penulis');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->join('users', 'artikel.id_user = users.id', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->where('kategori.nama_kategori', 'News');
+
+        if (!empty($keyword)) {
+            $this->db->group_start();
+            $this->db->like('artikel.judul_artikel', $keyword);
+            $this->db->or_like('artikel.ringkasan', $keyword);
+            $this->db->or_like('artikel.konten', $keyword);
+            $this->db->group_end();
+        }
+
+        $this->db->order_by('artikel.tanggal_dibuat', 'DESC');
+        $all_news = $this->db->get()->result_array();
+
+        if (!empty($all_news)) {
+            if (!empty($keyword)) {
+                $data['featured_news'] = null;
+                $data['news_list']     = $all_news;
+            } else {
+                $data['featured_news'] = $all_news[0];
+                $data['news_list']     = array_slice($all_news, 1);
+            }
+        } else {
+            $data['featured_news'] = null;
+            $data['news_list']     = [];
+        }
+
+        // Sidebar: News Terpopuler
+        $this->db->select('artikel.*, kategori.nama_kategori');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->where('kategori.nama_kategori', 'News');
+        $this->db->order_by('artikel.dibaca', 'DESC');
+        $this->db->limit(5);
+        $data['news_populer'] = $this->db->get()->result_array();
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_News', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Halaman Detail Artikel ───────────────────────────────
+    public function detail_artikel($slug = NULL)
+    {
+        if (empty($slug)) redirect('artikel');
+
+        $data = $this->_base_data();
+
+        // Query artikel berdasarkan slug atau id
+        $this->db->select('artikel.*, kategori.nama_kategori, users.full_name as nama_penulis');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->join('users', 'artikel.id_user = users.id', 'left');
+        $this->db->group_start();
+        $this->db->where('artikel.slug_artikel', $slug);
+        $this->db->or_where('artikel.id_artikel', $slug);
+        $this->db->group_end();
+        $this->db->where('artikel.status', 'Publish');
+        $artikel = $this->db->get()->row_array();
+
+        if (empty($artikel)) {
+            show_404();
+        }
+
+        // Update counter dibaca / views
+        $this->db->set('dibaca', 'dibaca+1', FALSE);
+        $this->db->where('id_artikel', $artikel['id_artikel']);
+        $this->db->update('artikel');
+
+        $data['artikel']    = $artikel;
+        $data['page_title'] = $artikel['judul_artikel'];
+
+        // Artikel Terkait (Kategori sama)
+        $this->db->select('artikel.*, kategori.nama_kategori');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->where('artikel.id_kategori', $artikel['id_kategori']);
+        $this->db->where('artikel.id_artikel !=', $artikel['id_artikel']);
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->order_by('artikel.tanggal_dibuat', 'DESC');
+        $this->db->limit(4);
+        $data['artikel_terkait'] = $this->db->get()->result_array();
+
+        // Sidebar Terpopuler
+        $this->db->select('artikel.*, kategori.nama_kategori');
+        $this->db->from('artikel');
+        $this->db->join('kategori', 'artikel.id_kategori = kategori.id_kategori', 'left');
+        $this->db->where('artikel.status', 'Publish');
+        $this->db->order_by('artikel.dibaca', 'DESC');
+        $this->db->limit(6);
+        $data['artikel_populer'] = $this->db->get()->result_array();
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Artikel_Detail', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+}
