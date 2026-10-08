@@ -2,7 +2,7 @@ name: Deploy Quran Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/awrad]
   workflow_dispatch:
 
 permissions:
