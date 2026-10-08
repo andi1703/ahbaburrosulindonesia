@@ -23,7 +23,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost:8888/ahbaburrosul/';
+$base_url_scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$base_url_host = 'localhost:8888';
+
+if (!empty($_SERVER['HTTP_HOST'])) {
+	$request_url = parse_url($base_url_scheme . '://' . $_SERVER['HTTP_HOST']);
+	$request_host = strtolower($request_url['host'] ?? '');
+	$is_ip_address = filter_var($request_host, FILTER_VALIDATE_IP) !== false;
+	$is_private_ip = $is_ip_address
+		&& filter_var($request_host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
+
+	if ($request_host === 'localhost' || $is_private_ip) {
+		$base_url_host = $request_host . (isset($request_url['port']) ? ':' . (int) $request_url['port'] : '');
+	}
+}
+
+$config['base_url'] = $base_url_scheme . '://' . $base_url_host . '/ahbaburrosul/';
 
 /*
 |--------------------------------------------------------------------------
