@@ -85,7 +85,7 @@
               <a href="<?= base_url('index.php/artikel/detail/' . $featured_artikel['slug_artikel']); ?>">
                 <img src="<?= $cover; ?>"
                   alt="<?= htmlspecialchars($featured_artikel['judul_artikel']); ?>"
-                  onerror="this.src='<?= base_url('assets/img/no-image.png'); ?>';">
+                  data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
               </a>
             </div>
             <div class="p-4 bg-white">
@@ -201,7 +201,7 @@
                     <a href="<?= base_url('index.php/artikel/detail/' . $art['slug_artikel']); ?>" class="nu-list-img-wrapper">
                       <img src="<?= $art_cover; ?>"
                         alt="<?= htmlspecialchars($art['judul_artikel']); ?>"
-                        onerror="this.src='<?= base_url('assets/img/no-image.png'); ?>';">
+                        data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                     </a>
                   </div>
                 </div>

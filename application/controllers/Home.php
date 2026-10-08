@@ -1,7 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Home extends CI_Controller
+/**
+ * @property \CI_DB_query_builder $db
+ * @property \CI_Input $input
+ */
+class Home extends \CI_Controller
 {
 
     public function __construct()
@@ -73,7 +77,8 @@ class Home extends CI_Controller
         $data['videos'] = $this->db->get('video')->result_array();
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Home', $data);
+        $this->load->view('frontend/home/home', $data);
+        $this->load->view('frontend/home/home_js');
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
@@ -81,10 +86,160 @@ class Home extends CI_Controller
     public function amalan()
     {
         $data = $this->_base_data();
-        $data['page_title'] = 'Amalan Ibadah';
+        $data['page_title'] = 'Al-Qur\'an';
+
+        $sources = $this->_load_quran_texts();
+        $quran_index = $sources['index'];
+        $data['surah_list'] = [];
+        $surah_by_id = [];
+
+        foreach ($quran_index['surahs'] as $surah_row) {
+            $slug = strtolower(trim(preg_replace('/[^a-z0-9]+/', '-', str_replace("'", '', $surah_row[1])), '-'));
+            $surah = [
+                'id' => $surah_row[0],
+                'name' => $surah_row[1],
+                'translation' => $surah_row[2],
+                'arabic' => $surah_row[3],
+                'verses' => $surah_row[4],
+                'revelation_order' => $surah_row[5],
+                'slug' => $slug,
+            ];
+
+            $data['surah_list'][] = $surah;
+            $surah_by_id[$surah['id']] = $surah;
+        }
+
+        $data['juz_list'] = [];
+        foreach ($this->_map_quran_juzs($sources) as $juz) {
+            $start_surah = $surah_by_id[$juz['surah_number']];
+            $data['juz_list'][] = [
+                'number' => $juz['number'],
+                'surah' => $start_surah['name'],
+                'surah_slug' => $start_surah['slug'],
+                'verse' => $juz['verse'],
+                'verses' => $juz['verses'],
+            ];
+        }
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Amalan', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_js');
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function quran_surah($number = null)
+    {
+        $surah_number = (int) $number;
+        if ($surah_number < 1 || $surah_number > 114) {
+            show_404();
+        }
+
+        $sources = $this->_load_quran_texts();
+        $surah_row = $sources['index']['surahs'][$surah_number - 1];
+        $data = $this->_base_data();
+        $data['page_title'] = $surah_row[1];
+        $data['reader_type'] = 'surah';
+        $data['reader_number'] = $surah_number;
+        $data['reader_title'] = $surah_row[1];
+        $data['reader_arabic'] = $surah_row[3];
+        $data['reader_subtitle'] = $surah_row[2] . ' · ' . $surah_row[4] . ' ayat';
+        $data['verses'] = $this->_map_quran_verses($sources, $surah_number, null);
+        $data['previous_url'] = $surah_number > 1 ? base_url('index.php/quran/surah/' . ($surah_number - 1)) : null;
+        $data['next_url'] = $surah_number < 114 ? base_url('index.php/quran/surah/' . ($surah_number + 1)) : null;
+
+        $this->_render_quran_reader($data);
+    }
+
+    public function quran_juz($number = null)
+    {
+        $juz_number = (int) $number;
+        if ($juz_number < 1 || $juz_number > 30) {
+            show_404();
+        }
+
+        $sources = $this->_load_quran_texts();
+        $juz_verses = $this->_map_quran_verses($sources, null, $juz_number);
+        $first_verse = $juz_verses[0];
+        $data = $this->_base_data();
+        $data['page_title'] = 'Juz ' . $juz_number;
+        $data['reader_type'] = 'juz';
+        $data['reader_number'] = $juz_number;
+        $data['reader_title'] = 'Juz ' . $juz_number;
+        $data['reader_arabic'] = 'الجزء ' . $juz_number;
+        $data['reader_subtitle'] = 'Mulai Surah ' . $first_verse['surah_name'] . ' ayat ' . $first_verse['number'] . ' · ' . count($juz_verses) . ' ayat';
+        $data['verses'] = $juz_verses;
+        $data['previous_url'] = $juz_number > 1 ? base_url('index.php/quran/juz/' . ($juz_number - 1)) : null;
+        $data['next_url'] = $juz_number < 30 ? base_url('index.php/quran/juz/' . ($juz_number + 1)) : null;
+
+        $this->_render_quran_reader($data);
+    }
+
+    private function _load_quran_texts()
+    {
+        $index = json_decode(file_get_contents(APPPATH . 'data/quran_index.json'), true);
+        $verses = json_decode(file_get_contents(APPPATH . 'data/quran_kemenag.json'), true);
+
+        if (empty($index['surahs']) || empty($verses) || count($verses) !== 6236) {
+            show_error('Data Al-Qur\'an lokal tidak dapat dibaca.', 500);
+        }
+
+        return [
+            'index' => $index,
+            'verses' => $verses,
+        ];
+    }
+
+    private function _map_quran_verses($sources, $surah_number = null, $juz_number = null)
+    {
+        $verses = [];
+        foreach ($sources['verses'] as $ayah) {
+            if ($surah_number !== null && (int) $ayah['surah'] !== $surah_number) {
+                continue;
+            }
+
+            if ($juz_number !== null && (int) $ayah['juz'] !== $juz_number) {
+                continue;
+            }
+
+            $surah_info = $sources['index']['surahs'][(int) $ayah['surah'] - 1];
+            $verses[] = [
+                'surah_number' => (int) $ayah['surah'],
+                'surah_name' => $surah_info[1],
+                'number' => (int) $ayah['verse'],
+                'arabic' => trim($ayah['arabic']),
+                'translation' => strip_tags($ayah['translation']),
+            ];
+        }
+
+        return $verses;
+    }
+
+    private function _map_quran_juzs($sources)
+    {
+        $juzs = [];
+        foreach ($sources['verses'] as $ayah) {
+            $juz_number = (int) $ayah['juz'];
+            if (!isset($juzs[$juz_number])) {
+                $juzs[$juz_number] = [
+                    'number' => $juz_number,
+                    'surah_number' => (int) $ayah['surah'],
+                    'verse' => (int) $ayah['verse'],
+                    'verses' => 0,
+                ];
+            }
+
+            $juzs[$juz_number]['verses']++;
+        }
+
+        ksort($juzs);
+        return $juzs;
+    }
+
+    private function _render_quran_reader($data)
+    {
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Quran/V_Quran', $data);
+        $this->load->view('frontend/V_Quran/V_Quran_js');
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
@@ -98,12 +253,13 @@ class Home extends CI_Controller
         $data['galeri'] = $this->db->get('galeri')->result_array();
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Galeri', $data);
+        $this->load->view('frontend/V_Galeri/V_Galeri', $data);
+        $this->load->view('frontend/V_Galeri/V_Galeri_js');
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
     // ── Halaman Kumpulan Artikel (Karya Tulis - Exclude News) ────
-    public function artikel($cat_param = NULL)
+    public function artikel($cat_param = null)
     {
         $data = $this->_base_data();
         $data['page_title'] = 'Artikel & Khazanah';
@@ -177,7 +333,8 @@ class Home extends CI_Controller
         $data['artikel_terkini'] = $this->db->get()->result_array();
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Artikel', $data);
+        $this->load->view('frontend/V_Artikel/V_Artikel', $data);
+        $this->load->view('frontend/V_Artikel/V_Artikel_js');
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
@@ -233,12 +390,13 @@ class Home extends CI_Controller
         $data['news_populer'] = $this->db->get()->result_array();
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_News', $data);
+        $this->load->view('frontend/V_News/V_News', $data);
+        $this->load->view('frontend/V_News/V_News_js');
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
     // ── Halaman Detail Artikel ───────────────────────────────
-    public function detail_artikel($slug = NULL)
+    public function detail_artikel($slug = null)
     {
         if (empty($slug)) redirect('artikel');
 
@@ -289,7 +447,7 @@ class Home extends CI_Controller
         $data['artikel_populer'] = $this->db->get()->result_array();
 
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Artikel_Detail', $data);
+        $this->load->view('frontend/V_Artikel/V_Artikel_Detail', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 }

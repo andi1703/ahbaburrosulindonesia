@@ -194,7 +194,7 @@
                             <div class="artikel-card-img">
                                 <img src="<?= base_url('assets/img/artikel/' . $art['gambar_cover']); ?>"
                                     alt="<?= htmlspecialchars($art['judul_artikel']); ?>"
-                                    onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                             </div>
                             <div class="artikel-card-body">
                                 <?php if (!empty($art['nama_kategori'])): ?>
@@ -235,27 +235,6 @@
     </div>
 </section>
 
-<script>
-    // Artikel filter tabs
-    (function() {
-        var tabs = document.querySelectorAll('.btn-tab-artikel');
-        var cards = document.querySelectorAll('.artikel-card-wrap');
-        tabs.forEach(function(tab) {
-            tab.addEventListener('click', function() {
-                tabs.forEach(function(t) {
-                    t.classList.remove('active');
-                });
-                this.classList.add('active');
-                var filter = this.dataset.filter;
-                cards.forEach(function(card) {
-                    card.style.display = (filter === 'semua' || card.dataset.kategori === filter) ? '' : 'none';
-                });
-            });
-        });
-    })();
-</script>
-
-
 <!-- ===================================================
      3. NEWS TERKINI
      =================================================== -->
@@ -284,7 +263,7 @@
                             <div class="news-card-img">
                                 <img src="<?= base_url('assets/img/artikel/' . $news['gambar_cover']); ?>"
                                     alt="<?= htmlspecialchars($news['judul_artikel']); ?>"
-                                    onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                             </div>
                             <!-- Konten -->
                             <div class="news-card-body">
@@ -344,12 +323,12 @@
                     <!-- Left Column (2 Small Videos) -->
                     <div class="col-lg-3 col-md-6 col-12 d-flex flex-column justify-content-between gap-4">
                         <?php foreach ($left_videos as $v): ?>
-                            <div class="video-card small-card" onclick="playVideo('<?= $v['id_youtube']; ?>', '<?= addslashes(htmlspecialchars($v['judul_video'])); ?>')">
+                            <div class="video-card small-card" data-video-id="<?= htmlspecialchars($v['id_youtube'], ENT_QUOTES, 'UTF-8'); ?>" data-video-title="<?= htmlspecialchars($v['judul_video'], ENT_QUOTES, 'UTF-8'); ?>">
                                 <div class="video-thumbnail-wrapper">
                                     <img src="https://img.youtube.com/vi/<?= $v['id_youtube']; ?>/hqdefault.jpg"
                                         alt="<?= htmlspecialchars($v['judul_video']); ?>"
                                         class="video-thumbnail"
-                                        onerror="this.src='<?= base_url('assets/img/no-image.png') ?>';">
+                                        data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                                     <div class="video-play-btn">
                                         <i class="bx bx-play-circle"></i>
                                     </div>
@@ -363,12 +342,12 @@
 
                     <!-- Center Column (1 Large Video) -->
                     <div class="col-lg-6 col-12">
-                        <div class="video-card large-card h-100 d-flex flex-column" onclick="playVideo('<?= $center_video['id_youtube']; ?>', '<?= addslashes(htmlspecialchars($center_video['judul_video'])); ?>')">
+                        <div class="video-card large-card h-100 d-flex flex-column" data-video-id="<?= htmlspecialchars($center_video['id_youtube'], ENT_QUOTES, 'UTF-8'); ?>" data-video-title="<?= htmlspecialchars($center_video['judul_video'], ENT_QUOTES, 'UTF-8'); ?>">
                             <div class="video-thumbnail-wrapper flex-grow-1">
                                 <img src="https://img.youtube.com/vi/<?= $center_video['id_youtube']; ?>/hqdefault.jpg"
                                     alt="<?= htmlspecialchars($center_video['judul_video']); ?>"
                                     class="video-thumbnail"
-                                    onerror="this.src='<?= base_url('assets/img/no-image.png') ?>';">
+                                    data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                                 <div class="video-play-btn large-play">
                                     <i class="bx bx-play-circle"></i>
                                 </div>
@@ -382,12 +361,12 @@
                     <!-- Right Column (2 Small Videos) -->
                     <div class="col-lg-3 col-md-6 col-12 d-flex flex-column justify-content-between gap-4">
                         <?php foreach ($right_videos as $v): ?>
-                            <div class="video-card small-card" onclick="playVideo('<?= $v['id_youtube']; ?>', '<?= addslashes(htmlspecialchars($v['judul_video'])); ?>')">
+                            <div class="video-card small-card" data-video-id="<?= htmlspecialchars($v['id_youtube'], ENT_QUOTES, 'UTF-8'); ?>" data-video-title="<?= htmlspecialchars($v['judul_video'], ENT_QUOTES, 'UTF-8'); ?>">
                                 <div class="video-thumbnail-wrapper">
                                     <img src="https://img.youtube.com/vi/<?= $v['id_youtube']; ?>/hqdefault.jpg"
                                         alt="<?= htmlspecialchars($v['judul_video']); ?>"
                                         class="video-thumbnail"
-                                        onerror="this.src='<?= base_url('assets/img/no-image.png') ?>';">
+                                        data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                                     <div class="video-play-btn">
                                         <i class="bx bx-play-circle"></i>
                                     </div>
@@ -405,12 +384,12 @@
                 <div class="row g-4 justify-content-center">
                     <?php foreach ($videos as $v): ?>
                         <div class="col-lg-4 col-md-6 col-12">
-                            <div class="video-card small-card h-100" onclick="playVideo('<?= $v['id_youtube']; ?>', '<?= addslashes(htmlspecialchars($v['judul_video'])); ?>')">
+                            <div class="video-card small-card h-100" data-video-id="<?= htmlspecialchars($v['id_youtube'], ENT_QUOTES, 'UTF-8'); ?>" data-video-title="<?= htmlspecialchars($v['judul_video'], ENT_QUOTES, 'UTF-8'); ?>">
                                 <div class="video-thumbnail-wrapper">
                                     <img src="https://img.youtube.com/vi/<?= $v['id_youtube']; ?>/hqdefault.jpg"
                                         alt="<?= htmlspecialchars($v['judul_video']); ?>"
                                         class="video-thumbnail"
-                                        onerror="this.src='<?= base_url('assets/img/no-image.png') ?>';">
+                                        data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                                     <div class="video-play-btn">
                                         <i class="bx bx-play-circle"></i>
                                     </div>
@@ -438,7 +417,7 @@
         <div class="modal-content video-modal-content border-0">
             <div class="modal-header video-modal-header py-3 px-4 d-flex justify-content-between align-items-center">
                 <h5 class="modal-title video-modal-title" id="modalVideoLabel">Play Video</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="stopVideo()"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0">
                 <div class="ratio ratio-16x9">
@@ -448,38 +427,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    var videoModal = null;
-    document.addEventListener("DOMContentLoaded", function() {
-        if (document.getElementById('modalVideo')) {
-            videoModal = new bootstrap.Modal(document.getElementById('modalVideo'));
-
-            // Stop video when modal is closed via backdrop click or escape key
-            document.getElementById('modalVideo').addEventListener('hidden.bs.modal', function() {
-                stopVideo();
-            });
-        }
-    });
-
-    function playVideo(youtubeId, title) {
-        var player = document.getElementById('youtubePlayer');
-        var modalTitle = document.getElementById('modalVideoLabel');
-
-        if (player && modalTitle && videoModal) {
-            player.src = "https://www.youtube.com/embed/" + youtubeId + "?autoplay=1&rel=0";
-            modalTitle.textContent = title;
-            videoModal.show();
-        }
-    }
-
-    function stopVideo() {
-        var player = document.getElementById('youtubePlayer');
-        if (player) {
-            player.src = "";
-        }
-    }
-</script>
 
 <!-- ===================================================
      4. SEJARAH / PROFIL MAJELIS
@@ -611,10 +558,10 @@
                                 <div class="col-8">
                                     <div class="gallery-wrapper gallery-wide"
                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                        onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>" data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                            onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -630,10 +577,10 @@
                                 <div class="col-4 d-flex flex-column">
                                     <div class="gallery-wrapper gallery-narrow w-100"
                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                        onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>" data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                            onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -649,10 +596,10 @@
                                 <div class="col-4 d-flex flex-column">
                                     <div class="gallery-wrapper gallery-narrow w-100"
                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                        onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>" data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                            onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -668,10 +615,10 @@
                                 <div class="col-8">
                                     <div class="gallery-wrapper gallery-wide"
                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                        onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>" data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                            onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -714,39 +661,4 @@
         </div>
     </div>
 
-    <script>
-        function openGalleryModal(imgUrl, caption) {
-            document.getElementById('modalFotoImg').src = imgUrl;
-            document.getElementById('modalFotoCaption').textContent = caption;
-        }
-    </script>
 <?php endif; ?>
-
-<!-- Smooth scroll to sections based on custom clean URLs -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var path = window.location.pathname.toLowerCase();
-        var targetSection = null;
-
-        if (path.indexOf('/articles') !== -1 || path.indexOf('/artikel') !== -1) {
-            targetSection = document.getElementById('artikel-section');
-        } else if (path.indexOf('/news') !== -1) {
-            targetSection = document.getElementById('news-section');
-        } else if (path.indexOf('/sejarah') !== -1) {
-            targetSection = document.getElementById('sejarah-section');
-        } else if (path.indexOf('/about') !== -1) {
-            targetSection = document.getElementById('sejarah-section');
-        }
-
-        if (targetSection) {
-            setTimeout(function() {
-                var navbarHeight = document.getElementById('mainNavbar') ? document.getElementById('mainNavbar').offsetHeight : 80;
-                var targetOffset = targetSection.getBoundingClientRect().top + window.scrollY - navbarHeight - 15;
-                window.scrollTo({
-                    top: targetOffset,
-                    behavior: 'smooth'
-                });
-            }, 300);
-        }
-    });
-</script>

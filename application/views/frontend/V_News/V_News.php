@@ -1,17 +1,79 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+$news_list = $news_list ?? [];
+?>
+
+<style>
+  .news-hero-banner {
+    background: linear-gradient(135deg, #0a2e1c 0%, #157347 100%);
+  }
+
+  .news-hero-label {
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+  }
+
+  .news-hero-description {
+    font-size: 0.95rem;
+  }
+
+  .news-search-input {
+    font-size: 0.9rem;
+  }
+
+  .news-featured-badge {
+    font-size: 0.75rem;
+  }
+
+  .news-featured-excerpt {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .news-author-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+
+  .news-widget-title {
+    font-size: 1.05rem;
+  }
+
+  .news-widget-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .news-popular-category {
+    font-size: 0.65rem;
+  }
+
+  .news-view-count {
+    font-size: 0.72rem;
+  }
+
+  .news-promo-banner {
+    background: linear-gradient(135deg, #0a2e1c 0%, #157347 100%);
+    border-top: 4px solid #c9a84c;
+  }
+
+  .news-promo-description {
+    font-size: 0.82rem;
+  }
+</style>
 
 <!-- ========================================================
      HEADER HERO SECTION NEWS & BERITA MAJELIS
      ======================================================== -->
-<section class="bg-majelis-dark text-white pt-5 pb-4 mt-5" style="background: linear-gradient(135deg, #0a2e1c 0%, #157347 100%);">
+<section class="news-hero-banner bg-majelis-dark text-white pt-5 pb-4 mt-5">
   <div class="container pt-4">
     <div class="row align-items-center">
       <div class="col-lg-7">
-        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-2" style="letter-spacing:1px; font-size:0.75rem;">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-2 news-hero-label">
           <i class="bx bx-news me-1"></i> Warta & Berita Resmi
         </span>
         <h1 class="fw-extrabold text-white display-6 mb-2">Berita Majelis Ahbaburrosul</h1>
-        <p class="text-white-50 mb-3" style="font-size: 0.95rem;">
+        <p class="text-white-50 mb-3 news-hero-description">
           Informasi kegiatan, liputan silaturahmi akbar, pengumuman resmi, dan warta majelis terkini.
         </p>
       </div>
@@ -20,9 +82,8 @@
         <form action="<?= base_url('index.php/news'); ?>" method="GET" class="position-relative">
           <div class="input-group shadow-sm rounded-pill overflow-hidden bg-white p-1">
             <input type="text" name="q" value="<?= htmlspecialchars($keyword ?? ''); ?>"
-              class="form-control border-0 ps-3 shadow-none"
-              placeholder="Cari berita atau pengumuman..."
-              style="font-size:0.9rem;">
+              class="form-control border-0 ps-3 shadow-none news-search-input"
+              placeholder="Cari berita atau pengumuman...">
             <button class="btn btn-warning rounded-pill px-4 fw-bold text-dark" type="submit">
               <i class="bx bx-search fs-5 align-middle"></i>
             </button>
@@ -65,12 +126,12 @@
               <a href="<?= base_url('index.php/artikel/detail/' . $featured_news['slug_artikel']); ?>">
                 <img src="<?= $cover; ?>"
                   alt="<?= htmlspecialchars($featured_news['judul_artikel']); ?>"
-                  onerror="this.src='<?= base_url('assets/img/no-image.png'); ?>';">
+                  data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
               </a>
             </div>
             <div class="p-4 bg-white">
               <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge bg-danger px-3 py-1 rounded-pill" style="font-size:0.75rem;">
+                <span class="badge bg-danger px-3 py-1 rounded-pill news-featured-badge">
                   <i class="bx bx-radio-circle-marked me-1"></i> Utamanya Warta
                 </span>
                 <span class="text-muted small">
@@ -90,13 +151,13 @@
                 </a>
               </h2>
 
-              <p class="text-secondary mb-3 line-clamp-3" style="font-size:0.95rem; line-height:1.6;">
+              <p class="text-secondary mb-3 line-clamp-3 news-featured-excerpt">
                 <?= htmlspecialchars(strip_tags($featured_news['ringkasan'] ?? substr(strip_tags($featured_news['konten'] ?? ''), 0, 180))); ?>...
               </p>
 
               <div class="d-flex align-items-center justify-content-between pt-3 border-top">
                 <div class="d-flex align-items-center gap-2">
-                  <div class="bg-majelis-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width:34px; height:34px; font-size:0.8rem;">
+                  <div class="bg-majelis-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold news-author-avatar">
                     <?= strtoupper(substr($featured_news['nama_penulis'] ?? 'R', 0, 1)); ?>
                   </div>
                   <span class="small fw-semibold text-dark">
@@ -168,7 +229,7 @@
                     <a href="<?= base_url('index.php/artikel/detail/' . $news['slug_artikel']); ?>" class="nu-list-img-wrapper">
                       <img src="<?= $news_cover; ?>"
                         alt="<?= htmlspecialchars($news['judul_artikel']); ?>"
-                        onerror="this.src='<?= base_url('assets/img/no-image.png'); ?>';">
+                        data-fallback-src="<?= base_url('assets/img/no-image.png'); ?>">
                     </a>
                   </div>
                 </div>
@@ -197,11 +258,11 @@
           <!-- WIDGET 1: NEWS TERPOPULER -->
           <div class="bg-white rounded-3 p-3 shadow-sm border">
             <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
-              <h5 class="fw-bold text-majelis-dark m-0 d-flex align-items-center gap-2" style="font-size:1.05rem;">
+              <h5 class="fw-bold text-majelis-dark m-0 d-flex align-items-center gap-2 news-widget-title">
                 <span class="bg-danger text-white rounded-circle px-2 py-1 fs-6 fw-bold">#</span>
                 Berita Populer
               </h5>
-              <span class="badge bg-light text-danger border border-danger px-2 py-1" style="font-size:0.7rem;">Paling Banyak Dibaca</span>
+              <span class="badge bg-light text-danger border border-danger px-2 py-1 news-widget-subtitle">Paling Banyak Dibaca</span>
             </div>
 
             <?php if (!empty($news_populer)): ?>
@@ -211,14 +272,14 @@
                   <div class="nu-popular-item">
                     <span class="nu-popular-num text-danger bg-light"><?= $rank++; ?></span>
                     <div>
-                      <span class="badge bg-danger px-2 py-0 rounded-pill mb-1" style="font-size:0.65rem;">
+                      <span class="badge bg-danger px-2 py-0 rounded-pill mb-1 news-popular-category">
                         News
                       </span>
                       <a href="<?= base_url('index.php/artikel/detail/' . $pop['slug_artikel']); ?>"
                         class="nu-popular-title d-block mb-1">
                         <?= htmlspecialchars($pop['judul_artikel']); ?>
                       </a>
-                      <div class="text-muted" style="font-size:0.72rem;">
+                      <div class="text-muted news-view-count">
                         <i class="bx bx-show me-1"></i> <?= number_format($pop['dibaca'] ?? 0); ?> dibaca
                       </div>
                     </div>
@@ -231,11 +292,10 @@
           </div>
 
           <!-- WIDGET 2: BANNER INFO -->
-          <div class="bg-majelis-dark text-white rounded-3 p-4 shadow-sm position-relative overflow-hidden"
-            style="background: linear-gradient(135deg, #0a2e1c 0%, #157347 100%); border-top: 4px solid #c9a84c;">
+          <div class="bg-majelis-dark text-white rounded-3 p-4 shadow-sm position-relative overflow-hidden news-promo-banner">
             <span class="badge bg-warning text-dark fw-bold mb-2">Warta Majelis</span>
             <h5 class="fw-bold mb-2">Seputar Kegiatan Majelis</h5>
-            <p class="text-white-50 small mb-3" style="font-size:0.82rem;">
+            <p class="text-white-50 small mb-3 news-promo-description">
               Temukan pula ribuan artikel khazanah, nasihat ulama, dan amalan ibadah harian jamaah.
             </p>
             <a href="<?= base_url('index.php/artikel'); ?>" class="btn btn-warning text-dark fw-bold btn-sm rounded-pill px-4">

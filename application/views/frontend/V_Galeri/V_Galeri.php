@@ -34,10 +34,10 @@
      ======================================================== -->
 <section class="py-5 bg-white" style="background-color: #ffffff !important;">
     <div class="container">
-        
+
         <?php if (!empty($galeri)): ?>
             <div class="row g-4">
-                <?php 
+                <?php
                 // Kelompokkan foto ke dalam kumpulan beranggotakan 4 item
                 $chunks = array_chunk($galeri, 4);
                 foreach ($chunks as $chunk):
@@ -45,16 +45,17 @@
                     <!-- Setiap block berisi 4 foto dibungkus col-lg-6 sehingga di desktop ada 2 block berdampingan -->
                     <div class="col-lg-6 col-12">
                         <div class="row g-3 align-items-stretch">
-                            
+
                             <!-- Foto 1 (Index 0): Wide (col-8) -->
                             <?php if (isset($chunk[0])): $foto = $chunk[0]; ?>
                                 <div class="col-8">
-                                    <div class="gallery-wrapper gallery-wide" 
-                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                         onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
-                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>" 
-                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                             onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    <div class="gallery-wrapper gallery-wide"
+                                        data-bs-toggle="modal" data-bs-target="#modalFoto"
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
+                                            alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -68,12 +69,13 @@
                             <!-- Foto 2 (Index 1): Narrow (col-4) -->
                             <?php if (isset($chunk[1])): $foto = $chunk[1]; ?>
                                 <div class="col-4 d-flex flex-column">
-                                    <div class="gallery-wrapper gallery-narrow w-100" 
-                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                         onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
-                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>" 
-                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                             onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    <div class="gallery-wrapper gallery-narrow w-100"
+                                        data-bs-toggle="modal" data-bs-target="#modalFoto"
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
+                                            alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -87,12 +89,13 @@
                             <!-- Foto 3 (Index 2): Narrow (col-4) -->
                             <?php if (isset($chunk[2])): $foto = $chunk[2]; ?>
                                 <div class="col-4 d-flex flex-column">
-                                    <div class="gallery-wrapper gallery-narrow w-100" 
-                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                         onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
-                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>" 
-                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                             onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    <div class="gallery-wrapper gallery-narrow w-100"
+                                        data-bs-toggle="modal" data-bs-target="#modalFoto"
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
+                                            alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -106,12 +109,13 @@
                             <!-- Foto 4 (Index 3): Wide (col-8) -->
                             <?php if (isset($chunk[3])): $foto = $chunk[3]; ?>
                                 <div class="col-8">
-                                    <div class="gallery-wrapper gallery-wide" 
-                                         data-bs-toggle="modal" data-bs-target="#modalFoto"
-                                         onclick="openGalleryModal('<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>', '<?= addslashes(htmlspecialchars($foto['judul_foto'])); ?>')">
-                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>" 
-                                             alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
-                                             onerror="this.src='<?= base_url('assets/frontend/img/no-img.jpg'); ?>'">
+                                    <div class="gallery-wrapper gallery-wide"
+                                        data-bs-toggle="modal" data-bs-target="#modalFoto"
+                                        data-gallery-image="<?= htmlspecialchars(base_url('assets/img/galeri/' . $foto['file_foto']), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-gallery-caption="<?= htmlspecialchars($foto['judul_foto'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <img src="<?= base_url('assets/img/galeri/' . $foto['file_foto']); ?>"
+                                            alt="<?= htmlspecialchars($foto['judul_foto']); ?>"
+                                            data-fallback-src="<?= base_url('assets/frontend/img/no-img.jpg'); ?>">
                                         <div class="gallery-overlay">
                                             <div class="gallery-text">
                                                 <h6 class="mb-0 text-white fw-600"><?= htmlspecialchars($foto['judul_foto']); ?></h6>
@@ -148,24 +152,24 @@
         transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
         background: #eaeaea;
     }
-    
+
     .gallery-wrapper:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
         z-index: 2;
     }
-    
+
     .gallery-wrapper img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
-    
+
     .gallery-wrapper:hover img {
         transform: scale(1.06);
     }
-    
+
     /* Overlay teks saat hover */
     .gallery-overlay {
         position: absolute;
@@ -180,16 +184,16 @@
         opacity: 0;
         transition: opacity 0.3s ease;
     }
-    
+
     .gallery-wrapper:hover .gallery-overlay {
         opacity: 1;
     }
-    
+
     .gallery-text {
         transform: translateY(10px);
         transition: transform 0.35s ease;
     }
-    
+
     .gallery-wrapper:hover .gallery-text {
         transform: translateY(0);
     }
@@ -199,7 +203,7 @@
     .gallery-wide {
         aspect-ratio: 3 / 2;
     }
-    
+
     .gallery-narrow {
         flex: 1 1 auto;
         height: 100%;
@@ -210,12 +214,15 @@
         .gallery-wrapper {
             border-radius: 12px;
         }
+
         .gallery-overlay {
             padding: 0.75rem;
         }
+
         .gallery-overlay h6 {
             font-size: 0.78rem !important;
         }
+
         .gallery-overlay small {
             font-size: 0.65rem !important;
         }
@@ -236,10 +243,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function openGalleryModal(imgUrl, caption) {
-        document.getElementById('modalFotoImg').src = imgUrl;
-        document.getElementById('modalFotoCaption').textContent = caption;
-    }
-</script>
