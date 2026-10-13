@@ -417,7 +417,6 @@ $juz_list = $juz_list ?? [];
             <div class="quran-identity">
                 <span class="quran-mark" aria-hidden="true">۞</span>
                 <div>
-                    <p class="quran-eyebrow">Bacaan, doa, wirid, dan sholawat</p>
                     <h1 class="quran-title">Al-Qur'an</h1>
                     <p class="quran-subtitle">Jelajahi 114 surah dan 30 juz Al-Qur'an.</p>
                 </div>

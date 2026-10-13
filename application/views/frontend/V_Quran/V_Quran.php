@@ -1,354 +1,997 @@
 <?php
-
 defined('BASEPATH') or exit('No direct script access allowed');
-$verses = $verses ?? [];
-$reader_title = $reader_title ?? 'Al-Qur\'an';
-$reader_arabic = $reader_arabic ?? 'القرآن الكريم';
-$reader_subtitle = $reader_subtitle ?? '';
-$reader_type = $reader_type ?? 'surah';
-$last_surah_number = 0;
+
+$verses             = $verses             ?? [];
+$reader_title       = $reader_title       ?? 'Al-Qur\'an';
+$reader_arabic      = $reader_arabic      ?? 'القرآن الكريم';
+$reader_translation = $reader_translation ?? '';
+$reader_subtitle    = $reader_subtitle    ?? '';
+$reader_type        = $reader_type        ?? 'surah';
+$reader_number      = $reader_number      ?? 1;
+$reader_juz         = $reader_juz         ?? 1;
+$reader_verse_count = $reader_verse_count ?? count($verses);
+$prev_name          = $prev_name          ?? null;
+$next_name          = $next_name          ?? null;
+$last_surah_number  = 0;
+
+/* Convert integer to Arabic-Indic numeral string */
+function qr_arabic_num(int $n): string
+{
+  static $map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  $out = '';
+  foreach (str_split((string) $n) as $d) {
+    $out .= $map[(int)$d];
+  }
+  return $out;
+}
 ?>
 <style>
   @font-face {
     font-family: "LPMQ";
     src: url("<?= base_url('assets/frontend/fonts/LPMQ.ttf'); ?>") format("truetype");
-    font-style: normal;
     font-weight: 400;
     font-display: swap;
   }
 
-  .quran-reader-page {
-    --reader-bg: #0b0d0d;
-    --reader-surface: #191c1b;
-    --reader-border: rgba(255, 255, 255, 0.08);
-    --reader-text: #f2f5f4;
-    --reader-muted: #a3aeaa;
-    --reader-accent: #28c3a3;
+  /* ── Tokens ── */
+  :root {
+    --qr-bg: #0b0d0d;
+    --qr-surf: #131615;
+    --qr-border: rgba(255, 255, 255, .07);
+    --qr-text: #eef1ee;
+    --qr-muted: #6d7e78;
+    --qr-accent: #28c3a3;
+    --qr-gold: #c9a84c;
+    --qr-nav: 70px;
+    --qr-sub: 48px;
+  }
+
+  /* ── Page ── */
+  .qr-page {
     min-height: 100vh;
-    padding: 92px 0 3rem;
-    background: var(--reader-bg);
-    color: var(--reader-text);
+    padding-top: calc(var(--qr-nav) + var(--qr-sub));
+    padding-bottom: 5rem;
+    background: var(--qr-bg);
+    color: var(--qr-text);
   }
 
-  body.quran-reader-body {
-    position: relative;
+  /* ── Sub-nav ── */
+  .qr-subnav {
+    position: fixed;
+    top: var(--qr-nav);
+    left: 0;
+    right: 0;
+    z-index: 120;
+    height: var(--qr-sub);
+    display: flex;
+    align-items: center;
+    background: #0d1010;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
   }
 
-  body.quran-reader-body .btn-whatsapp-floating {
-    position: absolute;
-    right: 1rem;
-    bottom: 1.25rem;
+  .qr-subnav-inner {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+    max-width: 860px;
+    margin-inline: auto;
+    padding-inline: 1rem;
   }
 
-  .quran-reader-container {
-    width: min(100% - 2rem, 860px);
+  /* Left slot — always pinned to left edge */
+  .qr-subnav-left {
+    flex-shrink: 0;
+  }
+
+  /* Center slot — takes all remaining space, contents centered */
+  .qr-subnav-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+  }
+
+  .qr-subnav-center::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* pill button */
+  .qr-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    height: 34px;
+    padding: 0 .85rem;
+    border: 1.5px solid rgba(255, 255, 255, .12);
+    border-radius: 8px;
+    background: #1a1d1c;
+    color: #a8b5b0;
+    font: inherit;
+    font-size: .73rem;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color .14s, color .14s, background .14s;
+  }
+
+  .qr-pill:hover {
+    border-color: var(--qr-accent);
+    color: var(--qr-accent);
+  }
+
+  .qr-pill.is-active {
+    border-color: var(--qr-accent);
+    background: rgba(40, 195, 163, .08);
+    color: var(--qr-accent);
+    font-weight: 600;
+  }
+
+  /* arrow */
+  .qr-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    height: 34px;
+    padding: 0 .65rem;
+    border: 1.5px solid rgba(255, 255, 255, .12);
+    border-radius: 8px;
+    background: #1a1d1c;
+    color: #a8b5b0;
+    font: inherit;
+    font-size: .73rem;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: border-color .14s, color .14s;
+  }
+
+  .qr-arrow i {
+    font-size: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .qr-arrow:hover {
+    border-color: var(--qr-accent);
+    color: var(--qr-accent);
+  }
+
+  .qr-arrow[aria-disabled="true"] {
+    opacity: .25;
+    pointer-events: none;
+  }
+
+  /* Arrow label: hidden on mobile, shown on wider screens */
+  .qr-arrow-name {
+    display: none;
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (min-width: 580px) {
+    .qr-arrow-name { display: inline; }
+  }
+
+  /* ── Content wrap ── */
+  .qr-body {
+    width: min(100% - 2rem, 820px);
     margin-inline: auto;
   }
 
-  .quran-reader-back {
+  /* ── Surah header ── */
+  .qr-hdr {
+    padding: 2.25rem 0 1.65rem;
+    text-align: center;
+    border-bottom: 1px solid var(--qr-border);
+  }
+
+  .qr-hdr-meta {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 1.4rem;
-    color: #c8d2ce;
-    font-size: 0.78rem;
-    text-decoration: none;
+    gap: .5rem;
+    padding: .28rem .9rem;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .05);
+    color: var(--qr-muted);
+    font-size: .68rem;
+    margin-bottom: 1.25rem;
   }
 
-  .quran-reader-back:hover {
-    color: var(--reader-accent);
+  .qr-hdr-meta span+span::before {
+    content: '·';
+    margin-right: .5rem;
   }
 
-  .quran-reader-heading {
-    padding: 1.4rem 1.5rem;
-    border: 1px solid var(--reader-border);
-    border-radius: 10px;
-    background: linear-gradient(135deg, #064b43, #093b35);
+  .qr-hdr-ar {
+    display: block;
+    font-family: "LPMQ", "Amiri", serif;
+    font-size: clamp(2.2rem, 5.5vw, 3.5rem);
+    line-height: 1.75;
+    color: #dff0e9;
+    margin-bottom: .35rem;
+    direction: rtl;
   }
 
-  .quran-reader-heading-row {
+  .qr-hdr-name {
+    margin: 0 0 .2rem;
+    font-size: clamp(1.3rem, 3.5vw, 1.65rem);
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .qr-hdr-trans {
+    margin: 0;
+    font-size: .82rem;
+    color: var(--qr-muted);
+  }
+
+  /* ── Bismillah ── */
+  .qr-bismillah {
+    padding: 1.35rem 0 .9rem;
+    text-align: center;
+    font-family: "LPMQ", "Amiri", serif;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    line-height: 2;
+    color: #b8d4cc;
+    direction: rtl;
+    border-bottom: 1px solid var(--qr-border);
+  }
+
+  /* ── Surah divider (juz) ── */
+  .qr-divider {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+    gap: .85rem;
+    padding: 1rem 0 .65rem;
+    border-bottom: 1px solid var(--qr-border);
   }
 
-  .quran-reader-title {
-    margin: 0;
-    color: #fff;
-    font-size: 1.45rem;
-    font-weight: 800;
-    line-height: 1.25;
-  }
-
-  .quran-reader-arabic-title {
-    display: block;
-    margin-top: 0.25rem;
-    color: #c7fff2;
+  .qr-divider-ar {
     font-family: "LPMQ", "Amiri", serif;
     font-size: 1.5rem;
-    line-height: 1.8;
-  }
-
-  .quran-reader-subtitle {
-    margin: 0.25rem 0 0;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-  }
-
-  .quran-reader-copy-all,
-  .quran-verse-copy {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    min-height: 34px;
-    padding: 0.4rem 0.65rem;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.14);
-    color: #edf8f5;
-    font: inherit;
-    font-size: 0.68rem;
-    cursor: pointer;
-  }
-
-  .quran-reader-copy-all:hover,
-  .quran-verse-copy:hover {
-    border-color: var(--reader-accent);
-    color: var(--reader-accent);
-  }
-
-  .quran-reader-status {
-    min-height: 1.2rem;
-    margin: 0.55rem 0 0;
-    color: #b1f5e4;
-    font-size: 0.7rem;
-  }
-
-  .quran-reader-nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin: 1rem 0;
-  }
-
-  .quran-reader-nav a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    min-height: 36px;
-    padding: 0.45rem 0.7rem;
-    border: 1px solid var(--reader-border);
-    border-radius: 6px;
-    color: #dfe7e3;
-    font-size: 0.72rem;
-    text-decoration: none;
-  }
-
-  .quran-reader-nav a:hover {
-    border-color: var(--reader-accent);
-    color: var(--reader-accent);
-  }
-
-  .quran-reader-nav a[aria-disabled="true"] {
-    visibility: hidden;
-  }
-
-  .quran-reader-surah-divider {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin: 1.5rem 0 0.65rem;
-    padding: 0.65rem 0.8rem;
-    border-left: 3px solid var(--reader-accent);
-    border-radius: 4px;
-    background: #151918;
-  }
-
-  .quran-reader-surah-divider h2 {
-    margin: 0;
-    color: #eaf3f0;
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
-
-  .quran-reader-surah-divider a {
-    color: var(--reader-accent);
-    font-size: 0.68rem;
-    text-decoration: none;
-  }
-
-  .quran-reader-verse {
-    margin-top: 0.55rem;
-    padding: 1.15rem 1.25rem;
-    border: 1px solid var(--reader-border);
-    border-radius: 8px;
-    background: var(--reader-surface);
-    scroll-margin-top: 1.5rem;
-  }
-
-  .quran-reader-verse-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    margin-bottom: 0.9rem;
-  }
-
-  .quran-reader-verse-number {
-    display: grid;
-    width: 29px;
-    height: 29px;
-    place-items: center;
-    border-radius: 50%;
-    background: #292f2c;
-    color: #cfe1da;
-    font-size: 0.68rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .quran-reader-verse-arabic {
-    margin: 0;
-    color: #f2f5f4;
+    color: var(--qr-accent);
     direction: rtl;
+    flex-shrink: 0;
+  }
+
+  .qr-divider-name {
+    display: block;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #dde8e3;
+  }
+
+  .qr-divider-link {
+    font-size: .7rem;
+    color: var(--qr-muted);
+    text-decoration: none;
+  }
+
+  .qr-divider-link:hover {
+    color: var(--qr-accent);
+  }
+
+  /* ── Verse ── */
+  .qr-verse {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 0 .5rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--qr-border);
+    scroll-margin-top: calc(var(--qr-nav) + var(--qr-sub) + .5rem);
+    position: relative;
+  }
+
+  /* last-read indicator */
+  .qr-verse.is-last-read::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
+    background: var(--qr-accent);
+  }
+
+  /* ── Dots menu column ── */
+  .qr-dots-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.1rem;
+    position: relative;
+  }
+
+  .qr-dots {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--qr-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .13s, color .13s;
+  }
+
+  .qr-dots:hover {
+    background: rgba(255, 255, 255, .07);
+    color: #fff;
+  }
+
+  .qr-dots.is-open {
+    background: rgba(255, 255, 255, .07);
+    color: var(--qr-accent);
+  }
+
+  /* overlay backdrop */
+  .qr-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 298;
+    background: rgba(0, 0, 0, .55);
+  }
+
+  .qr-overlay.is-open {
+    display: block;
+  }
+
+  /* sheet handle (mobile only) */
+  .qr-sheet-handle {
+    display: none;
+    width: 36px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .2);
+    margin: 0 auto .65rem;
+    flex-shrink: 0;
+  }
+
+  /* dropdown — sibling of .qr-dots inside .qr-dots-col */
+  .qr-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(1.1rem + 34px);
+    left: 0;
+    z-index: 299;
+    min-width: 210px;
+    padding: .4rem 0;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    background: #1c2120;
+    box-shadow: 0 10px 36px rgba(0, 0, 0, .65);
+  }
+
+  .qr-dots.is-open~.qr-dropdown {
+    display: block;
+  }
+
+  /* mobile: bottom sheet */
+  @media(max-width:480px) {
+    .qr-dropdown {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      border-radius: 18px 18px 0 0;
+      min-width: 0;
+      padding: .6rem 0 max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    .qr-dots.is-open~.qr-dropdown {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .qr-sheet-handle {
+      display: block;
+    }
+  }
+
+  .qr-dditem {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+    width: 100%;
+    padding: .6rem 1rem;
+    border: 0;
+    background: transparent;
+    color: #c4cec9;
+    font: inherit;
+    font-size: .82rem;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .1s, color .1s;
+  }
+
+  .qr-dditem:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+  }
+
+  .qr-dditem i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .qr-dditem.is-active {
+    color: var(--qr-accent);
+  }
+
+  .qr-dditem.is-active i {
+    color: var(--qr-accent);
+  }
+
+  @media(max-width:480px) {
+    .qr-dditem {
+      padding: .85rem 1.5rem;
+      font-size: .9rem;
+    }
+
+    .qr-dditem i {
+      font-size: 1.2rem;
+      width: 22px;
+    }
+  }
+
+  /* ── Verse content column ── */
+  .qr-vcontent {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    min-width: 0;
+  }
+
+  /* Arabic text + ornate badge (badge is inside RTL flow = appears at right) */
+  .qr-arabic {
+    margin: 0;
     font-family: "LPMQ", "Amiri", serif;
-    font-size: 1.75rem;
-    line-height: 2.25;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    line-height: 2.1;
+    color: #edf3ef;
+    direction: rtl;
     text-align: right;
   }
 
-  .quran-reader-verse-translation {
-    margin: 0.85rem 0 0;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--reader-border);
-    color: #c2ccc8;
-    font-size: 0.86rem;
-    line-height: 1.8;
+  /* Ornate number badge — sits inline at start of RTL text (= right edge visually) */
+  .qr-ornate {
+    display: inline-grid;
+    place-items: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    border: 1.5px solid rgba(201, 168, 76, .55);
+    box-shadow: inset 0 0 0 3px rgba(11, 13, 13, .8), 0 0 0 1.5px rgba(201, 168, 76, .25);
+    color: var(--qr-gold);
+    font-family: inherit;
+    font-size: .45em;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-inline-start: .25em;
   }
 
-  @media (max-width: 575.98px) {
-    .quran-reader-page {
-      padding-top: 82px;
+  /* Translation */
+  .qr-trans {
+    margin: 0;
+    padding: 0 .1rem;
+    font-size: clamp(.84rem, 2.2vw, .95rem);
+    line-height: 1.85;
+    color: #8fa49d;
+  }
+
+  /* Bookmark star indicator */
+  .qr-bookmark-star {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 1.4rem;
+    color: var(--qr-gold);
+    font-size: .85rem;
+  }
+
+  .qr-verse.is-bookmarked .qr-bookmark-star {
+    display: block;
+  }
+
+  /* ── Copy/status ── */
+  .qr-status {
+    display: block;
+    min-height: 1.1rem;
+    padding: .4rem 0;
+    color: var(--qr-accent);
+    font-size: .69rem;
+    text-align: center;
+  }
+
+  /* ── Bottom nav ── */
+  .qr-botnav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+  }
+
+  .qr-botnav a {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .65rem 1.1rem;
+    border: 1px solid var(--qr-border);
+    border-radius: 9px;
+    background: var(--qr-surf);
+    color: #b8c4bf;
+    font-size: .8rem;
+    text-decoration: none;
+    max-width: 48%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: border-color .14s, color .14s;
+  }
+
+  .qr-botnav a:hover {
+    border-color: var(--qr-accent);
+    color: var(--qr-accent);
+  }
+
+  /* ── Donation banner ── */
+  .qr-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.15rem 1.35rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #006860 0%, #004944 100%);
+  }
+
+  .qr-banner-body {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+  }
+
+  .qr-banner-ico {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .15);
+    color: #fff;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+
+  .qr-banner-title {
+    font-size: .88rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 .15rem;
+  }
+
+  .qr-banner-sub {
+    font-size: .72rem;
+    color: rgba(255, 255, 255, .68);
+    margin: 0;
+  }
+
+  .qr-banner-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .5rem 1.1rem;
+    border: 0;
+    border-radius: 99px;
+    background: #fff;
+    color: #004944;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .qr-banner-cta:hover {
+    background: #d8f5ee;
+  }
+
+  /* ── Responsive ── */
+  @media(max-width:480px) {
+    .qr-verse {
+      grid-template-columns: 34px 1fr;
     }
 
-    .quran-reader-container {
-      width: min(100% - 1.5rem, 860px);
+    .qr-dots {
+      width: 24px;
+      height: 24px;
+      font-size: 1.05rem;
     }
 
-    .quran-reader-heading {
-      padding: 1rem;
-    }
-
-    .quran-reader-heading-row {
+    .qr-banner {
+      flex-direction: column;
       align-items: flex-start;
     }
+  }
 
-    .quran-reader-title {
-      font-size: 1.2rem;
-    }
+  @media(prefers-reduced-motion:reduce) {
 
-    .quran-reader-arabic-title {
-      font-size: 1.35rem;
+    *,
+    *::before,
+    *::after {
+      transition-duration: .01ms !important;
     }
+  }
 
-    .quran-reader-copy-all {
-      flex: 0 0 auto;
-      width: 36px;
-      padding: 0;
-      font-size: 0;
-    }
+  /* ── Search panels ── */
+  .qr-panel {
+    position: fixed;
+    top: calc(var(--qr-nav) + var(--qr-sub) + 4px);
+    z-index: 250;
+    width: min(340px, 90vw);
+    max-height: min(520px, 70vh);
+    display: flex;
+    flex-direction: column;
+    background: #1a1d1c;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .75);
+    overflow: hidden;
+  }
 
-    .quran-reader-copy-all i {
-      font-size: 1rem;
-    }
+  .qr-panel[hidden] {
+    display: none;
+  }
 
-    .quran-reader-verse {
-      padding: 0.9rem;
-    }
+  .qr-panel-search {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .07);
+    flex-shrink: 0;
+  }
 
-    .quran-reader-verse-arabic {
-      font-size: 1.5rem;
-      line-height: 2;
-    }
+  .qr-panel-search i {
+    color: #6d7e78;
+    font-size: 1.1rem;
+  }
 
-    .quran-reader-verse-translation {
-      font-size: 0.8rem;
-    }
+  .qr-panel-search input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    color: #eef1ee;
+    font: inherit;
+    font-size: .88rem;
+    outline: none;
+  }
+
+  .qr-panel-search input::placeholder {
+    color: #6d7e78;
+  }
+
+  .qr-panel-list {
+    flex: 1;
+    overflow-y: auto;
+    margin: 0;
+    padding: .35rem 0;
+    list-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, .12) transparent;
+  }
+
+  .qr-panel-item a,
+  .qr-panel-item button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: .65rem 1rem;
+    background: transparent;
+    border: 0;
+    color: #c4cec9;
+    font: inherit;
+    font-size: .88rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .1s, color .1s;
+  }
+
+  .qr-panel-item a:hover,
+  .qr-panel-item button:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+  }
+
+  .qr-panel-item.is-active a {
+    color: #28c3a3;
+    font-weight: 600;
+    background: rgba(40, 195, 163, .07);
+  }
+
+  .qr-panel-item.is-hidden {
+    display: none;
+  }
+
+  .qr-panel-item a i {
+    color: #28c3a3;
+    font-size: 1rem;
+  }
+
+  /* Panel backdrop */
+  .qr-panel-back {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 249;
+  }
+
+  .qr-panel-back.is-open {
+    display: block;
   }
 </style>
 
-<main class="quran-reader-page">
-  <div class="quran-reader-container">
-    <a class="quran-reader-back" href="<?= base_url('index.php/amalan'); ?>">
-      <i class="bx bx-arrow-back" aria-hidden="true"></i> Daftar Al-Qur'an
-    </a>
+<!-- ── Sticky sub-nav ── -->
+<nav class="qr-subnav" aria-label="Navigasi Al-Qur'an">
+  <div class="qr-subnav-inner">
 
-    <header class="quran-reader-heading">
-      <div class="quran-reader-heading-row">
-        <div>
-          <h1 class="quran-reader-title"><?= htmlspecialchars($reader_title, ENT_QUOTES, 'UTF-8'); ?></h1>
-          <span class="quran-reader-arabic-title" lang="ar" dir="rtl"><?= htmlspecialchars($reader_arabic, ENT_QUOTES, 'UTF-8'); ?></span>
-          <p class="quran-reader-subtitle"><?= htmlspecialchars($reader_subtitle, ENT_QUOTES, 'UTF-8'); ?></p>
-        </div>
-        <button class="quran-reader-copy-all" type="button" data-copy-all title="Salin seluruh bacaan">
-          <i class="bx bx-copy" aria-hidden="true"></i><span>Salin semua</span>
+    <!-- Grid icon: always pinned left -->
+    <div class="qr-subnav-left">
+      <a class="qr-pill" href="<?= base_url('index.php/quran'); ?>" title="Daftar Surah">
+        <i class="bx bx-grid-alt"></i>
+      </a>
+    </div>
+
+    <!-- Center group: prev + surah + ayat + next -->
+    <div class="qr-subnav-center">
+
+      <a class="qr-arrow"
+        href="<?= $previous_url ?? '#'; ?>"
+        <?= empty($previous_url) ? 'aria-disabled="true"' : ''; ?>
+        title="<?= $prev_name ? 'Sebelumnya: ' . htmlspecialchars($prev_name) : ''; ?>">
+        <i class="bx bx-chevron-left"></i>
+        <?php if ($prev_name): ?>
+          <span class="qr-arrow-name"><?= htmlspecialchars($prev_name); ?></span>
+        <?php endif; ?>
+      </a>
+
+      <button class="qr-pill is-active" type="button" id="qrSurahTrigger"
+        aria-haspopup="true" aria-expanded="false" aria-current="page">
+        <?= htmlspecialchars($reader_title); ?>
+        <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
+      </button>
+
+      <?php if ($reader_verse_count > 0): ?>
+        <button class="qr-pill" type="button" id="qrAyatTrigger"
+          aria-haspopup="true" aria-expanded="false">
+          Pilih Ayat <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
         </button>
+      <?php endif; ?>
+
+      <a class="qr-arrow"
+        href="<?= $next_url ?? '#'; ?>"
+        <?= empty($next_url) ? 'aria-disabled="true"' : ''; ?>
+        title="<?= $next_name ? 'Selanjutnya: ' . htmlspecialchars($next_name) : ''; ?>">
+        <?php if ($next_name): ?>
+          <span class="qr-arrow-name"><?= htmlspecialchars($next_name); ?></span>
+        <?php endif; ?>
+        <i class="bx bx-chevron-right"></i>
+      </a>
+
+    </div>
+
+  </div>
+</nav>
+
+<!-- Transparent backdrop to close panels -->
+<div class="qr-panel-back" id="qrPanelBack"></div>
+
+<!-- ── Surah search panel ── -->
+<?php $surah_list = $surah_list ?? []; ?>
+<div class="qr-panel" id="qrSurahPanel" hidden>
+  <div class="qr-panel-search">
+    <i class="bx bx-search"></i>
+    <input type="text" id="qrSurahSearch" placeholder="Cari nama atau nomor surah" autocomplete="off">
+  </div>
+  <ul class="qr-panel-list" id="qrSurahList">
+    <?php foreach ($surah_list as $s): ?>
+      <li class="qr-panel-item<?= ((int)$s['id'] === (int)$reader_number && $reader_type === 'surah') ? ' is-active' : ''; ?>"
+        data-search="<?= $s['id'] . ' ' . strtolower($s['name']); ?>">
+        <a href="<?= htmlspecialchars($s['url']); ?>">
+          <?= (int)$s['id']; ?>. <?= htmlspecialchars($s['name']); ?>
+          <?php if ((int)$s['id'] === (int)$reader_number && $reader_type === 'surah'): ?>
+            <i class="bx bx-check"></i>
+          <?php endif; ?>
+        </a>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+</div>
+
+<!-- ── Ayat search panel ── -->
+<?php if ($reader_verse_count > 0): ?>
+  <div class="qr-panel" id="qrAyatPanel" hidden>
+    <div class="qr-panel-search">
+      <i class="bx bx-search"></i>
+      <input type="text" id="qrAyatSearch" placeholder="Cari nomor ayat" autocomplete="off">
+    </div>
+    <ul class="qr-panel-list" id="qrAyatList">
+      <?php for ($i = 1; $i <= $reader_verse_count; $i++): ?>
+        <li class="qr-panel-item" data-search="<?= $i; ?>">
+          <button type="button" data-goto-ayat="<?= $i; ?>">Ayat <?= $i; ?></button>
+        </li>
+      <?php endfor; ?>
+    </ul>
+  </div>
+<?php endif; ?>
+
+<!-- ── Reader ── -->
+<div class="qr-page" data-qr-page
+  data-surah="<?= (int) $reader_number; ?>"
+  data-type="<?= htmlspecialchars($reader_type); ?>">
+  <div class="qr-body">
+
+    <!-- Surah / Juz header -->
+    <header class="qr-hdr">
+      <div class="qr-hdr-meta">
+        <span><?= htmlspecialchars($reader_subtitle); ?></span>
+        <?php if ($reader_type === 'surah'): ?>
+          <span>Juz <?= (int) $reader_juz; ?></span>
+        <?php endif; ?>
       </div>
-      <p class="quran-reader-status" role="status" aria-live="polite" data-copy-status></p>
+      <span class="qr-hdr-ar" lang="ar" dir="rtl"><?= htmlspecialchars($reader_arabic); ?></span>
+      <h1 class="qr-hdr-name"><?= htmlspecialchars($reader_title); ?></h1>
+      <?php if (!empty($reader_translation)): ?>
+        <p class="qr-hdr-trans"><?= htmlspecialchars($reader_translation); ?></p>
+      <?php endif; ?>
     </header>
 
-    <nav class="quran-reader-nav" aria-label="Navigasi bacaan">
-      <?php if (!empty($previous_url)): ?>
-        <a href="<?= htmlspecialchars($previous_url, ENT_QUOTES, 'UTF-8'); ?>">
-          <i class="bx bx-chevron-left" aria-hidden="true"></i> Sebelumnya
-        </a>
-      <?php else: ?>
-        <span></span>
-      <?php endif; ?>
-      <?php if (!empty($next_url)): ?>
-        <a href="<?= htmlspecialchars($next_url, ENT_QUOTES, 'UTF-8'); ?>">
-          Selanjutnya <i class="bx bx-chevron-right" aria-hidden="true"></i>
-        </a>
-      <?php endif; ?>
-    </nav>
+    <!-- Bismillah (surah, not Al-Fatihah, not At-Tawbah) -->
+    <?php if ($reader_type === 'surah' && $reader_number !== 1 && $reader_number !== 9): ?>
+      <div class="qr-bismillah" lang="ar" aria-label="Bismillahirrahmanirrahim">
+        بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
+      </div>
+    <?php endif; ?>
 
-    <section aria-label="Ayat">
+    <!-- Status -->
+    <span class="qr-status" role="status" aria-live="polite" data-copy-status></span>
+
+    <!-- Verses -->
+    <section aria-label="Ayat-ayat">
       <?php foreach ($verses as $verse): ?>
+
+        <?php /* Surah divider for juz view */ ?>
         <?php if ($reader_type === 'juz' && $last_surah_number !== $verse['surah_number']): ?>
-          <div class="quran-reader-surah-divider">
-            <h2><?= htmlspecialchars($verse['surah_name'], ENT_QUOTES, 'UTF-8'); ?></h2>
-            <a href="<?= base_url('index.php/quran/surah/' . (int) $verse['surah_number']); ?>">Buka surah</a>
+          <div class="qr-divider">
+            <span class="qr-divider-ar" lang="ar" dir="rtl">
+              <?= htmlspecialchars($verse['surah_arabic'] ?? ''); ?>
+            </span>
+            <div>
+              <span class="qr-divider-name"><?= htmlspecialchars($verse['surah_name']); ?></span>
+              <a class="qr-divider-link"
+                href="<?= base_url('index.php/quran/surah/' . (int)$verse['surah_number']); ?>">
+                Buka surah <i class="bx bx-link-external" style="font-size:.7rem;"></i>
+              </a>
+            </div>
           </div>
           <?php $last_surah_number = $verse['surah_number']; ?>
         <?php endif; ?>
-        <article class="quran-reader-verse" id="ayat-<?= (int) $verse['surah_number']; ?>-<?= (int) $verse['number']; ?>" data-reader-verse>
-          <div class="quran-reader-verse-head">
-            <span class="quran-reader-verse-number"><?= (int) $verse['number']; ?></span>
-            <button class="quran-verse-copy" type="button" data-copy-verse title="Salin ayat">
-              <i class="bx bx-copy" aria-hidden="true"></i><span>Salin</span>
+
+        <?php
+        $vid = 'ayat-' . (int)$verse['surah_number'] . '-' . (int)$verse['number'];
+        $ar_num = qr_arabic_num((int)$verse['number']);
+        ?>
+        <article class="qr-verse"
+          id="<?= $vid; ?>"
+          data-reader-verse
+          data-verse-num="<?= (int) $verse['number']; ?>"
+          data-surah-num="<?= (int) $verse['surah_number']; ?>"
+          data-surah-name="<?= htmlspecialchars($verse['surah_name'], ENT_QUOTES); ?>"
+          data-arabic="<?= htmlspecialchars($verse['arabic'], ENT_QUOTES); ?>"
+          data-trans="<?= htmlspecialchars($verse['translation'], ENT_QUOTES); ?>">
+
+          <!-- Bookmark star (shown when bookmarked) -->
+          <i class="bx bxs-star qr-bookmark-star" aria-hidden="true"></i>
+
+          <!-- Left col: dots menu -->
+          <div class="qr-dots-col">
+            <button class="qr-dots" type="button"
+              aria-label="Menu ayat <?= (int) $verse['number']; ?>"
+              data-dots>
+              <i class="bx bx-dots-vertical-rounded" aria-hidden="true"></i>
             </button>
+            <div class="qr-dropdown" role="menu">
+              <div class="qr-sheet-handle" aria-hidden="true"></div>
+              <button class="qr-dditem" type="button" role="menuitem" data-action="last-read">
+                <i class="bx bx-book-bookmark"></i> Tandai Terakhir Dibaca
+              </button>
+              <button class="qr-dditem" type="button" role="menuitem" data-action="bookmark">
+                <i class="bx bx-star"></i> Simpan ke Bookmark
+              </button>
+              <button class="qr-dditem" type="button" role="menuitem" data-action="share">
+                <i class="bx bx-share-alt"></i> Bagikan
+              </button>
+              <button class="qr-dditem" type="button" role="menuitem" data-action="copy">
+                <i class="bx bx-copy"></i> Copy Text
+              </button>
+            </div>
           </div>
-          <p class="quran-reader-verse-arabic" lang="ar" dir="rtl"><?= htmlspecialchars($verse['arabic'], ENT_QUOTES, 'UTF-8'); ?></p>
-          <p class="quran-reader-verse-translation"><?= htmlspecialchars($verse['translation'], ENT_QUOTES, 'UTF-8'); ?></p>
+
+          <!-- Right col: Arabic + translation -->
+          <div class="qr-vcontent">
+            <!-- Arabic with ornate badge inline (RTL: badge appears at left edge = end of flow) -->
+            <p class="qr-arabic" lang="ar" dir="rtl">
+              <?= htmlspecialchars($verse['arabic'], ENT_QUOTES, 'UTF-8'); ?>
+              <span class="qr-ornate" aria-hidden="true"><?= $ar_num; ?></span>
+            </p>
+
+            <!-- Translation -->
+            <p class="qr-trans">
+              <?= htmlspecialchars($verse['translation'], ENT_QUOTES, 'UTF-8'); ?>
+            </p>
+          </div>
+
         </article>
       <?php endforeach; ?>
     </section>
 
-    <nav class="quran-reader-nav" aria-label="Navigasi bacaan bawah">
+    <!-- Bottom navigation -->
+    <nav class="qr-botnav" aria-label="Navigasi surah">
       <?php if (!empty($previous_url)): ?>
-        <a href="<?= htmlspecialchars($previous_url, ENT_QUOTES, 'UTF-8'); ?>">
-          <i class="bx bx-chevron-left" aria-hidden="true"></i> Sebelumnya
+        <a href="<?= htmlspecialchars($previous_url); ?>">
+          <i class="bx bx-chevron-left"></i>
+          <?= $prev_name ? htmlspecialchars($prev_name) : 'Sebelumnya'; ?>
         </a>
       <?php else: ?>
         <span></span>
       <?php endif; ?>
       <?php if (!empty($next_url)): ?>
-        <a href="<?= htmlspecialchars($next_url, ENT_QUOTES, 'UTF-8'); ?>">
-          Selanjutnya <i class="bx bx-chevron-right" aria-hidden="true"></i>
+        <a href="<?= htmlspecialchars($next_url); ?>">
+          <?= $next_name ? htmlspecialchars($next_name) : 'Selanjutnya'; ?>
+          <i class="bx bx-chevron-right"></i>
         </a>
       <?php endif; ?>
     </nav>
+
+    <!-- Banner -->
+    <div class="qr-banner">
+      <div class="qr-banner-body">
+        <span class="qr-banner-ico"><i class="bx bxs-book-heart"></i></span>
+        <div>
+          <p class="qr-banner-title">Dukung Pengembangan Majelis</p>
+          <p class="qr-banner-sub">Bantu kami menghadirkan fitur islami yang lebih lengkap.</p>
+        </div>
+      </div>
+      <?php if (!empty($identitas['whatsapp'])): ?>
+        <a class="qr-banner-cta"
+          href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $identitas['whatsapp']); ?>"
+          target="_blank" rel="noopener">
+          Hubungi Kami <i class="bx bx-chevron-right"></i>
+        </a>
+      <?php endif; ?>
+    </div>
+
   </div>
-</main>
+</div>
+
+<!-- Backdrop overlay for mobile bottom sheet -->
+<div class="qr-overlay" id="qrOverlay" aria-hidden="true"></div>

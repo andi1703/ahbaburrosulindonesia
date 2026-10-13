@@ -86,6 +86,16 @@ class Home extends \CI_Controller
     public function amalan()
     {
         $data = $this->_base_data();
+        $data['page_title'] = 'Amalan';
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_Hub', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function quran()
+    {
+        $data = $this->_base_data();
         $data['page_title'] = 'Al-Qur\'an';
 
         $sources = $this->_load_quran_texts();
@@ -142,10 +152,18 @@ class Home extends \CI_Controller
         $data['reader_number'] = $surah_number;
         $data['reader_title'] = $surah_row[1];
         $data['reader_arabic'] = $surah_row[3];
-        $data['reader_subtitle'] = $surah_row[2] . ' · ' . $surah_row[4] . ' ayat';
+        $data['reader_translation'] = $surah_row[2];
+        $data['reader_verse_count'] = (int) $surah_row[4];
+        $data['reader_subtitle'] = 'Surah ke-' . $surah_number . ' · ' . $surah_row[4] . ' ayat';
         $data['verses'] = $this->_map_quran_verses($sources, $surah_number, null);
+        $data['reader_juz'] = !empty($data['verses']) ? $data['verses'][0]['juz'] : 1;
         $data['previous_url'] = $surah_number > 1 ? base_url('index.php/quran/surah/' . ($surah_number - 1)) : null;
         $data['next_url'] = $surah_number < 114 ? base_url('index.php/quran/surah/' . ($surah_number + 1)) : null;
+        $data['prev_name'] = $surah_number > 1 ? $sources['index']['surahs'][$surah_number - 2][1] : null;
+        $data['next_name'] = $surah_number < 114 ? $sources['index']['surahs'][$surah_number][1] : null;
+        $data['surah_list'] = array_map(function ($sr) {
+            return ['id' => (int)$sr[0], 'name' => $sr[1], 'url' => base_url('index.php/quran/surah/' . (int)$sr[0])];
+        }, $sources['index']['surahs']);
 
         $this->_render_quran_reader($data);
     }
@@ -166,10 +184,18 @@ class Home extends \CI_Controller
         $data['reader_number'] = $juz_number;
         $data['reader_title'] = 'Juz ' . $juz_number;
         $data['reader_arabic'] = 'الجزء ' . $juz_number;
-        $data['reader_subtitle'] = 'Mulai Surah ' . $first_verse['surah_name'] . ' ayat ' . $first_verse['number'] . ' · ' . count($juz_verses) . ' ayat';
+        $data['reader_translation'] = '';
+        $data['reader_verse_count'] = count($juz_verses);
+        $data['reader_juz'] = $juz_number;
+        $data['reader_subtitle'] = 'Mulai ' . $first_verse['surah_name'] . ' · ' . count($juz_verses) . ' ayat';
         $data['verses'] = $juz_verses;
         $data['previous_url'] = $juz_number > 1 ? base_url('index.php/quran/juz/' . ($juz_number - 1)) : null;
         $data['next_url'] = $juz_number < 30 ? base_url('index.php/quran/juz/' . ($juz_number + 1)) : null;
+        $data['prev_name'] = $juz_number > 1 ? 'Juz ' . ($juz_number - 1) : null;
+        $data['next_name'] = $juz_number < 30 ? 'Juz ' . ($juz_number + 1) : null;
+        $data['surah_list'] = array_map(function ($sr) {
+            return ['id' => (int)$sr[0], 'name' => $sr[1], 'url' => base_url('index.php/quran/surah/' . (int)$sr[0])];
+        }, $sources['index']['surahs']);
 
         $this->_render_quran_reader($data);
     }
@@ -205,7 +231,9 @@ class Home extends \CI_Controller
             $verses[] = [
                 'surah_number' => (int) $ayah['surah'],
                 'surah_name' => $surah_info[1],
+                'surah_arabic' => $surah_info[3],
                 'number' => (int) $ayah['verse'],
+                'juz' => (int) $ayah['juz'],
                 'arabic' => trim($ayah['arabic']),
                 'translation' => strip_tags($ayah['translation']),
             ];
@@ -448,6 +476,112 @@ class Home extends \CI_Controller
 
         $this->load->view('frontend/layout/V_Header', $data);
         $this->load->view('frontend/V_Artikel/V_Artikel_Detail', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Tahlil ─────────────────────────────────────────
+    public function tahlil()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Tahlil & Ziarah';
+
+        $json = json_decode(file_get_contents(APPPATH . 'data/tahlilziarah.json'), true);
+        if (empty($json['tahlil'])) {
+            show_error('Data tahlil tidak dapat dibaca.', 500);
+        }
+        $data['tahlil_list'] = $json['tahlil'];
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Tahlil/V_Tahlil_Index', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function tahlil_detail($id = null)
+    {
+        $section_id = (int) $id;
+        $json = json_decode(file_get_contents(APPPATH . 'data/tahlilziarah.json'), true);
+        if (empty($json['tahlil'])) {
+            show_error('Data tahlil tidak dapat dibaca.', 500);
+        }
+
+        $sections = $json['tahlil'];
+        $total    = count($sections);
+
+        // find the section
+        $section = null;
+        foreach ($sections as $s) {
+            if ((int) $s['id'] === $section_id) {
+                $section = $s;
+                break;
+            }
+        }
+        if (!$section) show_404();
+
+        // build prev/next by position in array
+        $idx = 0;
+        foreach ($sections as $i => $s) {
+            if ((int) $s['id'] === $section_id) { $idx = $i; break; }
+        }
+        $prev = $idx > 0 ? $sections[$idx - 1] : null;
+        $next = $idx < $total - 1 ? $sections[$idx + 1] : null;
+
+        $data = $this->_base_data();
+        $data['page_title']    = $section['name'] . ' · Tahlil';
+        $data['section_id']    = $section_id;
+        $data['section_name']  = $section['name'];
+        $data['pasal_list']    = $section['pasal'];
+        $data['total']         = $total;
+        $data['prev_url']      = $prev ? base_url('index.php/tahlil/' . (int) $prev['id']) : null;
+        $data['next_url']      = $next ? base_url('index.php/tahlil/' . (int) $next['id']) : null;
+        $data['prev_name']     = $prev ? $prev['name'] : null;
+        $data['next_name']     = $next ? $next['name'] : null;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Tahlil/V_Tahlil_Reader', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Doa ────────────────────────────────────────────
+    public function doa()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Doa';
+        $data['amalan_type'] = 'doa';
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Wirid ──────────────────────────────────────────
+    public function wirid()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Wirid';
+        $data['amalan_type'] = 'wirid';
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Hadits ─────────────────────────────────────────
+    public function hadits()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Hadits';
+        $data['amalan_type'] = 'hadits';
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Jadwal Sholat ──────────────────────────────────
+    public function jadwal_sholat()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Jadwal Sholat';
+        $data['amalan_type'] = 'jadwal-sholat';
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 }

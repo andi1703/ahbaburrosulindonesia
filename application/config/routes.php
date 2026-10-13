@@ -61,10 +61,16 @@ $route['admin/(:any)'] = 'Back_Admin/$1';
 
 // frontend routing (clean URLs)
 $route['amalan'] = 'Home/amalan';
-$route['quran'] = 'Home/amalan';
+$route['quran'] = 'Home/quran';
 $route['quran/surah/(:num)'] = 'Home/quran_surah/$1';
 $route['quran/juz/(:num)'] = 'Home/quran_juz/$1';
-$route['back_amalan'] = 'Home/amalan'; // redirect slug lama ke halaman yang benar
+$route['back_amalan'] = 'Home/amalan';
+$route['tahlil'] = 'Home/tahlil';
+$route['tahlil/(:num)'] = 'Home/tahlil_detail/$1';
+$route['doa'] = 'Home/doa';
+$route['wirid'] = 'Home/wirid';
+$route['hadits'] = 'Home/hadits';
+$route['jadwal-sholat'] = 'Home/jadwal_sholat';
 $route['galeri'] = 'Home/galeri';
 $route['artikel'] = 'Home/artikel';
 $route['artikel/kategori/(:any)'] = 'Home/artikel/$1';
