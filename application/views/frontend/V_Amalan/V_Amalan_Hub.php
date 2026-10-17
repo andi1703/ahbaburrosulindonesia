@@ -1,7 +1,11 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+$_ib = base_url('assets/frontend/icons/islamic/');
+?>
 
 <style>
-    /* ── Amalan Sub-nav ── */
+    body { background: #0b0d0d; }
+    /* (sub-nav moved to V_Amalan_Subnav.php) */
     .am-subnav {
         position: fixed;
         top: 70px;
@@ -52,14 +56,14 @@
     }
 
     .am-pill:hover {
-        border-color: #28c3a3;
-        color: #28c3a3;
+        border-color: #e8b84b;
+        color: #e8b84b;
     }
 
     .am-pill.is-active {
-        border-color: #28c3a3;
-        background: rgba(40, 195, 163, .08);
-        color: #28c3a3;
+        border-color: #e8b84b;
+        background: rgba(232, 184, 75, .08);
+        color: #e8b84b;
         font-weight: 600;
     }
 
@@ -82,8 +86,8 @@
     }
 
     .am-arrow:hover {
-        border-color: #28c3a3;
-        color: #28c3a3;
+        border-color: #e8b84b;
+        color: #e8b84b;
     }
 
     .am-arrow[aria-disabled="true"] {
@@ -131,7 +135,7 @@
     }
 
     .am-sel:focus {
-        border-color: #28c3a3;
+        border-color: #e8b84b;
     }
 
     .amalan-page {
@@ -140,66 +144,11 @@
         --am-surface-hover: #202523;
         --am-text: #f2f5f4;
         --am-muted: #9aa5a1;
-        --am-accent: #28c3a3;
-        --am-gold: #c9a84c;
-        padding-top: calc(70px + 48px);
-        min-height: 100vh;
+        --am-accent: #e8b84b;
+        --am-gold: #e8b84b;
+        padding-top: 1rem;
         color: var(--am-text);
         background: var(--am-bg);
-    }
-
-    .amalan-hero {
-        position: relative;
-        overflow: hidden;
-        background-color: #00685f;
-        background-image:
-            repeating-linear-gradient(45deg, transparent 0 18px, rgba(255, 255, 255, .025) 18px 19px),
-            repeating-linear-gradient(-45deg, transparent 0 18px, rgba(0, 0, 0, .035) 18px 19px);
-        padding-block: 3rem 2.5rem;
-    }
-
-    .amalan-hero-inner {
-        width: min(100% - 2rem, 1120px);
-        margin-inline: auto;
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-    }
-
-    .amalan-hero-icon {
-        display: grid;
-        flex: 0 0 56px;
-        width: 56px;
-        height: 56px;
-        place-items: center;
-        border: 1px solid rgba(255, 255, 255, .35);
-        border-radius: 50%;
-        color: #d1fff3;
-        font-family: 'Amiri', serif;
-        font-size: 1.9rem;
-    }
-
-    .amalan-hero-eyebrow {
-        margin: 0 0 .15rem;
-        color: rgba(255, 255, 255, .72);
-        font-size: .72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .06em;
-    }
-
-    .amalan-hero-title {
-        margin: 0;
-        color: #fff;
-        font-size: 1.8rem;
-        font-weight: 800;
-        line-height: 1.2;
-    }
-
-    .amalan-hero-sub {
-        margin: .35rem 0 0;
-        color: rgba(255, 255, 255, .76);
-        font-size: .83rem;
     }
 
     /* ── Hub Grid ── */
@@ -240,7 +189,7 @@
 
     .amalan-card:hover,
     .amalan-card:focus-visible {
-        border-color: rgba(40, 195, 163, .5);
+        border-color: rgba(232, 184, 75, .5);
         background: var(--am-surface-hover);
         color: #fff;
         transform: translateY(-2px);
@@ -254,6 +203,13 @@
         place-items: center;
         border-radius: 10px;
         font-size: 1.45rem;
+    }
+
+    .amalan-icon-svg {
+        width: 26px;
+        height: 26px;
+        display: block;
+        filter: brightness(0) invert(1);
     }
 
     .amalan-card-copy {
@@ -294,33 +250,53 @@
 
     /* Color variants for icons */
     .ic-quran {
-        background: rgba(40, 195, 163, .15);
-        color: #28c3a3;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     .ic-tahlil {
-        background: rgba(201, 168, 76, .15);
-        color: #c9a84c;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     .ic-doa {
-        background: rgba(99, 160, 255, .15);
-        color: #63a0ff;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     .ic-wirid {
-        background: rgba(255, 140, 80, .15);
-        color: #ff8c50;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
+    }
+
+    .ic-khawajagan {
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     .ic-hadits {
-        background: rgba(180, 100, 255, .15);
-        color: #b464ff;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     .ic-jadwal {
-        background: rgba(80, 200, 120, .15);
-        color: #50c878;
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
+    }
+
+    .ic-burdah {
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
+    }
+
+    .ic-maulid {
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
+    }
+
+    .ic-sholawat {
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
     }
 
     @media (max-width: 767.98px) {
@@ -340,45 +316,9 @@
     }
 </style>
 
-<!-- ── Amalan Sub-nav ── -->
-<nav class="am-subnav" aria-label="Navigasi Amalan">
-    <div class="am-subnav-inner">
-        <a class="am-pill is-active" href="<?= base_url('index.php/amalan'); ?>">
-            <i class="bx bx-grid-alt"></i>
-            <span class="am-hub-name">Daftar Amalan</span>
-        </a>
-        <select class="am-sel" id="amPilihSel" aria-label="Pilih Amalan">
-            <option value="">Pilih Amalan</option>
-            <option value="<?= base_url('index.php/tahlil'); ?>">Tahlil</option>
-            <option value="<?= base_url('index.php/doa'); ?>">Doa</option>
-            <option value="<?= base_url('index.php/wirid'); ?>">Wirid</option>
-            <option value="<?= base_url('index.php/hadits'); ?>">Hadits</option>
-            <option value="<?= base_url('index.php/jadwal-sholat'); ?>">Jadwal Sholat</option>
-        </select>
-    </div>
-</nav>
-<script>
-    (function() {
-        var s = document.getElementById('amPilihSel');
-        if (s) s.addEventListener('change', function() {
-            if (this.value) window.location.href = this.value;
-        });
-    })();
-</script>
+<?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
 
 <main class="amalan-page">
-
-    <!-- Hero -->
-    <header class="amalan-hero">
-        <div class="amalan-hero-inner">
-            <span class="amalan-hero-icon" aria-hidden="true">۞</span>
-            <div>
-                <p class="amalan-hero-eyebrow">Bacaan, Doa, Wirid, dan Jadwal</p>
-                <h1 class="amalan-hero-title">Amalan</h1>
-                <p class="amalan-hero-sub">Panduan lengkap amalan harian Ahlussunnah Wal Jama'ah.</p>
-            </div>
-        </div>
-    </header>
 
     <!-- Hub Menu -->
     <section class="amalan-hub">
@@ -389,7 +329,7 @@
             <!-- Al-Qur'an -->
             <a class="amalan-card" href="<?= base_url('index.php/quran'); ?>">
                 <span class="amalan-card-icon ic-quran">
-                    <i class="bx bx-book-open"></i>
+                    <img src="<?= $_ib ?>quran-book.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Al-Qur'an</span>
@@ -401,7 +341,7 @@
             <!-- Tahlil -->
             <a class="amalan-card" href="<?= base_url('index.php/tahlil'); ?>">
                 <span class="amalan-card-icon ic-tahlil">
-                    <i class="bx bx-moon"></i>
+                    <img src="<?= $_ib ?>dua-hands.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Tahlil</span>
@@ -410,14 +350,38 @@
                 <i class="bx bx-chevron-right amalan-card-arrow"></i>
             </a>
 
-            <!-- Doa -->
-            <a class="amalan-card" href="<?= base_url('index.php/doa'); ?>">
-                <span class="amalan-card-icon ic-doa">
-                    <i class="bx bx-hand"></i>
+            <!-- Burdah Al Madih -->
+            <a class="amalan-card" href="<?= base_url('index.php/burdah'); ?>">
+                <span class="amalan-card-icon ic-burdah">
+                    <img src="<?= $_ib ?>muhammad-calligraphy.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Burdah Al Madih</span>
-                    <span class="amalan-card-desc">Kumpulan doa harian, doa sesudah sholat, dan doa-doa pilihan.</span>
+                    <span class="amalan-card-desc">Kasidah Burdah — syair pujian kepada Nabi Muhammad ﷺ karya Imam Al-Bushiri.</span>
+                </span>
+                <i class="bx bx-chevron-right amalan-card-arrow"></i>
+            </a>
+
+            <!-- Sholawat -->
+            <a class="amalan-card" href="<?= base_url('index.php/sholawat'); ?>">
+                <span class="amalan-card-icon ic-sholawat">
+                    <img src="<?= $_ib ?>takbir-hands.svg" class="amalan-icon-svg" alt="">
+                </span>
+                <span class="amalan-card-copy">
+                    <span class="amalan-card-name">Sholawat</span>
+                    <span class="amalan-card-desc">Kumpulan sholawat nasyid dan suluk — kasidah pujian kepada Nabi ﷺ.</span>
+                </span>
+                <i class="bx bx-chevron-right amalan-card-arrow"></i>
+            </a>
+
+            <!-- Maulid Ad-Diba'i -->
+            <a class="amalan-card" href="<?= base_url('index.php/maulid'); ?>">
+                <span class="amalan-card-icon ic-maulid">
+                    <img src="<?= $_ib ?>crescent-star-frame.svg" class="amalan-icon-svg" alt="">
+                </span>
+                <span class="amalan-card-copy">
+                    <span class="amalan-card-name">Maulid Ad-Diba'i</span>
+                    <span class="amalan-card-desc">29 bacaan maulid karya Syaikh Abdurrahman Ad-Diba'i lengkap dengan terjemahan.</span>
                 </span>
                 <i class="bx bx-chevron-right amalan-card-arrow"></i>
             </a>
@@ -425,7 +389,7 @@
             <!-- Wirid -->
             <a class="amalan-card" href="<?= base_url('index.php/wirid'); ?>">
                 <span class="amalan-card-icon ic-wirid">
-                    <i class="bx bx-repeat"></i>
+                    <img src="<?= $_ib ?>prayer-mat.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Wirid</span>
@@ -434,14 +398,26 @@
                 <i class="bx bx-chevron-right amalan-card-arrow"></i>
             </a>
 
-            <!-- Hadits -->
-            <a class="amalan-card" href="<?= base_url('index.php/hadits'); ?>">
-                <span class="amalan-card-icon ic-hadits">
-                    <i class="bx bx-news"></i>
+            <!-- Dzikir Khatam Khawajagan -->
+            <a class="amalan-card" href="<?= base_url('index.php/khawajagan'); ?>">
+                <span class="amalan-card-icon ic-khawajagan">
+                    <img src="<?= $_ib ?>prayer-beads-tasbih.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
-                    <span class="amalan-card-name">Hadits</span>
-                    <span class="amalan-card-desc">Hadits pilihan Rasulullah SAW sebagai pedoman kehidupan sehari-hari.</span>
+                    <span class="amalan-card-name">Dzikir Khawajagan</span>
+                    <span class="amalan-card-desc">Dzikir Khatam dari Silsilah Naqshbandiyyah Al-'Aliyyah.</span>
+                </span>
+                <i class="bx bx-chevron-right amalan-card-arrow"></i>
+            </a>
+
+            <!-- Manaqib -->
+            <a class="amalan-card" href="<?= base_url('index.php/manaqib'); ?>">
+                <span class="amalan-card-icon ic-hadits">
+                    <img src="<?= $_ib ?>mosque-dome.svg" class="amalan-icon-svg" alt="">
+                </span>
+                <span class="amalan-card-copy">
+                    <span class="amalan-card-name">Manaqib</span>
+                    <span class="amalan-card-desc">Manaqib Jawahirul Ma'ani — kisah dan kemuliaan Syekh Abdul Qadir Al-Jailani.</span>
                 </span>
                 <i class="bx bx-chevron-right amalan-card-arrow"></i>
             </a>
@@ -449,7 +425,7 @@
             <!-- Jadwal Sholat -->
             <a class="amalan-card" href="<?= base_url('index.php/jadwal-sholat'); ?>">
                 <span class="amalan-card-icon ic-jadwal">
-                    <i class="bx bx-time-five"></i>
+                    <img src="<?= $_ib ?>adhan-call.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Jadwal Sholat</span>

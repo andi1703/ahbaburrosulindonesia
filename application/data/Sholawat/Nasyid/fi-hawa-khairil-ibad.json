@@ -1,0 +1,37 @@
+{
+  "source": "kitabkuning.id",
+  "transmitter": "majelis rosulullah",
+  "name": "فِي هَوى خَيْرِ الْعِبَادْ",
+  "latin": "Fī hawā khairil-ʿibād",
+  "text": {
+    "1": {
+      "arabic": "فِي هَوى خَيْرِ الْعِبَادْ — شُغِفَ الْقَلْبُ وَ هَامْ",
+      "latin": "Fī hawā khairil-ʿibād — syuġifal-qalbu wa hām"
+    },
+    "2": {
+      "arabic": "فَهَنِيْئًا لِفُؤَادٍ — نَالَ منْ طه الْمَرَامُ",
+      "latin": "Fa hanīʾan li fuʾādin — nāla min Ṭhāhāl-marām"
+    },
+    "3": {
+      "arabic": "أَنَا فِي مَدْحِ مُحَمَّدٍ — مُغْرَمٌ وَاللهُ يَشْهَدْ",
+      "latin": "Anā fī madḥi Muḥammad — mughramun wallāhu yasyhad"
+    },
+    "4": {
+      "arabic": "أَنَا فِيْ أَوْصَافِهِ — قَدْ بَتَّ صَوْبًا مُسْتَهَامْ",
+      "latin": "Anā fī ʾauṣhāfihi — qad batta ṣhauban mustahām"
+    }
+  },
+  "translations": {
+    "id": {
+      "name": "Dalam Cinta Hamba Terbaik",
+      "translator": "kitabkuning.id",
+      "text": {
+        "1": "Dalam cinta hamba terbaik — Hatiku terpikat dan mabuk",
+        "2": "Berbahagialah hati — Yang telah mencapai tujuan dari Ṭāhā",
+        "3": "Aku dalam memuji Muhammad — Tergila-gila dan Allah Maha Mengetahui",
+        "4": "Aku dalam mengagumi sifat-sifatnya — Yang telah menjadi mabuk cinta sejati"
+      }
+    }
+  },
+  "last_updated": "2026-07-14"
+}

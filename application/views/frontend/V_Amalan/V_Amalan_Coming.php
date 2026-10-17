@@ -1,13 +1,13 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 $type = $amalan_type ?? 'amalan';
 $labels = [
-    'tahlil'       => ['name' => 'Tahlil',        'icon' => 'bx-moon',      'color' => '#c9a84c', 'bg' => 'rgba(201,168,76,.15)'],
-    'doa'          => ['name' => 'Doa',            'icon' => 'bx-hand',      'color' => '#63a0ff', 'bg' => 'rgba(99,160,255,.15)'],
-    'wirid'        => ['name' => 'Wirid',          'icon' => 'bx-repeat',    'color' => '#ff8c50', 'bg' => 'rgba(255,140,80,.15)'],
-    'hadits'       => ['name' => 'Hadits',         'icon' => 'bx-news',      'color' => '#b464ff', 'bg' => 'rgba(180,100,255,.15)'],
-    'jadwal-sholat'=> ['name' => 'Jadwal Sholat',  'icon' => 'bx-time-five', 'color' => '#50c878', 'bg' => 'rgba(80,200,120,.15)'],
+    'tahlil'       => ['name' => 'Tahlil',        'icon' => 'bx-moon',      'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'],
+    'doa'          => ['name' => 'Doa',            'icon' => 'bx-hand',      'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'],
+    'wirid'        => ['name' => 'Wirid',          'icon' => 'bx-repeat',    'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'],
+    'hadits'       => ['name' => 'Hadits',         'icon' => 'bx-news',      'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'],
+    'jadwal-sholat'=> ['name' => 'Jadwal Sholat',  'icon' => 'bx-time-five', 'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'],
 ];
-$info = $labels[$type] ?? ['name' => ucfirst($type), 'icon' => 'bx-book', 'color' => '#28c3a3', 'bg' => 'rgba(40,195,163,.15)'];
+$info = $labels[$type] ?? ['name' => ucfirst($type), 'icon' => 'bx-book', 'color' => '#e8b84b', 'bg' => 'rgba(232,184,75,.15)'];
 
 // ── Sub-nav prev / next ──
 $amalan_nav = [
@@ -45,10 +45,10 @@ $nav_cur    = $amalan_nav[$type] ?? ['name' => $info['name'], 'url' => '#'];
   white-space:nowrap; text-decoration:none; cursor:pointer; flex-shrink:0;
   transition:border-color .14s,color .14s,background .14s;
 }
-.am-pill:hover{border-color:#28c3a3;color:#28c3a3;}
+.am-pill:hover{border-color:#e8b84b;color:#e8b84b;}
 .am-pill.is-active{
-  border-color:#28c3a3; background:rgba(40,195,163,.08);
-  color:#28c3a3; font-weight:600;
+  border-color:#e8b84b; background:rgba(232,184,75,.08);
+  color:#e8b84b; font-weight:600;
 }
 .am-arrow{
   display:inline-flex; align-items:center; gap:.3rem;
@@ -58,7 +58,7 @@ $nav_cur    = $amalan_nav[$type] ?? ['name' => $info['name'], 'url' => '#'];
   text-decoration:none; white-space:nowrap; flex-shrink:0;
   transition:border-color .14s,color .14s;
 }
-.am-arrow:hover{border-color:#28c3a3;color:#28c3a3;}
+.am-arrow:hover{border-color:#e8b84b;color:#e8b84b;}
 .am-arrow[aria-disabled="true"]{opacity:.3;pointer-events:none;}
 .am-arrow i{font-size:1.1rem;}
 .am-arrow-name{display:none;}
@@ -72,7 +72,7 @@ $nav_cur    = $amalan_nav[$type] ?? ['name' => $info['name'], 'url' => '#'];
   color:#a8b5b0; font:inherit; font-size:.73rem;
   flex-shrink:0; cursor:pointer; outline:none;
 }
-.am-sel:focus{border-color:#28c3a3;}
+.am-sel:focus{border-color:#e8b84b;}
 
     .coming-page {
         padding-top: calc(70px + 48px);
@@ -121,7 +121,7 @@ $nav_cur    = $amalan_nav[$type] ?? ['name' => $info['name'], 'url' => '#'];
         transition: border-color 150ms, background 150ms;
     }
     .coming-back:hover {
-        border-color: rgba(40,195,163,.5);
+        border-color: rgba(232,184,75,.5);
         background: #202523;
         color: #fff;
     }

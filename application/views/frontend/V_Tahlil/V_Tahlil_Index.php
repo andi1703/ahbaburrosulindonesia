@@ -3,15 +3,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $tahlil_list = $tahlil_list ?? [];
 ?>
 <style>
+    body { background: #0b0d0d; }
     .tahlil-page {
         --th-bg: #0b0d0d;
         --th-surface: #191c1b;
         --th-surface-hover: #202523;
         --th-text: #f2f5f4;
         --th-muted: #9aa5a1;
-        --th-accent: #c9a84c;
-        padding-top: 72px;
-        min-height: 100vh;
+        --th-accent: #e8b84b;
+        padding-top: 1rem;
+
         color: var(--th-text);
         background: var(--th-bg);
     }
@@ -24,7 +25,7 @@ $tahlil_list = $tahlil_list ?? [];
     .tahlil-hero {
         position: relative;
         overflow: hidden;
-        background-color: #6b4a00;
+        background-color: #7a5818;
         background-image:
             repeating-linear-gradient(45deg, transparent 0 18px, rgba(255,255,255,.025) 18px 19px),
             repeating-linear-gradient(-45deg, transparent 0 18px, rgba(0,0,0,.035) 18px 19px);
@@ -53,7 +54,7 @@ $tahlil_list = $tahlil_list ?? [];
         place-items: center;
         border: 1px solid rgba(255,255,255,.35);
         border-radius: 50%;
-        color: #ffefc2;
+        color: #fef3d8;
         font-size: 1.75rem;
     }
 
@@ -146,7 +147,7 @@ $tahlil_list = $tahlil_list ?? [];
 
     .tahlil-card:hover,
     .tahlil-card:focus-visible {
-        border-color: rgba(201,168,76,.5);
+        border-color: rgba(232,184,75,.5);
         background: var(--th-surface-hover);
         color: #fff;
     }
@@ -236,32 +237,9 @@ $tahlil_list = $tahlil_list ?? [];
     }
 </style>
 
+<?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
+
 <main class="tahlil-page" data-tahlil-page>
-    <header class="tahlil-hero">
-        <div class="tahlil-container tahlil-hero-inner">
-            <div class="tahlil-identity">
-                <span class="tahlil-mark" aria-hidden="true">
-                    <i class="bx bx-moon"></i>
-                </span>
-                <div>
-                    <p class="tahlil-eyebrow">Amalan · Dzikir & Doa</p>
-                    <h1 class="tahlil-title">Tahlil & Ziarah</h1>
-                    <p class="tahlil-subtitle">Rangkaian doa dan dzikir tahlil lengkap untuk berbagai keperluan.</p>
-                </div>
-            </div>
-
-            <div class="tahlil-search-wrap">
-                <label class="visually-hidden" for="tahlilSearch">Cari bagian tahlil</label>
-                <div class="tahlil-search">
-                    <i class="bx bx-search" aria-hidden="true"></i>
-                    <input id="tahlilSearch" type="search" autocomplete="off" data-tahlil-search
-                        placeholder="Cari nama bagian, mis. Yasin atau Tawasul">
-                </div>
-                <p class="tahlil-search-hint">Cari berdasarkan nama bagian tahlil.</p>
-            </div>
-        </div>
-    </header>
-
     <section class="tahlil-container tahlil-browser" aria-label="Daftar bagian tahlil">
         <p class="tahlil-results-meta" aria-live="polite">
             <span data-tahlil-count><?= count($tahlil_list); ?></span> bagian

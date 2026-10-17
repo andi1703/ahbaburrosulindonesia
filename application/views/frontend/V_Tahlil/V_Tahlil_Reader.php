@@ -10,8 +10,10 @@ $prev_url     = $prev_url     ?? null;
 $next_url     = $next_url     ?? null;
 $prev_name    = $prev_name    ?? null;
 $next_name    = $next_name    ?? null;
+$all_sections = $all_sections ?? [];
 ?>
 <style>
+    body { background: #0b0d0d; }
     @font-face {
         font-family: "LPMQ";
         src: url("<?= base_url('assets/frontend/fonts/LPMQ.ttf'); ?>") format("truetype");
@@ -25,8 +27,8 @@ $next_name    = $next_name    ?? null;
         --th-border: rgba(255,255,255,.07);
         --th-text: #eef1ee;
         --th-muted: #6d7e78;
-        --th-accent: #c9a84c;
-        --th-nav: 70px;
+        --th-accent: #e8b84b;
+        --th-nav: 62px;
         --th-sub: 48px;
     }
 
@@ -41,7 +43,8 @@ $next_name    = $next_name    ?? null;
     /* ── Sub-nav ── */
     .thr-subnav {
         position: fixed;
-        top: var(--th-nav);
+        top: var(--an-hdr-h, 62px);
+        transition: top .32s ease;
         left: 0; right: 0;
         z-index: 120;
         height: var(--th-sub);
@@ -102,7 +105,7 @@ $next_name    = $next_name    ?? null;
 
     .thr-pill.is-active {
         border-color: var(--th-accent);
-        background: rgba(201,168,76,.08);
+        background: rgba(232,184,75,.08);
         color: var(--th-accent);
         font-weight: 600;
     }
@@ -172,7 +175,7 @@ $next_name    = $next_name    ?? null;
         display: grid;
         place-items: center;
         border-radius: 14px;
-        background: rgba(201,168,76,.12);
+        background: rgba(232,184,75,.12);
         color: var(--th-accent);
         font-size: 1.6rem;
     }
@@ -203,8 +206,8 @@ $next_name    = $next_name    ?? null;
         width: 26px;
         height: 26px;
         border-radius: 50%;
-        background: rgba(201,168,76,.1);
-        border: 1px solid rgba(201,168,76,.25);
+        background: rgba(232,184,75,.1);
+        border: 1px solid rgba(232,184,75,.25);
         color: var(--th-accent);
         font-size: .62rem;
         font-weight: 700;
@@ -216,7 +219,7 @@ $next_name    = $next_name    ?? null;
         font-family: "LPMQ", "Amiri", serif;
         font-size: clamp(1.5rem, 4.5vw, 2.2rem);
         line-height: 2.2;
-        color: #f0e6cc;
+        color: #fff;
         direction: rtl;
         text-align: right;
         white-space: pre-line;
@@ -250,7 +253,7 @@ $next_name    = $next_name    ?? null;
     }
 
     .thr-fnav-btn:hover {
-        border-color: rgba(201,168,76,.55);
+        border-color: rgba(232,184,75,.55);
         background: #1a1c1b;
         color: var(--th-accent);
     }
@@ -285,13 +288,45 @@ $next_name    = $next_name    ?? null;
         transition: color 140ms, border-color 140ms;
     }
 
-    .thr-back:hover { color: var(--th-accent); border-color: rgba(201,168,76,.4); }
+    .thr-back:hover { color: var(--th-accent); border-color: rgba(232,184,75,.4); }
 
     @media (max-width: 575.98px) {
         .thr-pasal-arab { font-size: 1.45rem; line-height: 2.1; }
         .thr-hdr { padding-block: 1.5rem 1.25rem; }
     }
+
+    /* ── Nav Dropdown Panel ── */
+    .rdr-nav-trigger .rdr-chev { font-size: .85rem; margin-left: .15rem; transition: transform .15s; }
+    .rdr-nav-trigger[aria-expanded="true"] .rdr-chev { transform: rotate(180deg); }
+    .rdr-panel {
+        position: fixed; z-index: 250;
+        width: min(340px, 90vw); max-height: min(520px, 70vh);
+        display: flex; flex-direction: column;
+        background: #1a1d1c; border: 1px solid rgba(255,255,255,.1);
+        border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,.75);
+        overflow: hidden;
+    }
+    .rdr-panel[hidden] { display: none; }
+    .rdr-panel-list {
+        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0;
+        list-style: none; scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,.12) transparent;
+    }
+    .rdr-panel-item a {
+        display: flex; align-items: center; justify-content: space-between;
+        width: 100%; padding: .65rem 1rem;
+        background: transparent; color: #c4cec9;
+        font: inherit; font-size: .88rem;
+        text-decoration: none; transition: background .1s, color .1s;
+    }
+    .rdr-panel-item a:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .rdr-panel-item.is-active a { color: #e8b84b; font-weight: 600; background: rgba(232,184,75,.07); }
+    .rdr-panel-item a i { color: #e8b84b; font-size: 1rem; }
+    .rdr-panel-back { display: none; position: fixed; inset: 0; z-index: 249; }
+    .rdr-panel-back.is-open { display: block; }
 </style>
+
+<?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
 
 <!-- Sub-nav -->
 <nav class="thr-subnav" aria-label="Navigasi Tahlil">
@@ -314,9 +349,11 @@ $next_name    = $next_name    ?? null;
                 <span class="thr-arrow-name"><?= $prev_name ? htmlspecialchars($prev_name) : ''; ?></span>
             </a>
 
-            <span class="thr-pill is-active" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
-                <?= htmlspecialchars($section_name); ?>
-            </span>
+            <button class="thr-pill is-active rdr-nav-trigger" id="rdrNavTrigger" type="button"
+                    aria-haspopup="true" aria-expanded="false" style="max-width:200px;">
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px;"><?= htmlspecialchars($section_name); ?></span>
+                <i class="bx bx-chevron-down rdr-chev"></i>
+            </button>
 
             <a class="thr-arrow"
                href="<?= $next_url ? htmlspecialchars($next_url) : '#'; ?>"
@@ -334,15 +371,25 @@ $next_name    = $next_name    ?? null;
     </div>
 </nav>
 
+<div class="rdr-panel-back" id="rdrPanelBack"></div>
+<div class="rdr-panel" id="rdrPanel" hidden>
+    <ul class="rdr-panel-list">
+        <?php foreach ($all_sections as $i => $s): ?>
+            <li class="rdr-panel-item <?= (int)$s['id'] === (int)$section_id ? 'is-active' : ''; ?>">
+                <a href="<?= base_url('index.php/tahlil/' . (int)$s['id']); ?>">
+                    <span><?= ($i + 1) . '. ' . htmlspecialchars($s['name']); ?></span>
+                    <?php if ((int)$s['id'] === (int)$section_id): ?><i class="bx bx-check"></i><?php endif; ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+
 <main class="thr-page" data-thr-page>
     <div class="thr-body">
 
         <!-- Section header -->
         <header class="thr-hdr">
-            <a class="thr-back" href="<?= base_url('index.php/tahlil'); ?>">
-                <i class="bx bx-arrow-back"></i> Daftar Tahlil
-            </a>
-            <br><br>
             <span class="thr-hdr-meta">
                 <span>Bagian <?= (int) $section_id; ?></span>
                 <span style="margin-left:.5rem; opacity:.5;">·</span>
@@ -350,7 +397,7 @@ $next_name    = $next_name    ?? null;
             </span>
 
             <span class="thr-hdr-icon" aria-hidden="true">
-                <i class="bx bx-moon"></i>
+                <img src="<?= base_url('assets/frontend/icons/islamic/dua-hands.svg'); ?>" style="width:28px;height:28px;display:block;filter:brightness(0) invert(1);" alt="">
             </span>
 
             <h1 class="thr-hdr-name"><?= htmlspecialchars($section_name, ENT_QUOTES, 'UTF-8'); ?></h1>
@@ -389,3 +436,38 @@ $next_name    = $next_name    ?? null;
 
     </div>
 </main>
+<script>
+(function() {
+  var trigger = document.getElementById('rdrNavTrigger');
+  var panel   = document.getElementById('rdrPanel');
+  var back    = document.getElementById('rdrPanelBack');
+  if (!trigger || !panel) return;
+  function position() {
+    var r = trigger.getBoundingClientRect();
+    var pw = Math.min(340, window.innerWidth * 0.9);
+    var mid = r.left + r.width / 2;
+    var left = Math.max(8, Math.min(mid - pw / 2, window.innerWidth - pw - 8));
+    panel.style.top  = (r.bottom + 4) + 'px';
+    panel.style.left = left + 'px';
+    panel.style.width = pw + 'px';
+  }
+  function close() {
+    panel.setAttribute('hidden', '');
+    trigger.setAttribute('aria-expanded', 'false');
+    if (back) back.classList.remove('is-open');
+  }
+  trigger.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (panel.hasAttribute('hidden')) {
+      position();
+      panel.removeAttribute('hidden');
+      trigger.setAttribute('aria-expanded', 'true');
+      if (back) back.classList.add('is-open');
+      var active = panel.querySelector('.rdr-panel-item.is-active a');
+      if (active) setTimeout(function() { active.scrollIntoView({ block: 'nearest' }); }, 30);
+    } else { close(); }
+  });
+  if (back) back.addEventListener('click', close);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+})();
+</script>

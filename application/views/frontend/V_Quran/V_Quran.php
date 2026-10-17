@@ -26,9 +26,20 @@ function qr_arabic_num(int $n): string
 }
 ?>
 <style>
+  body {
+    background: #0b0d0d;
+  }
+
   @font-face {
     font-family: "LPMQ";
     src: url("<?= base_url('assets/frontend/fonts/LPMQ.ttf'); ?>") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "QCF4-QBSML";
+    src: url("<?= base_url('assets/frontend/fonts/QCF4_QBSML.woff2'); ?>") format("woff2");
     font-weight: 400;
     font-display: swap;
   }
@@ -40,9 +51,9 @@ function qr_arabic_num(int $n): string
     --qr-border: rgba(255, 255, 255, .07);
     --qr-text: #eef1ee;
     --qr-muted: #6d7e78;
-    --qr-accent: #28c3a3;
-    --qr-gold: #c9a84c;
-    --qr-nav: 70px;
+    --qr-accent: #e8b84b;
+    --qr-gold: #e8b84b;
+    --qr-nav: 62px;
     --qr-sub: 48px;
   }
 
@@ -58,7 +69,8 @@ function qr_arabic_num(int $n): string
   /* ── Sub-nav ── */
   .qr-subnav {
     position: fixed;
-    top: var(--qr-nav);
+    top: var(--an-hdr-h, 62px);
+        transition: top .32s ease;
     left: 0;
     right: 0;
     z-index: 120;
@@ -127,9 +139,26 @@ function qr_arabic_num(int $n): string
 
   .qr-pill.is-active {
     border-color: var(--qr-accent);
-    background: rgba(40, 195, 163, .08);
+    background: rgba(232, 184, 75, .08);
     color: var(--qr-accent);
     font-weight: 600;
+  }
+
+  /* Surah indicator — juz mode only, auto-updates on scroll */
+  .qr-surah-indicator {
+    border-color: rgba(232, 184, 75, .3);
+    background: rgba(232, 184, 75, .06);
+    color: var(--qr-gold);
+    pointer-events: none;
+    max-width: 9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+
+  .qr-surah-indicator.is-visible {
+    opacity: 1;
   }
 
   /* arrow */
@@ -175,7 +204,9 @@ function qr_arabic_num(int $n): string
   }
 
   @media (min-width: 580px) {
-    .qr-arrow-name { display: inline; }
+    .qr-arrow-name {
+      display: inline;
+    }
   }
 
   /* ── Content wrap ── */
@@ -213,9 +244,17 @@ function qr_arabic_num(int $n): string
     font-family: "LPMQ", "Amiri", serif;
     font-size: clamp(2.2rem, 5.5vw, 3.5rem);
     line-height: 1.75;
-    color: #dff0e9;
+    color: #fff;
     margin-bottom: .35rem;
     direction: rtl;
+  }
+
+  .qr-hdr-ar--qbsml {
+    font-family: "QCF4-QBSML", serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1.6;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .qr-hdr-name {
@@ -238,7 +277,7 @@ function qr_arabic_num(int $n): string
     font-family: "LPMQ", "Amiri", serif;
     font-size: clamp(1.5rem, 4vw, 2.1rem);
     line-height: 2;
-    color: #b8d4cc;
+    color: #fff;
     direction: rtl;
     border-bottom: 1px solid var(--qr-border);
   }
@@ -247,17 +286,25 @@ function qr_arabic_num(int $n): string
   .qr-divider {
     display: flex;
     align-items: center;
-    gap: .85rem;
-    padding: 1rem 0 .65rem;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 0 .75rem;
     border-bottom: 1px solid var(--qr-border);
   }
 
+  .qr-divider-info {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+  }
+
   .qr-divider-ar {
-    font-family: "LPMQ", "Amiri", serif;
+    font-family: "QCF4-QBSML", serif;
     font-size: 1.5rem;
-    color: var(--qr-accent);
+    color: #fff;
     direction: rtl;
     flex-shrink: 0;
+    line-height: 1.6;
   }
 
   .qr-divider-name {
@@ -463,7 +510,7 @@ function qr_arabic_num(int $n): string
     font-family: "LPMQ", "Amiri", serif;
     font-size: clamp(1.6rem, 4vw, 2.2rem);
     line-height: 2.1;
-    color: #edf3ef;
+    color: #fff;
     direction: rtl;
     text-align: right;
   }
@@ -475,8 +522,8 @@ function qr_arabic_num(int $n): string
     width: 2em;
     height: 2em;
     border-radius: 50%;
-    border: 1.5px solid rgba(201, 168, 76, .55);
-    box-shadow: inset 0 0 0 3px rgba(11, 13, 13, .8), 0 0 0 1.5px rgba(201, 168, 76, .25);
+    border: 1.5px solid rgba(232, 184, 75, .55);
+    box-shadow: inset 0 0 0 3px rgba(11, 13, 13, .8), 0 0 0 1.5px rgba(232, 184, 75, .25);
     color: var(--qr-gold);
     font-family: inherit;
     font-size: .45em;
@@ -558,7 +605,7 @@ function qr_arabic_num(int $n): string
     margin-top: 2.5rem;
     padding: 1.15rem 1.35rem;
     border-radius: 12px;
-    background: linear-gradient(135deg, #006860 0%, #004944 100%);
+    background: linear-gradient(135deg, #7a5818 0%, #5e430c 100%);
   }
 
   .qr-banner-body {
@@ -600,7 +647,7 @@ function qr_arabic_num(int $n): string
     border: 0;
     border-radius: 99px;
     background: #fff;
-    color: #004944;
+    color: #5e430c;
     font: inherit;
     font-size: .78rem;
     font-weight: 700;
@@ -610,7 +657,7 @@ function qr_arabic_num(int $n): string
   }
 
   .qr-banner-cta:hover {
-    background: #d8f5ee;
+    background: #fef3d8;
   }
 
   /* ── Responsive ── */
@@ -723,9 +770,9 @@ function qr_arabic_num(int $n): string
   }
 
   .qr-panel-item.is-active a {
-    color: #28c3a3;
+    color: #e8b84b;
     font-weight: 600;
-    background: rgba(40, 195, 163, .07);
+    background: rgba(232, 184, 75, .07);
   }
 
   .qr-panel-item.is-hidden {
@@ -733,7 +780,7 @@ function qr_arabic_num(int $n): string
   }
 
   .qr-panel-item a i {
-    color: #28c3a3;
+    color: #e8b84b;
     font-size: 1rem;
   }
 
@@ -749,6 +796,8 @@ function qr_arabic_num(int $n): string
     display: block;
   }
 </style>
+
+<?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
 
 <!-- ── Sticky sub-nav ── -->
 <nav class="qr-subnav" aria-label="Navigasi Al-Qur'an">
@@ -774,13 +823,23 @@ function qr_arabic_num(int $n): string
         <?php endif; ?>
       </a>
 
-      <button class="qr-pill is-active" type="button" id="qrSurahTrigger"
-        aria-haspopup="true" aria-expanded="false" aria-current="page">
-        <?= htmlspecialchars($reader_title); ?>
-        <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
-      </button>
+      <?php if ($reader_type === 'surah'): ?>
+        <button class="qr-pill is-active" type="button" id="qrSurahTrigger"
+          aria-haspopup="true" aria-expanded="false" aria-current="page">
+          <?= htmlspecialchars($reader_title); ?>
+          <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
+        </button>
+      <?php else: ?>
+        <button class="qr-pill is-active" type="button" id="qrJuzTrigger"
+          aria-haspopup="true" aria-expanded="false" aria-current="page">
+          <?= htmlspecialchars($reader_title); ?>
+          <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
+        </button>
+        <span class="qr-pill qr-surah-indicator" id="qrCurrentSurah"
+              aria-live="polite" aria-atomic="true"></span>
+      <?php endif; ?>
 
-      <?php if ($reader_verse_count > 0): ?>
+      <?php if ($reader_verse_count > 0 && $reader_type !== 'juz'): ?>
         <button class="qr-pill" type="button" id="qrAyatTrigger"
           aria-haspopup="true" aria-expanded="false">
           Pilih Ayat <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
@@ -827,8 +886,25 @@ function qr_arabic_num(int $n): string
   </ul>
 </div>
 
+<!-- ── Juz picker panel (juz reader only) ── -->
+<?php if ($reader_type === 'juz'): ?>
+  <div class="qr-panel" id="qrJuzPanel" hidden>
+    <ul class="qr-panel-list">
+      <?php for ($j = 1; $j <= 30; $j++): ?>
+        <li class="qr-panel-item<?= ((int)$reader_number === $j) ? ' is-active' : ''; ?>"
+          data-search="juz <?= $j; ?> <?= $j; ?>">
+          <a href="<?= base_url('index.php/quran/juz/' . $j); ?>">
+            Juz <?= $j; ?>
+            <?php if ((int)$reader_number === $j): ?><i class="bx bx-check"></i><?php endif; ?>
+          </a>
+        </li>
+      <?php endfor; ?>
+    </ul>
+  </div>
+<?php endif; ?>
+
 <!-- ── Ayat search panel ── -->
-<?php if ($reader_verse_count > 0): ?>
+<?php if ($reader_verse_count > 0 && $reader_type !== 'juz'): ?>
   <div class="qr-panel" id="qrAyatPanel" hidden>
     <div class="qr-panel-search">
       <i class="bx bx-search"></i>
@@ -858,7 +934,11 @@ function qr_arabic_num(int $n): string
           <span>Juz <?= (int) $reader_juz; ?></span>
         <?php endif; ?>
       </div>
-      <span class="qr-hdr-ar" lang="ar" dir="rtl"><?= htmlspecialchars($reader_arabic); ?></span>
+      <?php if ($reader_type === 'surah'): ?>
+        <span class="qr-hdr-ar qr-hdr-ar--qbsml" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$reader_number - 1, 'UTF-8'); ?></span>
+      <?php else: ?>
+        <span class="qr-hdr-ar qr-hdr-ar--qbsml" lang="ar" dir="rtl"><?= mb_chr(0xF2D0 + (int)$reader_number - 1, 'UTF-8'); ?></span>
+      <?php endif; ?>
       <h1 class="qr-hdr-name"><?= htmlspecialchars($reader_title); ?></h1>
       <?php if (!empty($reader_translation)): ?>
         <p class="qr-hdr-trans"><?= htmlspecialchars($reader_translation); ?></p>
@@ -882,16 +962,14 @@ function qr_arabic_num(int $n): string
         <?php /* Surah divider for juz view */ ?>
         <?php if ($reader_type === 'juz' && $last_surah_number !== $verse['surah_number']): ?>
           <div class="qr-divider">
-            <span class="qr-divider-ar" lang="ar" dir="rtl">
-              <?= htmlspecialchars($verse['surah_arabic'] ?? ''); ?>
-            </span>
-            <div>
+            <div class="qr-divider-info">
               <span class="qr-divider-name"><?= htmlspecialchars($verse['surah_name']); ?></span>
               <a class="qr-divider-link"
                 href="<?= base_url('index.php/quran/surah/' . (int)$verse['surah_number']); ?>">
                 Buka surah <i class="bx bx-link-external" style="font-size:.7rem;"></i>
               </a>
             </div>
+            <span class="qr-divider-ar" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$verse['surah_number'] - 1, 'UTF-8'); ?></span>
           </div>
           <?php $last_surah_number = $verse['surah_number']; ?>
         <?php endif; ?>

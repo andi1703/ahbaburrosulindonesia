@@ -11,7 +11,7 @@
                     <img src="<?= base_url('assets/img/logo/' . $identitas['logo']); ?>"
                         alt="Logo" style="height:46px; border-radius:8px; margin-bottom:.9rem;">
                 <?php endif; ?>
-                <h5 style="font-weight:700; color:#c9a84c; margin-bottom:.5rem; font-size:1rem;">
+                <h5 style="font-weight:700; color:#e8b84b; margin-bottom:.5rem; font-size:1rem;">
                     Majelis <?= htmlspecialchars($identitas['nama_website'] ?? 'Ahbaburrosul'); ?>
                 </h5>
                 <p style="font-size:.84rem; color:#9aa5a1; line-height:1.8; margin-bottom:1rem;">
@@ -25,7 +25,7 @@
                                 class="d-flex align-items-center justify-content-center text-white"
                                 style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);font-size:1.05rem;transition:background .22s;"
                                 title="<?= htmlspecialchars($sm['nama_sosmed']); ?>"
-                                onmouseover="this.style.background='#c9a84c';this.style.color='#000'"
+                                onmouseover="this.style.background='#e8b84b';this.style.color='#000'"
                                 onmouseout="this.style.background='rgba(255,255,255,.08)';this.style.color='#fff'">
                                 <i class='bx <?= htmlspecialchars($sm['icon']); ?>'></i>
                             </a>
@@ -38,11 +38,11 @@
             <div class="col-lg-2 col-6">
                 <h6 style="font-size:.7rem;font-weight:700;color:#9aa5a1;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;">Menu</h6>
                 <ul class="list-unstyled mb-0" style="font-size:.85rem;">
-                    <li class="mb-2"><a href="<?= base_url(); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#cdd4d1'">Beranda</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/amalan'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#cdd4d1'">Amalan</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/agenda'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#cdd4d1'">Agenda</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/artikel'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#cdd4d1'">Artikel</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/galeri'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color='#cdd4d1'">Galeri</a></li>
+                    <li class="mb-2"><a href="<?= base_url(); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#cdd4d1'">Beranda</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/amalan'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#cdd4d1'">Amalan</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/agenda'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#cdd4d1'">Agenda</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/artikel'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#cdd4d1'">Artikel</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/galeri'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#e8b84b'" onmouseout="this.style.color='#cdd4d1'">Galeri</a></li>
                 </ul>
             </div>
 
@@ -52,10 +52,9 @@
                 <ul class="list-unstyled mb-0" style="font-size:.85rem;">
                     <li class="mb-2"><a href="<?= base_url('index.php/quran'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Al-Qur'an</a></li>
                     <li class="mb-2"><a href="<?= base_url('index.php/tahlil'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Tahlil</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/doa'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Doa</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/burdah'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Burdah</a></li>
                     <li class="mb-2"><a href="<?= base_url('index.php/wirid'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Wirid</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/hadits'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Hadits</a></li>
-                    <li class="mb-2"><a href="<?= base_url('index.php/jadwal-sholat'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Jadwal Sholat</a></li>
+                    <li class="mb-2"><a href="<?= base_url('index.php/manaqib'); ?>" style="color:#cdd4d1;text-decoration:none;" onmouseover="this.style.color='#28c3a3'" onmouseout="this.style.color='#cdd4d1'">Manaqib</a></li>
                 </ul>
             </div>
 
@@ -64,14 +63,14 @@
                 <h6 style="font-size:.7rem;font-weight:700;color:#9aa5a1;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem;">Kontak Kami</h6>
                 <ul class="list-unstyled mb-3" style="font-size:.84rem; color:#9aa5a1; line-height:2;">
                     <?php if (!empty($identitas['alamat'])): ?>
-                        <li><i class='bx bx-map-pin me-2' style="color:#c9a84c;"></i><?= htmlspecialchars($identitas['alamat']); ?></li>
+                        <li><i class='bx bx-map-pin me-2' style="color:#e8b84b;"></i><?= htmlspecialchars($identitas['alamat']); ?></li>
                     <?php endif; ?>
                     <?php if (!empty($identitas['email'])): ?>
-                        <li><i class='bx bx-envelope me-2' style="color:#c9a84c;"></i><?= htmlspecialchars($identitas['email']); ?></li>
+                        <li><i class='bx bx-envelope me-2' style="color:#e8b84b;"></i><?= htmlspecialchars($identitas['email']); ?></li>
                     <?php endif; ?>
                     <?php if (!empty($identitas['whatsapp'])): ?>
                         <li>
-                            <i class='bx bxl-whatsapp me-2' style="color:#c9a84c;"></i>
+                            <i class='bx bxl-whatsapp me-2' style="color:#e8b84b;"></i>
                             <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $identitas['whatsapp']); ?>"
                                 style="color:#9aa5a1;text-decoration:none;"
                                 onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#9aa5a1'">
@@ -83,7 +82,7 @@
 
                 <!-- App Download Card -->
                 <div style="background:#191c1b;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:1rem 1.1rem;">
-                    <p style="font-size:.75rem;font-weight:700;color:#c9a84c;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.06em;">Majelis Super App</p>
+                    <p style="font-size:.75rem;font-weight:700;color:#e8b84b;margin-bottom:.25rem;text-transform:uppercase;letter-spacing:.06em;">Majelis Super App</p>
                     <p style="font-size:.75rem;color:#9aa5a1;margin-bottom:.75rem;line-height:1.55;">Nikmati fitur lengkap Al-Qur'an, Doa, dan Jadwal Sholat di genggaman Anda.</p>
                     <div class="d-flex gap-2 flex-wrap">
                         <a href="#" style="display:inline-flex;align-items:center;gap:.45rem;background:#1a1d1c;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:.45rem .8rem;color:#fff;text-decoration:none;font-size:.72rem;transition:border-color .2s;" onmouseover="this.style.borderColor='#28c3a3'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)'">
@@ -106,7 +105,7 @@
                 &copy; <?= date('Y'); ?> <?= htmlspecialchars($identitas['nama_website'] ?? 'Majelis Ahbaburrosul Indonesia'); ?>. Seluruh hak cipta dilindungi.
             </p>
             <p class="mb-0" style="font-size:.78rem; color:#5a6460;">
-                Dibuat dengan <i class='bx bx-heart' style="color:#c9a84c;"></i> untuk dakwah Islam
+                Dibuat dengan <i class='bx bx-heart' style="color:#e8b84b;"></i> untuk dakwah Islam
             </p>
         </div>
     </div>

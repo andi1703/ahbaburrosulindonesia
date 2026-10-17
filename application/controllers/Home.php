@@ -520,7 +520,10 @@ class Home extends \CI_Controller
         // build prev/next by position in array
         $idx = 0;
         foreach ($sections as $i => $s) {
-            if ((int) $s['id'] === $section_id) { $idx = $i; break; }
+            if ((int) $s['id'] === $section_id) {
+                $idx = $i;
+                break;
+            }
         }
         $prev = $idx > 0 ? $sections[$idx - 1] : null;
         $next = $idx < $total - 1 ? $sections[$idx + 1] : null;
@@ -535,9 +538,77 @@ class Home extends \CI_Controller
         $data['next_url']      = $next ? base_url('index.php/tahlil/' . (int) $next['id']) : null;
         $data['prev_name']     = $prev ? $prev['name'] : null;
         $data['next_name']     = $next ? $next['name'] : null;
+        $data['all_sections']  = array_map(function ($s) {
+            return ['id' => (int) $s['id'], 'name' => $s['name']];
+        }, $sections);
 
         $this->load->view('frontend/layout/V_Header', $data);
         $this->load->view('frontend/V_Tahlil/V_Tahlil_Reader', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Burdah Al Madih ────────────────────────────────
+    public function burdah()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Burdah Al Madih';
+
+        $json = json_decode(file_get_contents(APPPATH . 'data/BurdahAlmadih.json'), true);
+        if (empty($json['databurdah'])) {
+            show_error('Data Burdah Al Madih tidak dapat dibaca.', 500);
+        }
+        $data['burdah_list'] = $json['databurdah'];
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Burdah/V_Burdah_Index', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function burdah_detail($id = null)
+    {
+        $section_id = (int) $id;
+        $json = json_decode(file_get_contents(APPPATH . 'data/BurdahAlmadih.json'), true);
+        if (empty($json['databurdah'])) {
+            show_error('Data Burdah Al Madih tidak dapat dibaca.', 500);
+        }
+
+        $sections = $json['databurdah'];
+        $total    = count($sections);
+
+        $section = null;
+        $idx     = 0;
+        foreach ($sections as $i => $s) {
+            if ((int) $s['id'] === $section_id) {
+                $section = $s;
+                $idx = $i;
+                break;
+            }
+        }
+        if (!$section) show_404();
+
+        $prev = $idx > 0 ? $sections[$idx - 1] : null;
+        $next = $idx < $total - 1 ? $sections[$idx + 1] : null;
+
+        $data = $this->_base_data();
+        $data['page_title']       = $section['tentang'] . ' · Burdah Al Madih';
+        $data['section_id']       = $section_id;
+        $data['section_name']     = $section['name'];
+        $data['section_pasal']    = $section['pasal'];
+        $data['section_judul']    = $section['judul'];
+        $data['section_terjemah'] = $section['terjemah'];
+        $data['section_tentang']  = $section['tentang'];
+        $data['syair_list']       = $section['syairburdah'];
+        $data['total']            = $total;
+        $data['prev_url']         = $prev ? base_url('index.php/burdah/' . (int) $prev['id']) : null;
+        $data['next_url']         = $next ? base_url('index.php/burdah/' . (int) $next['id']) : null;
+        $data['prev_name']        = $prev ? $prev['name'] . ' · ' . $prev['tentang'] : null;
+        $data['next_name']        = $next ? $next['name'] . ' · ' . $next['tentang'] : null;
+        $data['all_sections']     = array_map(function ($s) {
+            return ['id' => (int) $s['id'], 'name' => $s['name'], 'tentang' => $s['tentang'] ?? ''];
+        }, $sections);
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Burdah/V_Burdah_Reader', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
@@ -556,21 +627,288 @@ class Home extends \CI_Controller
     public function wirid()
     {
         $data = $this->_base_data();
-        $data['page_title'] = 'Wirid';
-        $data['amalan_type'] = 'wirid';
+        $data['page_title'] = "Wirid & Dzikir Ba'da Sholat";
+
+        $json = json_decode(file_get_contents(APPPATH . 'data/dzikirsholat.json'), true);
+        if (empty($json['dzikirbadasholat'])) {
+            show_error('Data dzikir tidak dapat dibaca.', 500);
+        }
+        $data['dzikir_list'] = $json['dzikirbadasholat'];
+
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/V_Wirid/V_Wirid', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 
-    // ── Amalan: Hadits ─────────────────────────────────────────
-    public function hadits()
+    // ── Amalan: Dzikir Khatam Khawajagan ─────────────────────
+    public function khawajagan()
     {
         $data = $this->_base_data();
-        $data['page_title'] = 'Hadits';
-        $data['amalan_type'] = 'hadits';
+        $data['page_title'] = 'Dzikir Khatam Khawajagan';
+
+        $json = json_decode(file_get_contents(APPPATH . 'data/khawajagan.json'), true);
+        if (empty($json['datakhawajagan'])) {
+            show_error('Data khawajagan tidak dapat dibaca.', 500);
+        }
+        $data['khawajagan_list'] = $json['datakhawajagan'];
+
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/V_Khawajagan/V_Khawajagan', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Manaqib ────────────────────────────────────────
+    public function hadits()
+    {
+        // Alias — redirect ke manaqib
+        redirect('manaqib');
+    }
+
+    public function manaqib()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Manaqib Jawahirul Ma\'ani';
+
+        $raw = json_decode(file_get_contents(APPPATH . 'data/manaqib.json'), true);
+        if (empty($raw['datamanaqib'])) {
+            show_error('Data manaqib tidak dapat dibaca.', 500);
+        }
+
+        // Reindex sequential to fix duplicate IDs in source JSON
+        $list = [];
+        foreach ($raw['datamanaqib'] as $i => $s) {
+            $s['seq'] = $i + 1;
+            $list[] = $s;
+        }
+        $data['manaqib_list'] = $list;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Manaqib/V_Manaqib_Index', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function manaqib_detail($seq = null)
+    {
+        $seq = (int) $seq;
+        $raw = json_decode(file_get_contents(APPPATH . 'data/manaqib.json'), true);
+        if (empty($raw['datamanaqib'])) {
+            show_error('Data manaqib tidak dapat dibaca.', 500);
+        }
+
+        $sections = array_values($raw['datamanaqib']);
+        $total    = count($sections);
+        $idx      = $seq - 1;
+
+        if ($idx < 0 || $idx >= $total) show_404();
+
+        $section = $sections[$idx];
+        $prev    = $idx > 0 ? $sections[$idx - 1] : null;
+        $next    = $idx < $total - 1 ? $sections[$idx + 1] : null;
+
+        $data = $this->_base_data();
+        $data['page_title']   = $section['name'] . ' · Manaqib';
+        $data['section_seq']  = $seq;
+        $data['section_name'] = $section['name'];
+        $data['section_doa']  = $section['doa'] ?? '';
+        $data['bacaan_list']  = $section['jawahirulmaani'];
+        $data['total']        = $total;
+        $data['prev_url']     = $prev ? base_url('index.php/manaqib/' . $idx) : null;
+        $data['next_url']     = $next ? base_url('index.php/manaqib/' . ($idx + 2)) : null;
+        $data['prev_name']    = $prev ? $prev['name'] : null;
+        $data['next_name']    = $next ? $next['name'] : null;
+        $all_secs = [];
+        foreach ($sections as $i => $s) {
+            $all_secs[] = ['seq' => $i + 1, 'name' => $s['name']];
+        }
+        $data['all_sections'] = $all_secs;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Manaqib/V_Manaqib_Reader', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Maulid Ad-Diba'i ──────────────────────────────
+    public function maulid()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = "Maulid Ad-Diba'i";
+
+        $list = [];
+        for ($i = 1; $i <= 29; $i++) {
+            $file = APPPATH . 'data/Maulid Diba/' . $i . '.json';
+            if (!file_exists($file)) continue;
+            $entry  = json_decode(file_get_contents($file), true);
+            $list[] = [
+                'number' => $i,
+                'name'   => $entry['name']  ?? '',
+                'latin'  => $entry['latin'] ?? '',
+            ];
+        }
+        $data['maulid_list'] = $list;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Maulid/V_Maulid_Index', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function maulid_detail($num = null)
+    {
+        $num   = (int) $num;
+        $total = 29;
+
+        if ($num < 1 || $num > $total) show_404();
+
+        $file = APPPATH . 'data/Maulid Diba/' . $num . '.json';
+        if (!file_exists($file)) show_404();
+
+        $entry = json_decode(file_get_contents($file), true);
+
+        $display = !empty($entry['name']) ? $entry['name']
+            : (!empty($entry['latin']) ? $entry['latin'] : 'Bagian ' . $num);
+
+        $data = $this->_base_data();
+        $data['page_title']          = $display . " · Maulid Ad-Diba'i";
+        $data['maulid_num']          = $num;
+        $data['maulid_name']         = $display;
+        $data['maulid_latin']        = $entry['latin'] ?? '';
+        $data['maulid_sections']     = $entry['sections'] ?? [];
+        $data['maulid_translations'] = $entry['translations']['id']['sections'] ?? [];
+        $data['total']               = $total;
+        $data['prev_url']            = $num > 1      ? base_url('index.php/maulid/' . ($num - 1)) : null;
+        $data['next_url']            = $num < $total ? base_url('index.php/maulid/' . ($num + 1)) : null;
+        $maulid_nav = [];
+        for ($i = 1; $i <= $total; $i++) {
+            $f = APPPATH . 'data/Maulid Diba/' . $i . '.json';
+            if (!file_exists($f)) {
+                $maulid_nav[] = ['num' => $i, 'display' => 'Bacaan ' . $i];
+                continue;
+            }
+            $e = json_decode(file_get_contents($f), true);
+            $d = !empty($e['name']) ? $e['name'] : (!empty($e['latin']) ? $e['latin'] : 'Bacaan ' . $i);
+            $maulid_nav[] = ['num' => $i, 'display' => $d];
+        }
+        $data['maulid_nav'] = $maulid_nav;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Maulid/V_Maulid_Reader', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    // ── Amalan: Sholawat ──────────────────────────────────────
+    public function sholawat()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Sholawat';
+
+        $groups = [];
+        foreach (['Nasyid', 'Suluk'] as $g) {
+            $files = glob(APPPATH . 'data/Sholawat/' . $g . '/*.json') ?: [];
+            $groups[$g] = ['count' => count($files), 'slug' => strtolower($g)];
+        }
+        $data['sholawat_groups'] = $groups;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Sholawat/V_Sholawat_Hub', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function sholawat_group($group = 'nasyid')
+    {
+        $allowed = ['nasyid', 'suluk'];
+        if (!in_array($group, $allowed)) show_404();
+
+        $dir   = APPPATH . 'data/Sholawat/' . ucfirst($group) . '/';
+        $files = glob($dir . '*.json') ?: [];
+
+        $list = [];
+        foreach ($files as $file) {
+            $slug   = basename($file, '.json');
+            $entry  = json_decode(file_get_contents($file), true);
+            $list[] = [
+                'slug'  => $slug,
+                'name'  => $entry['name']  ?? '',
+                'latin' => $entry['latin'] ?? $slug,
+            ];
+        }
+        usort($list, function ($a, $b) {
+            return strcmp($a['latin'], $b['latin']);
+        });
+
+        $group_title = $group === 'nasyid' ? 'Nasyid' : 'Suluk';
+
+        $data = $this->_base_data();
+        $data['page_title']     = $group_title . ' · Sholawat';
+        $data['sh_group']       = $group;
+        $data['sh_group_title'] = $group_title;
+        $data['sh_list']        = $list;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Sholawat/V_Sholawat_Group', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
+    public function sholawat_reader($group = 'nasyid', $slug = null)
+    {
+        $allowed = ['nasyid', 'suluk'];
+        if (!in_array($group, $allowed) || empty($slug)) show_404();
+
+        $dir  = APPPATH . 'data/Sholawat/' . ucfirst($group) . '/';
+        $file = $dir . $slug . '.json';
+        if (!file_exists($file)) show_404();
+
+        $entry = json_decode(file_get_contents($file), true);
+
+        // Build slug-sorted list for prev/next
+        $all_files = glob($dir . '*.json') ?: [];
+        $all_slugs = array_map(function ($f) {
+            return basename($f, '.json');
+        }, $all_files);
+        sort($all_slugs);
+        $sh_all_list = [];
+        foreach ($all_slugs as $s) {
+            $d = json_decode(file_get_contents($dir . $s . '.json'), true);
+            $sh_all_list[] = ['slug' => $s, 'latin' => $d['latin'] ?? $s];
+        }
+
+        $idx   = array_search($slug, $all_slugs);
+        $total = count($all_slugs);
+        $prev  = $idx > 0           ? $all_slugs[$idx - 1] : null;
+        $next  = $idx < $total - 1  ? $all_slugs[$idx + 1] : null;
+
+        // Get prev/next latin name for tooltip (quick read)
+        $prev_latin = null;
+        $next_latin = null;
+        if ($prev) {
+            $pd = json_decode(file_get_contents($dir . $prev . '.json'), true);
+            $prev_latin = $pd['latin'] ?? $prev;
+        }
+        if ($next) {
+            $nd = json_decode(file_get_contents($dir . $next . '.json'), true);
+            $next_latin = $nd['latin'] ?? $next;
+        }
+
+        $group_title = $group === 'nasyid' ? 'Nasyid' : 'Suluk';
+        $latin       = $entry['latin'] ?? $slug;
+
+        $data = $this->_base_data();
+        $data['page_title']     = $latin . ' · ' . $group_title;
+        $data['sh_group']       = $group;
+        $data['sh_group_title'] = $group_title;
+        $data['sh_slug']        = $slug;
+        $data['sh_name']        = $entry['name']  ?? '';
+        $data['sh_latin']       = $latin;
+        $data['sh_texts']       = $entry['text']  ?? [];
+        $data['sh_trans']       = $entry['translations']['id']['text'] ?? [];
+        $data['sh_total']       = $total;
+        $data['sh_pos']         = $idx + 1;
+        $data['prev_url']       = $prev ? base_url('index.php/sholawat/' . $group . '/' . $prev) : null;
+        $data['next_url']       = $next ? base_url('index.php/sholawat/' . $group . '/' . $next) : null;
+        $data['prev_latin']     = $prev_latin;
+        $data['sh_all_list']    = $sh_all_list;
+        $data['next_latin']     = $next_latin;
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Sholawat/V_Sholawat_Reader', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 

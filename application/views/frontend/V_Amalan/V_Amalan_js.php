@@ -11,7 +11,7 @@
     var tabs = Array.prototype.slice.call(page.querySelectorAll('[data-quran-mode]'));
     var surahGrid = page.querySelector('[data-quran-grid="surah"]');
     var juzGrid = page.querySelector('[data-quran-grid="juz"]');
-    var searchInput = page.querySelector('[data-quran-search]');
+    var searchInput = document.querySelector('[data-quran-search]');
     var sortButton = page.querySelector('[data-quran-sort]');
     var sortLabel = page.querySelector('[data-quran-sort-label]');
     var resultCount = page.querySelector('[data-quran-count]');

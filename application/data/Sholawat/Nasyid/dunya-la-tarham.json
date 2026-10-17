@@ -1,0 +1,61 @@
+{
+  "source": "terjemahkitab.com",
+  "name": "دُنْيَا لَاتَرْحَمْ",
+  "latin": "Dunya La Tarham",
+  "text": {
+    "1": {
+      "arabic": "اَللّٰهُ اَللّٰهُ اَللّٰهُ اَللّٰهُ اَللّٰهُ اَللّٰهُ اَللّٰهُ رَبِّيْ",
+      "latin": "Allah allahu allah allahu allah allahu allahu robbi"
+    },
+    "2": {
+      "arabic": "دُنْيَا لَا تَرْحَمْ دُنْيَاكَ أَرْحَمْ وَأَنْتَ أَرْحَمْ وَأَنْتَ أَحْكَمْ",
+      "latin": "Dunya la tarham dunyaka arham wa anta arham wa anta ahkam"
+    },
+    "3": {
+      "arabic": "حَاشَاكَ تَظْلِمْ عَبْدًا تَنَدَّمْ عَبْدًا تَنَدَّمْ مِنْ كُلِّ ذَنْبٍ",
+      "latin": "Hasyaka tadhlim abdan tanaddam abdan tanaddam min kulli dzanbin"
+    },
+    "4": {
+      "arabic": "نَادَى الْوَدُوْدُ أَنْ يَا عَبِيْدُ إِلَيَّ عُوْدُوْا جَاءَ الْوَعِيْدُ",
+      "latin": "Nadal wadudu an ya abidu ilayya udu ja-al waidu"
+    },
+    "5": {
+      "arabic": "إِنَّا عَبِيْدٌ إِنَّا عَبِيْدٌ إِنَّا عَبِيْدٌ رَحْمَاكَ رَبِّيْ",
+      "latin": "Inna abidun inna abidun inna abidun rohmaka robbi"
+    },
+    "6": {
+      "arabic": "مِنْ نُوْرِ طٰهَ صَلَاةٌ لَهَا ذِكْرُ الْإِلٰهِ زَيْتٌ إِلَيْهَا",
+      "latin": "Min nuri thoha sholatun laha dzikrul ilahi zaitun ilaiha"
+    },
+    "7": {
+      "arabic": "مِنْ قَلْبِ أَحْمَدْ نُسْقَى وَنُرْشَدْ مِنْ قَلْبِ أَحْمَدْ ذَاكَ الْمُرَبِّيْ",
+      "latin": "Min qolbi ahmad nusqo wa nursyad min qolbi ahmad dzakal murobbi"
+    },
+    "8": {
+      "arabic": "هَا هُمْ أَتُوْنِيْ زَادُوْا شُجُوْنِيْ فَيَا عُيُوْنِيْ فَيْضِيْ أَرِيْنِيْ",
+      "latin": "Ha-ham atuni zadu syujuni faya uyuni faidli arini"
+    },
+    "9": {
+      "arabic": "دَمْعًا نَدَامَا وَالْإِسْتِقَامَةْ بِالْإِسْتِقَامَةِ أَدْعُوْكَ رَبِّيْ",
+      "latin": "Daman nadama wal istiqomah bil istiqomah aduuka robbi"
+    }
+  },
+  "translations": {
+    "id": {
+      "name": "Dunia Tidak Menyayangi",
+      "translator": "Terjemahkitab (Dr. Muhammad Ali Fathomi, Lc., M. H.)",
+      "text": {
+        "1": "Allah Allah Allah Allah, Allah Allah Allah Tuhanku",
+        "2": "Dunia tidak menyayangi, duniamu lebih menyayangi, dan Engkau lebih menyayangi dan Engkau lebih bijaksana",
+        "3": "Mustahil Engkau menzhalimi hamba yang menyesal, hamba yang menyesal dari segala dosa",
+        "4": "Yang Maha Pengasih memanggil wahai para hamba, kembalilah kepada-Ku datang ancaman",
+        "5": "Kami adalah hamba, kami adalah hamba, kami adalah hamba, rahmat-Mu ya Tuhanku",
+        "6": "Dari cahaya Taha shalat untuknya, dzikir kepada Ilahi minyak kepadanya",
+        "7": "Dari hati Ahmad kami diberi minum dan diberi petunjuk, dari hati Ahmad sang pendidik",
+        "8": "Mereka datang kepadaku menambah kesedihanku, maka wahai mataku, limpahkanlah tunjukkanlah aku",
+        "9": "Air mata penyesalan dan istiqomah, dengan istiqomah aku berdoa kepada-Mu ya Tuhanku"
+      }
+    }
+  },
+  "last_updated": "2026-03-15"
+}

@@ -5,14 +5,25 @@ $surah_list = $surah_list ?? [];
 $juz_list = $juz_list ?? [];
 ?>
 <style>
+    body {
+        background: #0b0d0d;
+    }
+
+    @font-face {
+        font-family: "QCF4-QBSML";
+        src: url("<?= base_url('assets/frontend/fonts/QCF4_QBSML.woff2'); ?>") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+    }
+
     .quran-page {
         --quran-bg: #0b0d0d;
         --quran-surface: #191c1b;
         --quran-surface-hover: #202523;
         --quran-text: #f2f5f4;
         --quran-muted: #9aa5a1;
-        --quran-accent: #28c3a3;
-        padding-top: 72px;
+        --quran-accent: #e8b84b;
+        padding-top: 1rem;
         min-height: 100vh;
         color: var(--quran-text);
         background: var(--quran-bg);
@@ -36,7 +47,7 @@ $juz_list = $juz_list ?? [];
     .quran-hero {
         position: relative;
         overflow: hidden;
-        background-color: #00685f;
+        background-color: #7a5818;
         background-image: repeating-linear-gradient(45deg, transparent 0 18px, rgba(255, 255, 255, 0.025) 18px 19px),
             repeating-linear-gradient(-45deg, transparent 0 18px, rgba(0, 0, 0, 0.035) 18px 19px);
     }
@@ -64,7 +75,7 @@ $juz_list = $juz_list ?? [];
         place-items: center;
         border: 1px solid rgba(255, 255, 255, 0.35);
         border-radius: 50%;
-        color: #d1fff3;
+        color: #fef3d8;
         font-family: "Amiri", serif;
         font-size: 2rem;
     }
@@ -244,7 +255,7 @@ $juz_list = $juz_list ?? [];
 
     .quran-card:hover,
     .quran-card:focus-visible {
-        border-color: rgba(40, 195, 163, 0.55);
+        border-color: rgba(232, 184, 75, 0.55);
         background: var(--quran-surface-hover);
         color: #fff;
     }
@@ -291,12 +302,24 @@ $juz_list = $juz_list ?? [];
     }
 
     .quran-card-arabic {
-        color: var(--quran-accent);
+        color: #fff;
         direction: rtl;
         font-family: "Amiri", serif;
         font-size: 1.18rem;
         line-height: 1;
         white-space: nowrap;
+    }
+
+    .quran-card-arabic--qbsml {
+        font-family: "QCF4-QBSML", serif;
+        font-size: 0.9rem;
+        line-height: 2;
+    }
+
+    .quran-card-arabic--juz {
+        font-family: "QCF4-QBSML", serif;
+        font-size: 2.2rem;
+        line-height: 1.4;
     }
 
     .quran-empty {
@@ -398,6 +421,10 @@ $juz_list = $juz_list ?? [];
         .quran-card-arabic {
             font-size: 1.28rem;
         }
+
+        .quran-card-arabic--juz {
+            font-size: 2rem;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -411,29 +438,9 @@ $juz_list = $juz_list ?? [];
     }
 </style>
 
+<?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
+
 <main class="quran-page" data-quran-page>
-    <header class="quran-hero">
-        <div class="quran-container quran-hero-inner">
-            <div class="quran-identity">
-                <span class="quran-mark" aria-hidden="true">۞</span>
-                <div>
-                    <h1 class="quran-title">Al-Qur'an</h1>
-                    <p class="quran-subtitle">Jelajahi 114 surah dan 30 juz Al-Qur'an.</p>
-                </div>
-            </div>
-
-            <div class="quran-search-wrap">
-                <label class="visually-hidden" for="quranSearch">Cari surah atau juz</label>
-                <div class="quran-search">
-                    <i class="bx bx-search" aria-hidden="true"></i>
-                    <input id="quranSearch" type="search" autocomplete="off" data-quran-search
-                        placeholder="Nama atau nomor surah, mis. Yasin atau 2:124">
-                </div>
-                <p class="quran-search-hint">Cari berdasarkan nama, nomor surah, atau nomor ayat.</p>
-            </div>
-        </div>
-    </header>
-
     <section class="quran-container quran-browser" aria-label="Daftar surah dan juz">
         <div class="quran-toolbar">
             <div class="quran-tabs" role="tablist" aria-label="Jenis daftar Al-Qur'an">
@@ -466,7 +473,7 @@ $juz_list = $juz_list ?? [];
                         <span class="quran-card-title"><?= htmlspecialchars($surah['name'], ENT_QUOTES, 'UTF-8'); ?></span>
                         <span class="quran-card-subtitle"><?= htmlspecialchars($surah['translation'], ENT_QUOTES, 'UTF-8'); ?> · <?= (int) $surah['verses']; ?> ayat</span>
                     </span>
-                    <span class="quran-card-arabic" lang="ar" dir="rtl"><?= htmlspecialchars($surah['arabic'], ENT_QUOTES, 'UTF-8'); ?></span>
+                    <span class="quran-card-arabic quran-card-arabic--qbsml" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$surah['id'] - 1, 'UTF-8'); ?></span>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -484,7 +491,7 @@ $juz_list = $juz_list ?? [];
                         <span class="quran-card-title">Juz <?= (int) $juz['number']; ?></span>
                         <span class="quran-card-subtitle">Surah <?= htmlspecialchars($juz['surah'], ENT_QUOTES, 'UTF-8'); ?> · Ayat <?= (int) $juz['verse']; ?> · <?= (int) $juz['verses']; ?> ayat</span>
                     </span>
-                    <span class="quran-card-arabic" lang="ar" dir="rtl">الجزء <?= (int) $juz['number']; ?></span>
+                    <span class="quran-card-arabic quran-card-arabic--juz" lang="ar" dir="rtl"><?= mb_chr(0xF2D0 + (int)$juz['number'] - 1, 'UTF-8'); ?></span>
                 </a>
             <?php endforeach; ?>
         </div>
