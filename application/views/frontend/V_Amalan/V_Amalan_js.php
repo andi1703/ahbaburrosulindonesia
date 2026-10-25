@@ -9,8 +9,9 @@
     document.body.classList.add('quran-page-body');
 
     var tabs = Array.prototype.slice.call(page.querySelectorAll('[data-quran-mode]'));
-    var surahGrid = page.querySelector('[data-quran-grid="surah"]');
-    var juzGrid = page.querySelector('[data-quran-grid="juz"]');
+    var surahGrid   = page.querySelector('[data-quran-grid="surah"]');
+    var juzGrid     = page.querySelector('[data-quran-grid="juz"]');
+    var populerGrid = page.querySelector('[data-quran-grid="populer"]');
     var searchInput = document.querySelector('[data-quran-search]');
     var sortButton = page.querySelector('[data-quran-sort]');
     var sortLabel = page.querySelector('[data-quran-sort-label]');
@@ -34,7 +35,7 @@
     });
 
     sortButton.addEventListener('click', function() {
-      if (activeMode !== 'surah') {
+      if (activeMode !== 'surah' && activeMode !== 'revelation') {
         activeMode = 'surah';
         tabs.forEach(function(item) {
           item.setAttribute('aria-selected', item.dataset.quranMode === 'surah' ? 'true' : 'false');
@@ -49,24 +50,26 @@
       var card = event.target.closest('[data-quran-card]');
       var verseSearch = searchInput.value.trim().match(/^(\d+):(\d+)$/);
 
-      if (card && activeMode === 'surah' && verseSearch && Number(verseSearch[1]) === Number(card.dataset.number)) {
+      if (card && activeMode === 'surah' && verseSearch && Number(verseSearch[1]) === Number(card.dataset.surahId || card.dataset.number)) {
         event.preventDefault();
         window.location.href = card.href + '#ayat-' + Number(verseSearch[1]) + '-' + Number(verseSearch[2]);
       }
     });
 
     function updateCatalog() {
-      var showingJuz = activeMode === 'juz';
-      var activeGrid = showingJuz ? juzGrid : surahGrid;
+      var showingJuz     = activeMode === 'juz';
+      var showingPopuler = activeMode === 'populer';
+      var activeGrid = showingJuz ? juzGrid : (showingPopuler ? populerGrid : surahGrid);
       var searchTerm = searchInput.value.trim().toLocaleLowerCase('id');
       var numericSearch = searchTerm.match(/^(\d+)(?::\d+)?$/);
       var cards = Array.prototype.slice.call(activeGrid.querySelectorAll('[data-quran-card]'));
 
-      surahGrid.hidden = showingJuz;
-      juzGrid.hidden = !showingJuz;
-      sortButton.disabled = showingJuz;
+      surahGrid.hidden   = showingJuz || showingPopuler;
+      juzGrid.hidden     = !showingJuz;
+      populerGrid.hidden = !showingPopuler;
+      sortButton.disabled = showingJuz || showingPopuler;
 
-      if (!showingJuz) {
+      if (!showingJuz && !showingPopuler) {
         cards.sort(function(left, right) {
           if (activeMode === 'revelation') {
             return Number(left.dataset.revelation) - Number(right.dataset.revelation);

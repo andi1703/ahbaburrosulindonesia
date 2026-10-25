@@ -231,6 +231,7 @@ class Home extends \CI_Controller
             $verses[] = [
                 'surah_number' => (int) $ayah['surah'],
                 'surah_name' => $surah_info[1],
+                'surah_meaning' => $surah_info[2],
                 'surah_arabic' => $surah_info[3],
                 'number' => (int) $ayah['verse'],
                 'juz' => (int) $ayah['juz'],
@@ -601,8 +602,8 @@ class Home extends \CI_Controller
         $data['total']            = $total;
         $data['prev_url']         = $prev ? base_url('index.php/burdah/' . (int) $prev['id']) : null;
         $data['next_url']         = $next ? base_url('index.php/burdah/' . (int) $next['id']) : null;
-        $data['prev_name']        = $prev ? $prev['name'] . ' · ' . $prev['tentang'] : null;
-        $data['next_name']        = $next ? $next['name'] . ' · ' . $next['tentang'] : null;
+        $data['prev_name']        = $prev ? $prev['name'] : null;
+        $data['next_name']        = $next ? $next['name'] : null;
         $data['all_sections']     = array_map(function ($s) {
             return ['id' => (int) $s['id'], 'name' => $s['name'], 'tentang' => $s['tentang'] ?? ''];
         }, $sections);
@@ -624,6 +625,16 @@ class Home extends \CI_Controller
     }
 
     // ── Amalan: Wirid ──────────────────────────────────────────
+    public function tasbih()
+    {
+        $data = $this->_base_data();
+        $data['page_title'] = 'Tasbih Digital';
+
+        $this->load->view('frontend/layout/V_Header', $data);
+        $this->load->view('frontend/V_Tasbih/V_Tasbih', $data);
+        $this->load->view('frontend/layout/V_Footer', $data);
+    }
+
     public function wirid()
     {
         $data = $this->_base_data();
@@ -800,12 +811,27 @@ class Home extends \CI_Controller
         $data = $this->_base_data();
         $data['page_title'] = 'Sholawat';
 
-        $groups = [];
+        $all_list = [];
+        $sh_counts = ['nasyid' => 0, 'suluk' => 0];
         foreach (['Nasyid', 'Suluk'] as $g) {
-            $files = glob(APPPATH . 'data/Sholawat/' . $g . '/*.json') ?: [];
-            $groups[$g] = ['count' => count($files), 'slug' => strtolower($g)];
+            $dir   = APPPATH . 'data/Sholawat/' . $g . '/';
+            $files = glob($dir . '*.json') ?: [];
+            $sh_counts[strtolower($g)] = count($files);
+            foreach ($files as $file) {
+                $slug  = basename($file, '.json');
+                $entry = json_decode(file_get_contents($file), true);
+                $all_list[] = [
+                    'slug'  => $slug,
+                    'name'  => $entry['name']  ?? '',
+                    'latin' => $entry['latin'] ?? $slug,
+                    'group' => strtolower($g),
+                ];
+            }
         }
-        $data['sholawat_groups'] = $groups;
+        usort($all_list, function ($a, $b) { return strcmp($a['latin'], $b['latin']); });
+
+        $data['sh_all_list'] = $all_list;
+        $data['sh_counts']   = $sh_counts;
 
         $this->load->view('frontend/layout/V_Header', $data);
         $this->load->view('frontend/V_Sholawat/V_Sholawat_Hub', $data);
@@ -919,7 +945,7 @@ class Home extends \CI_Controller
         $data['page_title'] = 'Jadwal Sholat';
         $data['amalan_type'] = 'jadwal-sholat';
         $this->load->view('frontend/layout/V_Header', $data);
-        $this->load->view('frontend/V_Amalan/V_Amalan_Coming', $data);
+        $this->load->view('frontend/V_Jadwal/V_Jadwal', $data);
         $this->load->view('frontend/layout/V_Footer', $data);
     }
 }

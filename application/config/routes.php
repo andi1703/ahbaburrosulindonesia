@@ -73,6 +73,7 @@ $route['manaqib'] = 'Home/manaqib';
 $route['manaqib/(:num)'] = 'Home/manaqib_detail/$1';
 $route['doa'] = 'Home/doa';
 $route['wirid'] = 'Home/wirid';
+$route['tasbih'] = 'Home/tasbih';
 $route['khawajagan'] = 'Home/khawajagan';
 $route['maulid'] = 'Home/maulid';
 $route['maulid/(:num)'] = 'Home/maulid_detail/$1';

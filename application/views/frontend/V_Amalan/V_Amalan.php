@@ -3,6 +3,11 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 $surah_list = $surah_list ?? [];
 $juz_list = $juz_list ?? [];
+
+/* Popular surah IDs — in popularity order */
+$_popular_ids = [56, 36, 67, 18, 55, 32, 48, 71, 12, 31, 19, 1, 2, 73, 78, 93, 94, 112, 113, 114, 87, 95, 99, 3];
+$_surah_by_id = [];
+foreach ($surah_list as $s) { $_surah_by_id[(int)$s['id']] = $s; }
 ?>
 <style>
     body {
@@ -225,7 +230,7 @@ $juz_list = $juz_list ?? [];
     .quran-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.55rem;
+        gap: 0.65rem;
     }
 
     .quran-grid[hidden],
@@ -235,14 +240,14 @@ $juz_list = $juz_list ?? [];
 
     .quran-card {
         display: grid;
-        grid-template-columns: 30px minmax(0, 1fr) auto;
+        grid-template-columns: 48px minmax(0, 1fr) auto;
         align-items: center;
-        gap: 0.65rem;
+        gap: 0.9rem;
         min-width: 0;
-        min-height: 54px;
-        padding: 0.55rem 0.65rem;
-        border: 1px solid rgba(255, 255, 255, 0.035);
-        border-radius: 8px;
+        min-height: 74px;
+        padding: 0.8rem 0.9rem;
+        border: 1px solid rgba(255, 255, 255, 0.055);
+        border-radius: 10px;
         background: var(--quran-surface);
         color: var(--quran-text);
         text-decoration: none;
@@ -260,16 +265,18 @@ $juz_list = $juz_list ?? [];
         color: #fff;
     }
 
+    /* Diamond badge — same visual as quran.com */
     .quran-number {
         display: grid;
-        width: 30px;
-        height: 30px;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
         place-items: center;
-        border-radius: 6px;
-        background: #282c2a;
-        color: #e3e8e5;
-        font-size: 0.68rem;
-        font-weight: 700;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background: #2c3230;
+        color: var(--quran-accent);
+        font-size: 0.76rem;
+        font-weight: 800;
         font-variant-numeric: tabular-nums;
     }
 
@@ -283,7 +290,7 @@ $juz_list = $juz_list ?? [];
         display: block;
         overflow: hidden;
         color: inherit;
-        font-size: 0.73rem;
+        font-size: 0.92rem;
         font-weight: 700;
         line-height: 1.3;
         text-overflow: ellipsis;
@@ -293,9 +300,9 @@ $juz_list = $juz_list ?? [];
     .quran-card-subtitle {
         display: block;
         overflow: hidden;
-        margin-top: 0.12rem;
+        margin-top: 0.22rem;
         color: var(--quran-muted);
-        font-size: 0.58rem;
+        font-size: 0.72rem;
         line-height: 1.25;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -305,20 +312,20 @@ $juz_list = $juz_list ?? [];
         color: #fff;
         direction: rtl;
         font-family: "Amiri", serif;
-        font-size: 1.18rem;
+        font-size: 1.35rem;
         line-height: 1;
         white-space: nowrap;
     }
 
     .quran-card-arabic--qbsml {
         font-family: "QCF4-QBSML", serif;
-        font-size: 0.9rem;
+        font-size: 1.05rem;
         line-height: 2;
     }
 
     .quran-card-arabic--juz {
         font-family: "QCF4-QBSML", serif;
-        font-size: 2.2rem;
+        font-size: 2.4rem;
         line-height: 1.4;
     }
 
@@ -402,28 +409,32 @@ $juz_list = $juz_list ?? [];
 
         .quran-grid {
             grid-template-columns: minmax(0, 1fr);
-            gap: 0.45rem;
+            gap: 0.55rem;
         }
 
         .quran-card {
-            min-height: 56px;
-            padding-inline: 0.7rem;
+            min-height: 78px;
+            padding: 0.85rem 1rem;
         }
 
         .quran-card-title {
-            font-size: 0.78rem;
+            font-size: 0.95rem;
         }
 
         .quran-card-subtitle {
-            font-size: 0.62rem;
+            font-size: 0.74rem;
         }
 
         .quran-card-arabic {
-            font-size: 1.28rem;
+            font-size: 1.45rem;
+        }
+
+        .quran-card-arabic--qbsml {
+            font-size: 1.1rem;
         }
 
         .quran-card-arabic--juz {
-            font-size: 2rem;
+            font-size: 2.1rem;
         }
     }
 
@@ -447,6 +458,7 @@ $juz_list = $juz_list ?? [];
                 <button class="quran-tab" type="button" role="tab" aria-selected="true" data-quran-mode="surah">Surah</button>
                 <button class="quran-tab" type="button" role="tab" aria-selected="false" data-quran-mode="juz">Juz</button>
                 <button class="quran-tab" type="button" role="tab" aria-selected="false" data-quran-mode="revelation">Urutan Turun</button>
+                <button class="quran-tab" type="button" role="tab" aria-selected="false" data-quran-mode="populer">Populer</button>
             </div>
             <button class="quran-sort" type="button" data-quran-sort aria-pressed="false" title="Urutkan A–Z">
                 <span data-quran-sort-label>A–Z</span>
@@ -492,6 +504,28 @@ $juz_list = $juz_list ?? [];
                         <span class="quran-card-subtitle">Surah <?= htmlspecialchars($juz['surah'], ENT_QUOTES, 'UTF-8'); ?> · Ayat <?= (int) $juz['verse']; ?> · <?= (int) $juz['verses']; ?> ayat</span>
                     </span>
                     <span class="quran-card-arabic quran-card-arabic--juz" lang="ar" dir="rtl"><?= mb_chr(0xF2D0 + (int)$juz['number'] - 1, 'UTF-8'); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="quran-grid" role="tabpanel" data-quran-grid="populer" hidden>
+            <?php foreach ($_popular_ids as $_rank => $_pid):
+                if (!isset($_surah_by_id[$_pid])) continue;
+                $_ps = $_surah_by_id[$_pid];
+                $_ps_search = mb_strtolower(($_rank + 1) . ' ' . $_ps['name'] . ' ' . $_ps['translation'] . ' ' . $_ps['arabic'], 'UTF-8');
+            ?>
+                <a class="quran-card" data-quran-card
+                    data-search="<?= htmlspecialchars($_ps_search, ENT_QUOTES, 'UTF-8'); ?>"
+                    data-name="<?= htmlspecialchars(mb_strtolower($_ps['name'], 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>"
+                    data-number="<?= $_rank + 1; ?>"
+                    data-surah-id="<?= (int)$_ps['id']; ?>"
+                    href="<?= base_url('index.php/quran/surah/' . (int)$_ps['id']); ?>">
+                    <span class="quran-number"><?= $_rank + 1; ?></span>
+                    <span class="quran-card-copy">
+                        <span class="quran-card-title"><?= htmlspecialchars($_ps['name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <span class="quran-card-subtitle"><?= htmlspecialchars($_ps['translation'], ENT_QUOTES, 'UTF-8'); ?> · <?= (int)$_ps['verses']; ?> ayat</span>
+                    </span>
+                    <span class="quran-card-arabic quran-card-arabic--qbsml" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$_ps['id'] - 1, 'UTF-8'); ?></span>
                 </a>
             <?php endforeach; ?>
         </div>

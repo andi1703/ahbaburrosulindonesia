@@ -6,6 +6,12 @@ $sh_list        = $sh_list        ?? [];
 ?>
 <style>
     body { background: #0b0d0d; }
+    @font-face {
+        font-family: "LPMQ";
+        src: url("<?= base_url('assets/frontend/fonts/LPMQ.ttf'); ?>") format("truetype");
+        font-weight: 400;
+        font-display: swap;
+    }
 
     :root {
         --shg-bg: #0b0d0d;
@@ -144,7 +150,7 @@ $sh_list        = $sh_list        ?? [];
 
     .shg-card-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
+        font-family: "LPMQ", serif;
         font-size: .82rem;
         line-height: 1.5;
         color: #d8e0dc;
@@ -163,6 +169,7 @@ $sh_list        = $sh_list        ?? [];
         white-space: nowrap;
         text-overflow: ellipsis;
         margin-top: .1rem;
+        text-align: right;
     }
 
     .shg-card-arrow { color: var(--shg-accent); font-size: 1rem; flex-shrink: 0; }

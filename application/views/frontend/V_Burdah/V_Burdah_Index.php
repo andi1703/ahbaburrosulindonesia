@@ -149,13 +149,13 @@ $burdah_list = $burdah_list ?? [];
 
     .burdah-card {
         display: grid;
-        grid-template-columns: 30px minmax(0, 1fr) auto;
+        grid-template-columns: 48px minmax(0, 1fr) auto;
         align-items: center;
-        gap: 0.65rem;
-        min-height: 68px;
-        padding: 0.7rem 0.75rem;
-        border: 1px solid rgba(255, 255, 255, .035);
-        border-radius: 8px;
+        gap: 0.9rem;
+        min-height: 74px;
+        padding: 0.8rem 0.9rem;
+        border: 1px solid rgba(255, 255, 255, .055);
+        border-radius: 10px;
         background: var(--bh-surface);
         color: var(--bh-text);
         text-decoration: none;
@@ -168,21 +168,23 @@ $burdah_list = $burdah_list ?? [];
 
     .burdah-card:hover,
     .burdah-card:focus-visible {
-        border-color: rgba(232, 184, 75, .5);
+        border-color: rgba(232, 184, 75, .55);
         background: var(--bh-surface-hover);
         color: #fff;
     }
 
     .burdah-number {
         display: grid;
-        width: 30px;
-        height: 30px;
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
         place-items: center;
-        border-radius: 6px;
-        background: #282c2a;
-        color: #e3e8e5;
-        font-size: 0.68rem;
-        font-weight: 700;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background: #2c3230;
+        color: var(--bh-accent);
+        font-size: 0.76rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
     }
 
     .burdah-card-copy {
@@ -195,7 +197,7 @@ $burdah_list = $burdah_list ?? [];
         display: block;
         overflow: hidden;
         color: inherit;
-        font-size: 0.73rem;
+        font-size: 0.92rem;
         font-weight: 700;
         line-height: 1.3;
         text-overflow: ellipsis;
@@ -205,19 +207,19 @@ $burdah_list = $burdah_list ?? [];
     .burdah-card-subtitle {
         display: block;
         overflow: hidden;
-        margin-top: 0.12rem;
+        margin-top: 0.22rem;
         color: var(--bh-muted);
-        font-size: 0.58rem;
-        line-height: 1.4;
+        font-size: 0.72rem;
+        line-height: 1.25;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .burdah-card-arabic {
-        color: #fff;
+        color: var(--bh-accent);
         direction: rtl;
         font-family: "Amiri", serif;
-        font-size: 1.1rem;
+        font-size: 1.35rem;
         line-height: 1;
         white-space: nowrap;
         flex-shrink: 0;
@@ -285,20 +287,20 @@ $burdah_list = $burdah_list ?? [];
         }
 
         .burdah-card {
-            min-height: 62px;
-            padding-inline: 0.7rem;
+            min-height: 66px;
+            padding-inline: 0.75rem;
         }
 
         .burdah-card-title {
-            font-size: 0.78rem;
+            font-size: 0.85rem;
         }
 
         .burdah-card-subtitle {
-            font-size: 0.62rem;
+            font-size: 0.67rem;
         }
 
         .burdah-card-arabic {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
         }
     }
 </style>

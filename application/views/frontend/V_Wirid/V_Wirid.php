@@ -86,7 +86,7 @@ $dzikir_list = $dzikir_list ?? [];
         text-align: center;
         font-size: .75rem;
         font-weight: 600;
-        color: #c8d0cc;
+        color: #fff;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -173,13 +173,66 @@ $dzikir_list = $dzikir_list ?? [];
 
     .wr-dzikir-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.45rem, 4vw, 2rem);
-        line-height: 2.2;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 2.1;
         color: #fff;
         direction: rtl;
         text-align: right;
         white-space: pre-line;
+    }
+
+    /* ── Section frame (like Quran surah divider) ── */
+    .wr-section {
+        margin: 1.75rem 0 1.25rem;
+        position: relative;
+    }
+
+    .wr-section-ornament {
+        height: 8px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpolygon points='7,0 13,4 7,8 1,4' fill='%23e8b84b' opacity='.55'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-size: 14px 8px;
+    }
+
+    .wr-section-frame {
+        position: relative;
+        border: 2px solid var(--wr-accent);
+        background: var(--wr-surf);
+        padding: .9rem 2rem;
+        text-align: center;
+    }
+
+    .wr-section-frame::after {
+        content: '';
+        position: absolute;
+        inset: 5px;
+        border: 1px solid rgba(232,184,75,.25);
+        pointer-events: none;
+    }
+
+    .wr-sc {
+        position: absolute;
+        width: 12px; height: 12px;
+        background: var(--wr-accent);
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        z-index: 1;
+    }
+    .wr-sc--tl { top: -6px; left: -6px; }
+    .wr-sc--tr { top: -6px; right: -6px; }
+    .wr-sc--bl { bottom: -6px; left: -6px; }
+    .wr-sc--br { bottom: -6px; right: -6px; }
+
+    .wr-section-arab {
+        display: block;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        font-weight: 700;
+        line-height: 1.8;
+        color: #fff;
+        direction: rtl;
+        position: relative;
+        z-index: 1;
     }
 
     /* ── Back link ── */
@@ -231,7 +284,7 @@ $dzikir_list = $dzikir_list ?? [];
     }
 
     @media (max-width: 575.98px) {
-        .wr-dzikir-arab { font-size: 1.35rem; line-height: 2.1; }
+        .wr-dzikir-arab { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 2.1; }
         .wr-hdr { padding-block: 1.5rem 1.25rem; }
     }
 </style>
@@ -272,10 +325,29 @@ $dzikir_list = $dzikir_list ?? [];
 
         <!-- Dzikir list -->
         <?php foreach ($dzikir_list as $idx => $dzikir): ?>
+            <?php
+            /* Detect section header: strip harakat then check length */
+            $_bare = preg_replace('/[\x{064B}-\x{065F}\x{0610}-\x{061A}\x{06D6}-\x{06ED}]/u', '', trim($dzikir['arab']));
+            $_is_header = mb_strlen($_bare, 'UTF-8') <= 15;
+            ?>
+            <?php if ($_is_header): ?>
+            <div class="wr-section" id="dzikir-<?= (int) $dzikir['id']; ?>">
+                <div class="wr-section-ornament"></div>
+                <div class="wr-section-frame">
+                    <div class="wr-sc wr-sc--tl"></div>
+                    <div class="wr-sc wr-sc--tr"></div>
+                    <div class="wr-sc wr-sc--bl"></div>
+                    <div class="wr-sc wr-sc--br"></div>
+                    <span class="wr-section-arab" lang="ar" dir="rtl"><?= htmlspecialchars($dzikir['arab'], ENT_QUOTES, 'UTF-8'); ?></span>
+                </div>
+                <div class="wr-section-ornament"></div>
+            </div>
+            <?php else: ?>
             <div class="wr-dzikir" id="dzikir-<?= (int) $dzikir['id']; ?>">
                 <span class="wr-dzikir-num"><?= $idx + 1; ?></span>
                 <span class="wr-dzikir-arab" lang="ar" dir="rtl"><?= htmlspecialchars($dzikir['arab'], ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
+            <?php endif; ?>
         <?php endforeach; ?>
 
         <!-- Footer -->
@@ -285,5 +357,6 @@ $dzikir_list = $dzikir_list ?? [];
             </a>
         </div>
 
+        <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Banner.php'; ?>
     </div>
 </main>

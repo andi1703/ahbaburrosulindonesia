@@ -36,13 +36,13 @@ $maulid_list = $maulid_list ?? [];
 
     .mdl-card {
         display: grid;
-        grid-template-columns: 30px minmax(0,1fr) auto;
+        grid-template-columns: 48px minmax(0,1fr) auto;
         align-items: center;
-        gap: .65rem;
-        min-height: 68px;
-        padding: .7rem .75rem;
-        border: 1px solid rgba(255,255,255,.035);
-        border-radius: 8px;
+        gap: .9rem;
+        min-height: 74px;
+        padding: .8rem .9rem;
+        border: 1px solid rgba(255,255,255,.055);
+        border-radius: 10px;
         background: var(--mdl-surface);
         color: var(--mdl-text);
         text-decoration: none;
@@ -52,30 +52,32 @@ $maulid_list = $maulid_list ?? [];
     .mdl-card[hidden] { display: none !important; }
 
     .mdl-card:hover, .mdl-card:focus-visible {
-        border-color: rgba(232,184,75,.5);
+        border-color: rgba(232,184,75,.55);
         background: var(--mdl-surface-hover);
         color: #fff;
     }
 
     .mdl-number {
-        display: grid; width: 30px; height: 30px;
-        place-items: center; border-radius: 6px;
-        background: #282c2a; color: #e3e8e5;
-        font-size: .68rem; font-weight: 700;
+        display: grid; width: 44px; height: 44px;
+        flex-shrink: 0; place-items: center;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background: #2c3230; color: var(--mdl-accent);
+        font-size: .76rem; font-weight: 800;
+        font-variant-numeric: tabular-nums;
     }
 
     .mdl-card-copy { display: block; min-width: 0; overflow: hidden; }
 
     .mdl-card-title {
         display: block; overflow: hidden; color: inherit;
-        font-size: .73rem; font-weight: 700; line-height: 1.3;
+        font-size: .92rem; font-weight: 700; line-height: 1.3;
         text-overflow: ellipsis; white-space: nowrap;
     }
 
     .mdl-card-subtitle {
-        display: block; overflow: hidden; margin-top: .12rem;
-        color: var(--mdl-muted); font-size: .58rem;
-        line-height: 1.4; text-overflow: ellipsis; white-space: nowrap;
+        display: block; overflow: hidden; margin-top: .22rem;
+        color: var(--mdl-muted); font-size: .72rem;
+        line-height: 1.25; text-overflow: ellipsis; white-space: nowrap;
     }
 
     .mdl-card-icon { color: var(--mdl-accent); font-size: 1.1rem; flex-shrink: 0; }

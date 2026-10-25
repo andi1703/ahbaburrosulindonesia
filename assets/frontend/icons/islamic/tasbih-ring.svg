@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Thread/string circle -->
+  <circle cx="50" cy="50" r="35" stroke="black" stroke-width="1.5"/>
+
+  <!-- 24 bead circles + inner comma (bead at angle = -90 + i*15 deg, r=35) -->
+  <!-- i=0  -90deg  50.0, 15.0 -->
+  <circle cx="50.0" cy="15.0" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M48.2,18.2 Q46.5,16.5 47.8,14.8" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=1  -75deg  59.1, 16.2 -->
+  <circle cx="59.1" cy="16.2" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M57.3,19.4 Q55.6,17.7 56.9,16.0" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=2  -60deg  67.5, 19.7 -->
+  <circle cx="67.5" cy="19.7" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M65.7,22.9 Q64.0,21.2 65.3,19.5" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=3  -45deg  74.7, 25.3 -->
+  <circle cx="74.7" cy="25.3" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M72.9,28.5 Q71.2,26.8 72.5,25.1" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=4  -30deg  80.3, 32.5 -->
+  <circle cx="80.3" cy="32.5" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M78.5,35.7 Q76.8,34.0 78.1,32.3" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=5  -15deg  83.8, 40.9 -->
+  <circle cx="83.8" cy="40.9" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M82.0,44.1 Q80.3,42.4 81.6,40.7" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=6  0deg  85.0, 50.0 -->
+  <circle cx="85.0" cy="50.0" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M83.2,53.2 Q81.5,51.5 82.8,49.8" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=7  15deg  83.8, 59.1 -->
+  <circle cx="83.8" cy="59.1" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M82.0,62.3 Q80.3,60.6 81.6,58.9" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=8  30deg  80.3, 67.5 -->
+  <circle cx="80.3" cy="67.5" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M78.5,70.7 Q76.8,69.0 78.1,67.3" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=9  45deg  74.7, 74.7 -->
+  <circle cx="74.7" cy="74.7" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M72.9,77.9 Q71.2,76.2 72.5,74.5" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=10 60deg  67.5, 80.3 -->
+  <circle cx="67.5" cy="80.3" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M65.7,83.5 Q64.0,81.8 65.3,80.1" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=11 75deg  59.1, 83.8 -->
+  <circle cx="59.1" cy="83.8" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M57.3,87.0 Q55.6,85.3 56.9,83.6" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=12 90deg  50.0, 85.0 -->
+  <circle cx="50.0" cy="85.0" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M48.2,88.2 Q46.5,86.5 47.8,84.8" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=13 105deg 40.9, 83.8 -->
+  <circle cx="40.9" cy="83.8" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M39.1,87.0 Q37.4,85.3 38.7,83.6" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=14 120deg 32.5, 80.3 -->
+  <circle cx="32.5" cy="80.3" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M30.7,83.5 Q29.0,81.8 30.3,80.1" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=15 135deg 25.3, 74.7 -->
+  <circle cx="25.3" cy="74.7" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M23.5,77.9 Q21.8,76.2 23.1,74.5" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=16 150deg 19.7, 67.5 -->
+  <circle cx="19.7" cy="67.5" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M17.9,70.7 Q16.2,69.0 17.5,67.3" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=17 165deg 16.2, 59.1 -->
+  <circle cx="16.2" cy="59.1" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M14.4,62.3 Q12.7,60.6 14.0,58.9" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=18 180deg 15.0, 50.0 -->
+  <circle cx="15.0" cy="50.0" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M13.2,53.2 Q11.5,51.5 12.8,49.8" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=19 195deg 16.2, 40.9 -->
+  <circle cx="16.2" cy="40.9" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M14.4,44.1 Q12.7,42.4 14.0,40.7" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=20 210deg 19.7, 32.5 -->
+  <circle cx="19.7" cy="32.5" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M17.9,35.7 Q16.2,34.0 17.5,32.3" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Connector ornament at ~225deg (upper-left), replacing beads 21-23 -->
+  <!-- Connector bridge (small elongated bead) -->
+  <ellipse cx="25.5" cy="25.5" rx="4" ry="6.5" fill="white" stroke="black" stroke-width="3.2" transform="rotate(-45,25.5,25.5)"/>
+  <!-- Stem going outward -->
+  <line x1="22.0" y1="22.0" x2="13.5" y2="13.5" stroke="black" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Fork prongs at tip -->
+  <line x1="13.5" y1="13.5" x2="9.5" y2="7.0"  stroke="black" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="13.5" y1="13.5" x2="7.0" y2="9.5"  stroke="black" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="13.5" y1="13.5" x2="10.5" y2="10.5" stroke="black" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- Small cap circle at stem base -->
+  <circle cx="25.5" cy="25.5" r="3.5" fill="black"/>
+
+  <!-- i=22 240deg 32.5, 19.7 -->
+  <circle cx="32.5" cy="19.7" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M30.7,22.9 Q29.0,21.2 30.3,19.5" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <!-- i=23 255deg 40.9, 16.2 -->
+  <circle cx="40.9" cy="16.2" r="6.5" fill="white" stroke="black" stroke-width="3.2"/>
+  <path d="M39.1,19.4 Q37.4,17.7 38.7,16.0" stroke="black" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,256 +1,683 @@
 @font-face {
-    font-family: "LPMQ";
-    src: url("./assets/fonts/LPMQ.ttf") format("truetype");
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
+	font-family: "LPMQ";
+	src: url("./assets/fonts/LPMQ.ttf") format("truetype");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
 }
 
 :root {
-    color-scheme: dark;
-    --bg: #080b0a;
-    --surface: #171a19;
-    --surface-hover: #202523;
-    --text: #f1f4f3;
-    --muted: #929d99;
-    --accent: #28c3a3;
-    --line: rgba(255, 255, 255, 0.08);
-    font-family: "Avenir Next", "Segoe UI", sans-serif;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
+	color-scheme: dark;
+	--bg: #080b0a;
+	--surface: #171a19;
+	--surface-hover: #202523;
+	--text: #f1f4f3;
+	--muted: #929d99;
+	--accent: #28c3a3;
+	--line: rgba(255, 255, 255, 0.08);
+	font-family: "Avenir Next", "Segoe UI", sans-serif;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
 }
 
-* { box-sizing: border-box; }
+* {
+	box-sizing: border-box;
+}
 
 body {
-    min-width: 320px;
-    margin: 0;
-    color: var(--text);
-    background: var(--bg);
+	min-width: 320px;
+	margin: 0;
+	color: var(--text);
+	background: var(--bg);
 }
 
-button, input { font: inherit; }
-a { color: inherit; }
+button,
+input {
+	font: inherit;
+}
+a {
+	color: inherit;
+}
 
-.site-shell { min-height: 100vh; }
+.site-shell {
+	min-height: 100vh;
+}
 
 .site-header {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: min(100% - 2rem, 1120px);
-    min-height: 62px;
-    margin: 14px auto 0;
-    padding: 0.55rem 1.15rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    background: #101716;
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: min(100% - 2rem, 1120px);
+	min-height: 62px;
+	margin: 14px auto 0;
+	padding: 0.55rem 1.15rem;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 999px;
+	background: #101716;
 }
 
 .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: #fff;
-    text-decoration: none;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	color: #fff;
+	text-decoration: none;
 }
 
 .brand-mark {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    place-items: center;
-    border: 1px solid rgba(40, 195, 163, 0.45);
-    border-radius: 50%;
-    color: #9cebd8;
-    font-family: "LPMQ", serif;
-    font-size: 1.2rem;
+	display: grid;
+	width: 34px;
+	height: 34px;
+	place-items: center;
+	border: 1px solid rgba(40, 195, 163, 0.45);
+	border-radius: 50%;
+	color: #9cebd8;
+	font-family: "LPMQ", serif;
+	font-size: 1.2rem;
 }
 
-.brand strong, .brand small { display: block; }
-.brand strong { font-size: 0.8rem; }
-.brand small { margin-top: 0.08rem; color: #99aaa5; font-size: 0.62rem; }
-
-.site-nav { display: flex; align-items: center; gap: 1.5rem; }
-.site-nav a, .header-action {
-    color: #d8e0dd;
-    font-size: 0.7rem;
-    text-decoration: none;
+.brand strong,
+.brand small {
+	display: block;
 }
-.site-nav a:hover { color: var(--accent); }
+.brand strong {
+	font-size: 0.8rem;
+}
+.brand small {
+	margin-top: 0.08rem;
+	color: #99aaa5;
+	font-size: 0.62rem;
+}
+
+.site-nav {
+	display: flex;
+	align-items: center;
+	gap: 1.5rem;
+}
+.site-nav a,
 .header-action {
-    padding: 0.48rem 0.85rem;
-    border: 1px solid rgba(40, 195, 163, 0.45);
-    border-radius: 999px;
-    color: #b4f4e5;
+	color: #d8e0dd;
+	font-size: 0.7rem;
+	text-decoration: none;
+}
+.site-nav a:hover {
+	color: var(--accent);
+}
+.header-action {
+	padding: 0.48rem 0.85rem;
+	border: 1px solid rgba(40, 195, 163, 0.45);
+	border-radius: 999px;
+	color: #b4f4e5;
 }
 
-.app-main { min-height: calc(100vh - 130px); }
-.loading-state, .error-state { padding: 5rem 1rem; color: var(--muted); text-align: center; }
-.error-state strong { display: block; margin-bottom: 0.4rem; color: #fff; }
+.app-main {
+	min-height: calc(100vh - 130px);
+}
+.loading-state,
+.error-state {
+	padding: 5rem 1rem;
+	color: var(--muted);
+	text-align: center;
+}
+.error-state strong {
+	display: block;
+	margin-bottom: 0.4rem;
+	color: #fff;
+}
 
 .quran-hero {
-    margin-top: 14px;
-    background-color: #00685f;
-    background-image: repeating-linear-gradient(45deg, transparent 0 18px, rgba(255,255,255,.025) 18px 19px),
-        repeating-linear-gradient(-45deg, transparent 0 18px, rgba(0,0,0,.035) 18px 19px);
+	margin-top: 14px;
+	background-color: #00685f;
+	background-image:
+		repeating-linear-gradient(
+			45deg,
+			transparent 0 18px,
+			rgba(255, 255, 255, 0.025) 18px 19px
+		),
+		repeating-linear-gradient(
+			-45deg,
+			transparent 0 18px,
+			rgba(0, 0, 0, 0.035) 18px 19px
+		);
 }
 
 .quran-hero-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
-    align-items: end;
-    gap: 2rem;
-    width: min(100% - 2rem, 1120px);
-    min-height: 210px;
-    margin-inline: auto;
-    padding-block: 2.2rem;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(300px, 0.8fr);
+	align-items: end;
+	gap: 2rem;
+	width: min(100% - 2rem, 1120px);
+	min-height: 210px;
+	margin-inline: auto;
+	padding-block: 2.2rem;
 }
 
-.identity { display: flex; align-items: center; gap: 1rem; }
+.identity {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
 .identity-mark {
-    display: grid;
-    flex: 0 0 58px;
-    width: 58px;
-    height: 58px;
-    place-items: center;
-    border: 1px solid rgba(255,255,255,.36);
-    border-radius: 50%;
-    color: #d1fff3;
-    font-family: "LPMQ", serif;
-    font-size: 1.75rem;
+	display: grid;
+	flex: 0 0 58px;
+	width: 58px;
+	height: 58px;
+	place-items: center;
+	border: 1px solid rgba(255, 255, 255, 0.36);
+	border-radius: 50%;
+	color: #d1fff3;
+	font-family: "LPMQ", serif;
+	font-size: 1.75rem;
 }
-.eyebrow { margin: 0 0 0.2rem; color: rgba(255,255,255,.7); font-size: .68rem; font-weight: 700; text-transform: uppercase; }
-.page-title { margin: 0; color: #fff; font-size: 1.7rem; font-weight: 800; line-height: 1.2; }
-.page-subtitle { margin: .35rem 0 0; color: rgba(255,255,255,.75); font-size: .78rem; }
+.eyebrow {
+	margin: 0 0 0.2rem;
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+.page-title {
+	margin: 0;
+	color: #fff;
+	font-size: 1.7rem;
+	font-weight: 800;
+	line-height: 1.2;
+}
+.page-subtitle {
+	margin: 0.35rem 0 0;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.78rem;
+}
 
-.search-wrap { min-width: 0; }
+.search-wrap {
+	min-width: 0;
+}
 .search-box {
-    display: flex;
-    align-items: center;
-    gap: .65rem;
-    min-height: 44px;
-    padding: 0 1rem;
-    border: 1px solid rgba(255,255,255,.08);
-    border-radius: 999px;
-    background: #151918;
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	min-height: 44px;
+	padding: 0 1rem;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 999px;
+	background: #151918;
 }
-.search-glyph { position: relative; width: 14px; height: 14px; flex: 0 0 14px; border: 1.5px solid #bfccc7; border-radius: 50%; }
-.search-glyph::after { position: absolute; right: -5px; bottom: -3px; width: 6px; height: 1.5px; background: #bfccc7; content: ""; transform: rotate(48deg); }
-.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #fff; font-size: .76rem; }
-.search-box input::placeholder { color: #abb5b1; opacity: 1; }
-.search-hint { margin: .45rem 0 0 1rem; color: rgba(255,255,255,.64); font-size: .66rem; }
+.search-glyph {
+	position: relative;
+	width: 14px;
+	height: 14px;
+	flex: 0 0 14px;
+	border: 1.5px solid #bfccc7;
+	border-radius: 50%;
+}
+.search-glyph::after {
+	position: absolute;
+	right: -5px;
+	bottom: -3px;
+	width: 6px;
+	height: 1.5px;
+	background: #bfccc7;
+	content: "";
+	transform: rotate(48deg);
+}
+.search-box input {
+	width: 100%;
+	min-width: 0;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: #fff;
+	font-size: 0.76rem;
+}
+.search-box input::placeholder {
+	color: #abb5b1;
+	opacity: 1;
+}
+.search-hint {
+	margin: 0.45rem 0 0 1rem;
+	color: rgba(255, 255, 255, 0.64);
+	font-size: 0.66rem;
+}
 
-.browser { width: min(100% - 2rem, 1120px); margin: 0 auto; padding: 1.1rem 0 3.5rem; }
-.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
-.tabs { display: inline-flex; max-width: 100%; padding: 3px; border-radius: 999px; background: #242726; }
+.browser {
+	width: min(100% - 2rem, 1120px);
+	margin: 0 auto;
+	padding: 1.1rem 0 3.5rem;
+}
+.toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1rem;
+}
+.tabs {
+	display: inline-flex;
+	max-width: 100%;
+	padding: 3px;
+	border-radius: 999px;
+	background: #242726;
+}
 .tab {
-    min-height: 32px;
-    padding: .35rem .85rem;
-    border: 0;
-    border-radius: 999px;
-    background: transparent;
-    color: #bdc5c2;
-    font-size: .7rem;
-    white-space: nowrap;
-    cursor: pointer;
+	min-height: 32px;
+	padding: 0.35rem 0.85rem;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #bdc5c2;
+	font-size: 0.7rem;
+	white-space: nowrap;
+	cursor: pointer;
 }
-.tab:hover { color: #fff; }
-.tab[aria-selected="true"] { background: #454948; color: #fff; }
-.sort-button { min-height: 34px; padding: .35rem .55rem; border: 0; background: transparent; color: #e6eae8; font-size: .7rem; cursor: pointer; }
-.sort-button:disabled { opacity: .45; cursor: default; }
-.results-meta { min-height: 1.4rem; margin: 0 0 .55rem; color: var(--muted); font-size: .68rem; }
+.tab:hover {
+	color: #fff;
+}
+.tab[aria-selected="true"] {
+	background: #454948;
+	color: #fff;
+}
+.sort-button {
+	min-height: 34px;
+	padding: 0.35rem 0.55rem;
+	border: 0;
+	background: transparent;
+	color: #e6eae8;
+	font-size: 0.7rem;
+	cursor: pointer;
+}
+.sort-button:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+.results-meta {
+	min-height: 1.4rem;
+	margin: 0 0 0.55rem;
+	color: var(--muted);
+	font-size: 0.68rem;
+}
 
-.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; }
-.card-grid[hidden], .empty-state[hidden], .verse-section[hidden] { display: none !important; }
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.55rem;
+}
+.card-grid[hidden],
+.empty-state[hidden],
+.verse-section[hidden] {
+	display: none !important;
+}
 .surah-card {
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: .65rem;
-    min-width: 0;
-    min-height: 54px;
-    padding: .55rem .65rem;
-    border: 1px solid rgba(255,255,255,.035);
-    border-radius: 8px;
-    background: var(--surface);
-    color: var(--text);
-    text-decoration: none;
-    transition: background-color 150ms ease, border-color 150ms ease;
+	display: grid;
+	grid-template-columns: 30px minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 0.65rem;
+	min-width: 0;
+	min-height: 54px;
+	padding: 0.55rem 0.65rem;
+	border: 1px solid rgba(255, 255, 255, 0.035);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--text);
+	text-decoration: none;
+	transition:
+		background-color 150ms ease,
+		border-color 150ms ease;
 }
-.surah-card[hidden] { display: none !important; }
-.surah-card:hover, .surah-card:focus-visible { border-color: rgba(40,195,163,.55); background: var(--surface-hover); color: #fff; }
-.card-number { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 6px; background: #282c2a; color: #e3e8e5; font-size: .68rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.card-copy { display: block; min-width: 0; overflow: hidden; }
-.card-title, .card-subtitle { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.card-title { color: inherit; font-size: .73rem; font-weight: 700; line-height: 1.3; }
-.card-subtitle { margin-top: .12rem; color: var(--muted); font-size: .58rem; line-height: 1.25; }
-.card-arabic { color: var(--accent); direction: rtl; font-family: "LPMQ", serif; font-size: 1.2rem; line-height: 1.2; white-space: nowrap; }
-.empty-state { padding: 3.5rem 1rem; color: var(--muted); text-align: center; }
+.surah-card[hidden] {
+	display: none !important;
+}
+.surah-card:hover,
+.surah-card:focus-visible {
+	border-color: rgba(40, 195, 163, 0.55);
+	background: var(--surface-hover);
+	color: #fff;
+}
+.card-number {
+	display: grid;
+	width: 30px;
+	height: 30px;
+	place-items: center;
+	border-radius: 6px;
+	background: #282c2a;
+	color: #e3e8e5;
+	font-size: 0.68rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+.card-copy {
+	display: block;
+	min-width: 0;
+	overflow: hidden;
+}
+.card-title,
+.card-subtitle {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.card-title {
+	color: inherit;
+	font-size: 0.73rem;
+	font-weight: 700;
+	line-height: 1.3;
+}
+.card-subtitle {
+	margin-top: 0.12rem;
+	color: var(--muted);
+	font-size: 0.58rem;
+	line-height: 1.25;
+}
+.card-arabic {
+	color: var(--accent);
+	direction: rtl;
+	font-family: "LPMQ", serif;
+	font-size: 1.2rem;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+.empty-state {
+	padding: 3.5rem 1rem;
+	color: var(--muted);
+	text-align: center;
+}
 
-.reader { width: min(100% - 2rem, 860px); margin: 0 auto; padding: 1.25rem 0 3rem; }
-.back-link { display: inline-flex; align-items: center; gap: .4rem; margin-bottom: 1rem; color: #c8d2ce; font-size: .75rem; text-decoration: none; }
-.back-link:hover { color: var(--accent); }
-.reader-heading { padding: 1.25rem 1.4rem; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(135deg, #064b43, #093b35); }
-.reader-heading-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.reader-title { margin: 0; color: #fff; font-size: 1.35rem; font-weight: 800; }
-.reader-arabic-title { display: block; margin-top: .2rem; color: #c7fff2; font-family: "LPMQ", serif; font-size: 1.45rem; line-height: 1.8; }
-.reader-subtitle { margin: .2rem 0 0; color: rgba(255,255,255,.72); font-size: .72rem; }
-.copy-button { display: inline-flex; align-items: center; gap: .35rem; min-height: 34px; padding: .4rem .7rem; border: 1px solid rgba(255,255,255,.17); border-radius: 6px; background: rgba(0,0,0,.14); color: #edf8f5; font-size: .68rem; cursor: pointer; }
-.copy-button:hover { border-color: var(--accent); color: var(--accent); }
-.copy-status { min-height: 1.2rem; margin: .45rem 0 0; color: #b1f5e4; font-size: .68rem; }
-.reader-nav { display: flex; justify-content: space-between; gap: .75rem; margin: .9rem 0; }
-.reader-nav a { padding: .45rem .7rem; border: 1px solid var(--line); border-radius: 6px; color: #dfe7e3; font-size: .7rem; text-decoration: none; }
-.reader-nav a:hover { border-color: var(--accent); color: var(--accent); }
-.verse-divider { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.4rem 0 .6rem; padding: .65rem .8rem; border-left: 3px solid var(--accent); border-radius: 4px; background: #151918; }
-.verse-divider h2 { margin: 0; color: #eaf3f0; font-size: .8rem; }
-.verse-divider a { color: var(--accent); font-size: .68rem; text-decoration: none; }
-.verse-card { margin-top: .55rem; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); scroll-margin-top: 1.25rem; }
-.verse-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
-.verse-number { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: #292f2c; color: #cfe1da; font-size: .68rem; font-variant-numeric: tabular-nums; }
-.verse-arabic { margin: 0; color: #f2f5f4; direction: rtl; font-family: "LPMQ", serif; font-size: 1.8rem; line-height: 2.15; text-align: right; }
-.verse-translation { margin: .75rem 0 0; padding-top: .7rem; border-top: 1px solid var(--line); color: #c2ccc8; font-size: .84rem; line-height: 1.8; }
-.site-footer { display: flex; justify-content: space-between; gap: 1rem; width: min(100% - 2rem, 1120px); margin: 0 auto; padding: 1rem 0 1.3rem; border-top: 1px solid var(--line); color: #77827e; font-size: .65rem; }
+.reader {
+	width: min(100% - 2rem, 860px);
+	margin: 0 auto;
+	padding: 1.25rem 0 3rem;
+}
+.back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	margin-bottom: 1rem;
+	color: #c8d2ce;
+	font-size: 0.75rem;
+	text-decoration: none;
+}
+.back-link:hover {
+	color: var(--accent);
+}
+.reader-heading {
+	padding: 1.25rem 1.4rem;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	background: linear-gradient(135deg, #064b43, #093b35);
+}
+.reader-heading-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+.reader-title {
+	margin: 0;
+	color: #fff;
+	font-size: 1.35rem;
+	font-weight: 800;
+}
+.reader-arabic-title {
+	display: block;
+	margin-top: 0.2rem;
+	color: #c7fff2;
+	font-family: "LPMQ", serif;
+	font-size: 1.45rem;
+	line-height: 1.8;
+}
+.reader-subtitle {
+	margin: 0.2rem 0 0;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.72rem;
+}
+.copy-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	min-height: 34px;
+	padding: 0.4rem 0.7rem;
+	border: 1px solid rgba(255, 255, 255, 0.17);
+	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.14);
+	color: #edf8f5;
+	font-size: 0.68rem;
+	cursor: pointer;
+}
+.copy-button:hover {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+.copy-status {
+	min-height: 1.2rem;
+	margin: 0.45rem 0 0;
+	color: #b1f5e4;
+	font-size: 0.68rem;
+}
+.reader-nav {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin: 0.9rem 0;
+}
+.reader-nav a {
+	padding: 0.45rem 0.7rem;
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	color: #dfe7e3;
+	font-size: 0.7rem;
+	text-decoration: none;
+}
+.reader-nav a:hover {
+	border-color: var(--accent);
+	color: var(--accent);
+}
+.verse-divider {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	margin: 1.4rem 0 0.6rem;
+	padding: 0.65rem 0.8rem;
+	border-left: 3px solid var(--accent);
+	border-radius: 4px;
+	background: #151918;
+}
+.verse-divider h2 {
+	margin: 0;
+	color: #eaf3f0;
+	font-size: 0.8rem;
+}
+.verse-divider a {
+	color: var(--accent);
+	font-size: 0.68rem;
+	text-decoration: none;
+}
+.verse-card {
+	margin-top: 0.55rem;
+	padding: 1rem 1.2rem;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	scroll-margin-top: 1.25rem;
+}
+.verse-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 0.75rem;
+}
+.verse-number {
+	display: grid;
+	width: 28px;
+	height: 28px;
+	place-items: center;
+	border-radius: 50%;
+	background: #292f2c;
+	color: #cfe1da;
+	font-size: 0.68rem;
+	font-variant-numeric: tabular-nums;
+}
+.verse-arabic {
+	margin: 0;
+	color: #f2f5f4;
+	direction: rtl;
+	font-family: "LPMQ", serif;
+	font-size: 1.8rem;
+	line-height: 2.15;
+	text-align: right;
+}
+.verse-translation {
+	margin: 0.75rem 0 0;
+	padding-top: 0.7rem;
+	border-top: 1px solid var(--line);
+	color: #c2ccc8;
+	font-size: 0.84rem;
+	line-height: 1.8;
+}
+.site-footer {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	width: min(100% - 2rem, 1120px);
+	margin: 0 auto;
+	padding: 1rem 0 1.3rem;
+	border-top: 1px solid var(--line);
+	color: #77827e;
+	font-size: 0.65rem;
+}
 
 @media (max-width: 991px) {
-    .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .quran-hero-inner { grid-template-columns: minmax(0, 1fr) minmax(250px, .9fr); gap: 1.2rem; }
+	.card-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.quran-hero-inner {
+		grid-template-columns: minmax(0, 1fr) minmax(250px, 0.9fr);
+		gap: 1.2rem;
+	}
 }
 
 @media (max-width: 575px) {
-    .site-header { width: calc(100% - 1rem); min-height: 54px; margin-top: .5rem; padding-inline: .75rem; }
-    .site-nav { gap: .7rem; }
-    .site-nav a { font-size: .63rem; }
-    .header-action { padding: .42rem .6rem; font-size: .63rem; }
-    .quran-hero { margin-top: .5rem; }
-    .quran-hero-inner { grid-template-columns: 1fr; gap: 1.2rem; width: calc(100% - 1.5rem); min-height: auto; padding-block: 1.35rem; }
-    .page-title { font-size: 1.45rem; }
-    .identity-mark { flex-basis: 48px; width: 48px; height: 48px; }
-    .search-hint { margin-left: .7rem; font-size: .62rem; }
-    .browser { width: calc(100% - 1.5rem); padding-top: .8rem; }
-    .toolbar { gap: .35rem; }
-    .tabs { max-width: calc(100% - 48px); overflow-x: auto; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab { padding-inline: .65rem; font-size: .65rem; }
-    .card-grid { grid-template-columns: minmax(0, 1fr); gap: .45rem; }
-    .surah-card { min-height: 55px; padding-inline: .7rem; }
-    .card-title { font-size: .77rem; }
-    .card-subtitle { font-size: .61rem; }
-    .card-arabic { font-size: 1.3rem; }
-    .reader { width: calc(100% - 1.5rem); padding-top: .8rem; }
-    .reader-heading { padding: 1rem; }
-    .reader-heading-row { align-items: flex-start; }
-    .reader-title { font-size: 1.2rem; }
-    .reader-arabic-title { font-size: 1.3rem; }
-    .copy-button[data-copy-all] { width: 36px; padding: 0; overflow: hidden; font-size: 0; }
-    .verse-card { padding: .85rem; }
-    .verse-arabic { font-size: 1.5rem; line-height: 2; }
-    .verse-translation { font-size: .8rem; }
-    .site-footer { flex-direction: column; gap: .35rem; width: calc(100% - 1.5rem); }
+	.site-header {
+		width: calc(100% - 1rem);
+		min-height: 54px;
+		margin-top: 0.5rem;
+		padding-inline: 0.75rem;
+	}
+	.site-nav {
+		gap: 0.7rem;
+	}
+	.site-nav a {
+		font-size: 0.63rem;
+	}
+	.header-action {
+		padding: 0.42rem 0.6rem;
+		font-size: 0.63rem;
+	}
+	.quran-hero {
+		margin-top: 0.5rem;
+	}
+	.quran-hero-inner {
+		grid-template-columns: 1fr;
+		gap: 1.2rem;
+		width: calc(100% - 1.5rem);
+		min-height: auto;
+		padding-block: 1.35rem;
+	}
+	.page-title {
+		font-size: 1.45rem;
+	}
+	.identity-mark {
+		flex-basis: 48px;
+		width: 48px;
+		height: 48px;
+	}
+	.search-hint {
+		margin-left: 0.7rem;
+		font-size: 0.62rem;
+	}
+	.browser {
+		width: calc(100% - 1.5rem);
+		padding-top: 0.8rem;
+	}
+	.toolbar {
+		gap: 0.35rem;
+	}
+	.tabs {
+		max-width: calc(100% - 48px);
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+	.tabs::-webkit-scrollbar {
+		display: none;
+	}
+	.tab {
+		padding-inline: 0.65rem;
+		font-size: 0.65rem;
+	}
+	.card-grid {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.45rem;
+	}
+	.surah-card {
+		min-height: 55px;
+		padding-inline: 0.7rem;
+	}
+	.card-title {
+		font-size: 0.77rem;
+	}
+	.card-subtitle {
+		font-size: 0.61rem;
+	}
+	.card-arabic {
+		font-size: 1.3rem;
+	}
+	.reader {
+		width: calc(100% - 1.5rem);
+		padding-top: 0.8rem;
+	}
+	.reader-heading {
+		padding: 1rem;
+	}
+	.reader-heading-row {
+		align-items: flex-start;
+	}
+	.reader-title {
+		font-size: 1.2rem;
+	}
+	.reader-arabic-title {
+		font-size: 1.3rem;
+	}
+	.copy-button[data-copy-all] {
+		width: 36px;
+		padding: 0;
+		overflow: hidden;
+		font-size: 0;
+	}
+	.verse-card {
+		padding: 0.85rem;
+	}
+	.verse-arabic {
+		font-size: 1.5rem;
+		line-height: 2;
+	}
+	.verse-translation {
+		font-size: 0.8rem;
+	}
+	.site-footer {
+		flex-direction: column;
+		gap: 0.35rem;
+		width: calc(100% - 1.5rem);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
 }

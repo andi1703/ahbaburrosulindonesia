@@ -101,13 +101,13 @@ $manaqib_list = $manaqib_list ?? [];
 
     .mq-card {
         display: grid;
-        grid-template-columns: 30px minmax(0,1fr) auto;
+        grid-template-columns: 48px minmax(0,1fr) auto;
         align-items: center;
-        gap: .65rem;
-        min-height: 68px;
-        padding: .7rem .75rem;
-        border: 1px solid rgba(255,255,255,.035);
-        border-radius: 8px;
+        gap: .9rem;
+        min-height: 74px;
+        padding: .8rem .9rem;
+        border: 1px solid rgba(255,255,255,.055);
+        border-radius: 10px;
         background: var(--mq-surface);
         color: var(--mq-text);
         text-decoration: none;
@@ -117,30 +117,32 @@ $manaqib_list = $manaqib_list ?? [];
     .mq-card[hidden] { display: none !important; }
 
     .mq-card:hover, .mq-card:focus-visible {
-        border-color: rgba(232,184,75,.5);
+        border-color: rgba(232,184,75,.55);
         background: var(--mq-surface-hover);
         color: #fff;
     }
 
     .mq-number {
-        display: grid; width: 30px; height: 30px;
-        place-items: center; border-radius: 6px;
-        background: #282c2a; color: #e3e8e5;
-        font-size: .68rem; font-weight: 700;
+        display: grid; width: 44px; height: 44px;
+        flex-shrink: 0; place-items: center;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background: #2c3230; color: var(--mq-accent);
+        font-size: .76rem; font-weight: 800;
+        font-variant-numeric: tabular-nums;
     }
 
     .mq-card-copy { display: block; min-width: 0; overflow: hidden; }
 
     .mq-card-title {
         display: block; overflow: hidden; color: inherit;
-        font-size: .73rem; font-weight: 700; line-height: 1.3;
+        font-size: .92rem; font-weight: 700; line-height: 1.3;
         text-overflow: ellipsis; white-space: nowrap;
     }
 
     .mq-card-subtitle {
-        display: block; overflow: hidden; margin-top: .12rem;
-        color: var(--mq-muted); font-size: .58rem;
-        line-height: 1.4; text-overflow: ellipsis; white-space: nowrap;
+        display: block; overflow: hidden; margin-top: .22rem;
+        color: var(--mq-muted); font-size: .72rem;
+        line-height: 1.25; text-overflow: ellipsis; white-space: nowrap;
     }
 
     .mq-card-icon { color: var(--mq-accent); font-size: 1.1rem; flex-shrink: 0; }

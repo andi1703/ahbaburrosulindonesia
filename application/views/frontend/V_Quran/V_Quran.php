@@ -70,7 +70,7 @@ function qr_arabic_num(int $n): string
   .qr-subnav {
     position: fixed;
     top: var(--an-hdr-h, 62px);
-        transition: top .32s ease;
+    transition: top .32s ease;
     left: 0;
     right: 0;
     z-index: 120;
@@ -217,9 +217,13 @@ function qr_arabic_num(int $n): string
 
   /* ── Surah header ── */
   .qr-hdr {
-    padding: 2.25rem 0 1.65rem;
+    padding: 1rem 0 1rem;
     text-align: center;
     border-bottom: 1px solid var(--qr-border);
+  }
+
+  .qr-hdr--juz {
+    padding-top: .6rem;
   }
 
   .qr-hdr-meta {
@@ -231,7 +235,7 @@ function qr_arabic_num(int $n): string
     background: rgba(255, 255, 255, .05);
     color: var(--qr-muted);
     font-size: .68rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: .7rem;
   }
 
   .qr-hdr-meta span+span::before {
@@ -242,19 +246,30 @@ function qr_arabic_num(int $n): string
   .qr-hdr-ar {
     display: block;
     font-family: "LPMQ", "Amiri", serif;
-    font-size: clamp(2.2rem, 5.5vw, 3.5rem);
-    line-height: 1.75;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    line-height: 1.5;
     color: #fff;
-    margin-bottom: .35rem;
+    margin-bottom: .2rem;
     direction: rtl;
   }
 
   .qr-hdr-ar--qbsml {
     font-family: "QCF4-QBSML", serif;
-    font-size: clamp(3rem, 8vw, 5rem);
-    line-height: 1.6;
+    font-size: clamp(3rem, 8vw, 4.2rem);
+    line-height: 1.4;
     max-width: 100%;
     overflow: hidden;
+  }
+
+  @media (max-width: 480px) {
+    .qr-hdr-ar--qbsml {
+      font-size: 3rem !important;
+      font-weight: 500;
+    }
+
+    .qr-hdr-ar {
+      font-size: 1.9rem;
+    }
   }
 
   .qr-hdr-name {
@@ -271,57 +286,157 @@ function qr_arabic_num(int $n): string
   }
 
   /* ── Bismillah ── */
+  @import url('https://fonts.googleapis.com/css2?family=Amiri&display=swap');
+
   .qr-bismillah {
-    padding: 1.35rem 0 .9rem;
+    padding: 1.25rem 1rem .85rem;
     text-align: center;
-    font-family: "LPMQ", "Amiri", serif;
-    font-size: clamp(1.5rem, 4vw, 2.1rem);
-    line-height: 2;
+    font-family: "Amiri", "LPMQ", serif;
+    font-size: clamp(2.0rem, 5vw, 2.4rem);
+    line-height: 1.8;
     color: #fff;
     direction: rtl;
     border-bottom: 1px solid var(--qr-border);
+    font-feature-settings: "liga" 1, "calt" 1;
+    letter-spacing: 0;
+    overflow: hidden;
   }
 
-  /* ── Surah divider (juz) ── */
+  :root[data-theme="light"] .qr-bismillah {
+    color: #1a0e00;
+  }
+
+  /* ── Surah divider (juz) — ornamental frame ── */
   .qr-divider {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.25rem 0 .75rem;
-    border-bottom: 1px solid var(--qr-border);
+    margin: 2.25rem 0 1.75rem;
+    position: relative;
   }
 
-  .qr-divider-info {
+  /* Repeating diamond border row */
+  .qr-divider-ornament {
+    height: 9px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpolygon points='7,0 13,4.5 7,9 1,4.5' fill='%23e8b84b' opacity='.6'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-size: 14px 9px;
+  }
+
+  /* Main ornamental frame */
+  .qr-divider-frame {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    border: 2px solid var(--qr-accent);
+    background: var(--qr-surf);
+    padding: .85rem 1rem;
+  }
+
+  /* Inner double-border via pseudo-element */
+  .qr-divider-frame::after {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(232, 184, 75, .28);
+    pointer-events: none;
+  }
+
+  /* Corner diamond ornaments */
+  .qr-dc {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: var(--qr-accent);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    z-index: 1;
+  }
+
+  .qr-dc--tl {
+    top: -7px;
+    left: -7px;
+  }
+
+  .qr-dc--tr {
+    top: -7px;
+    right: -7px;
+  }
+
+  .qr-dc--bl {
+    bottom: -7px;
+    left: -7px;
+  }
+
+  .qr-dc--br {
+    bottom: -7px;
+    right: -7px;
+  }
+
+  /* Left panel: latin surah name + link */
+  .qr-divider-panel {
     display: flex;
     flex-direction: column;
-    gap: .15rem;
+    gap: .25rem;
+    padding-right: 1rem;
+    border-right: 1px solid rgba(232, 184, 75, .22);
+  }
+
+  /* Right panel: surah number */
+  .qr-divider-panel--r {
+    padding-right: 0;
+    padding-left: 1rem;
+    border-right: none;
+    border-left: 1px solid rgba(232, 184, 75, .22);
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  /* Center body: big calligraphic Arabic name */
+  .qr-divider-body {
+    text-align: center;
+    padding: 0 1.25rem;
   }
 
   .qr-divider-ar {
     font-family: "QCF4-QBSML", serif;
-    font-size: 1.5rem;
-    color: #fff;
+    font-size: 2rem;
+    color: var(--qr-text);
     direction: rtl;
-    flex-shrink: 0;
-    line-height: 1.6;
+    line-height: 1.5;
+    display: block;
   }
 
   .qr-divider-name {
     display: block;
-    font-size: .85rem;
+    font-size: .92rem;
     font-weight: 700;
-    color: #dde8e3;
+    color: var(--qr-text);
   }
 
-  .qr-divider-link {
-    font-size: .7rem;
+  .qr-divider-meaning {
+    display: block;
+    font-size: .72rem;
     color: var(--qr-muted);
-    text-decoration: none;
+    font-style: italic;
   }
 
-  .qr-divider-link:hover {
-    color: var(--qr-accent);
+  /* Surah number — Arabic numeral, prominent */
+  .qr-divider-num {
+    display: block;
+    font-family: "LPMQ", "Amiri", serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--qr-text);
+    line-height: 1;
+    text-align: right;
+    direction: rtl;
+  }
+
+  .qr-divider-num-label {
+    display: block;
+    font-size: .6rem;
+    color: var(--qr-muted);
+    text-align: right;
+    letter-spacing: .04em;
+    margin-top: .15rem;
   }
 
   /* ── Verse ── */
@@ -517,19 +632,26 @@ function qr_arabic_num(int $n): string
 
   /* Ornate number badge — sits inline at start of RTL text (= right edge visually) */
   .qr-ornate {
-    display: inline-grid;
-    place-items: center;
-    width: 2em;
-    height: 2em;
-    border-radius: 50%;
-    border: 1.5px solid rgba(232, 184, 75, .55);
-    box-shadow: inset 0 0 0 3px rgba(11, 13, 13, .8), 0 0 0 1.5px rgba(232, 184, 75, .25);
-    color: var(--qr-gold);
-    font-family: inherit;
-    font-size: .45em;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.8rem;
+    height: 3.9rem;
+    background-image: url("<?= base_url('assets/frontend/icons/islamic/quran-verse-frame.svg'); ?>");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--qr-text);
+    font-family: "LPMQ", "Amiri", serif;
+    font-size: 1.1rem;
+    font-weight: 800;
     vertical-align: middle;
-    margin-inline-start: .25em;
+    margin-inline-start: .6rem;
+    line-height: 1;
+    padding-bottom: 1.0rem;
+    padding-right: .3rem;
   }
 
   /* Translation */
@@ -690,28 +812,56 @@ function qr_arabic_num(int $n): string
   /* ── Search panels ── */
   .qr-panel {
     position: fixed;
-    top: calc(var(--qr-nav) + var(--qr-sub) + 4px);
-    z-index: 250;
-    width: min(340px, 90vw);
-    max-height: min(520px, 70vh);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 400;
     display: flex;
     flex-direction: column;
+    max-height: 85vh;
     background: #1a1d1c;
-    border: 1px solid rgba(255, 255, 255, .1);
-    border-radius: 14px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, .75);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 40px rgba(0, 0, 0, .6);
+    transform: translateY(100%);
+    transition: transform .28s cubic-bezier(.32, .72, 0, 1);
     overflow: hidden;
   }
 
-  .qr-panel[hidden] {
-    display: none;
+  .qr-panel.is-open {
+    transform: translateY(0);
+  }
+
+  .qr-panel-handle {
+    display: flex;
+    justify-content: center;
+    padding: .7rem 0 .35rem;
+    flex-shrink: 0;
+    cursor: grab;
+  }
+
+  .qr-panel-handle span {
+    width: 38px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, .18);
+  }
+
+  .qr-panel-title {
+    margin: 0 0 .4rem;
+    padding: 0 1.2rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #5d6e69;
+    flex-shrink: 0;
   }
 
   .qr-panel-search {
     display: flex;
     align-items: center;
     gap: .55rem;
-    padding: .75rem 1rem;
+    padding: .5rem 1rem .75rem;
     border-bottom: 1px solid rgba(255, 255, 255, .07);
     flex-shrink: 0;
   }
@@ -743,6 +893,11 @@ function qr_arabic_num(int $n): string
     list-style: none;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, .12) transparent;
+  }
+
+  #qrJuzList {
+    max-height: 25rem;
+    overflow-y: auto;
   }
 
   .qr-panel-item a,
@@ -789,11 +944,78 @@ function qr_arabic_num(int $n): string
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 249;
+    z-index: 399;
+    background: rgba(0, 0, 0, .5);
   }
 
   .qr-panel-back.is-open {
     display: block;
+  }
+
+  /* Hide terjemahan when setting is off */
+  [data-qr-trans="0"] .qr-trans {
+    display: none;
+  }
+
+  /* ── Tajweed coloring (Quran.com v4 class names) ── */
+  .qr-arabic .ham_wasl {
+    color: #AAAAAA;
+  }
+
+  .qr-arabic .slnt {
+    color: #AAAAAA;
+  }
+
+  .qr-arabic .madda_normal {
+    color: #537FFF;
+  }
+
+  .qr-arabic .madda_permissible {
+    color: #4050FF;
+  }
+
+  .qr-arabic .madda_necessary {
+    color: #000EBC;
+  }
+
+  .qr-arabic .madda_obligatory {
+    color: #2144C1;
+  }
+
+  .qr-arabic .ikhafa_shafawi {
+    color: #D500B7;
+  }
+
+  .qr-arabic .ikhafa {
+    color: #FF7E1E;
+  }
+
+  .qr-arabic .iqlab {
+    color: #26BFFD;
+  }
+
+  .qr-arabic .idghaam_shafawi {
+    color: #58B800;
+  }
+
+  .qr-arabic .idghaam_wo_ghunnah {
+    color: #169200;
+  }
+
+  .qr-arabic .idghaam_with_ghunna {
+    color: #169200;
+  }
+
+  .qr-arabic .idghaam_ghunnah {
+    color: #169200;
+  }
+
+  .qr-arabic .ghunnah {
+    color: #FF4040;
+  }
+
+  .qr-arabic .qalaqah {
+    color: #26BFFD;
   }
 </style>
 
@@ -836,7 +1058,7 @@ function qr_arabic_num(int $n): string
           <i class="bx bx-chevron-down" style="font-size:.85rem;margin-left:.15rem;"></i>
         </button>
         <span class="qr-pill qr-surah-indicator" id="qrCurrentSurah"
-              aria-live="polite" aria-atomic="true"></span>
+          aria-live="polite" aria-atomic="true"></span>
       <?php endif; ?>
 
       <?php if ($reader_verse_count > 0 && $reader_type !== 'juz'): ?>
@@ -866,7 +1088,9 @@ function qr_arabic_num(int $n): string
 
 <!-- ── Surah search panel ── -->
 <?php $surah_list = $surah_list ?? []; ?>
-<div class="qr-panel" id="qrSurahPanel" hidden>
+<div class="qr-panel" id="qrSurahPanel" aria-hidden="true">
+  <div class="qr-panel-handle"><span></span></div>
+  <p class="qr-panel-title">Pilih Surah</p>
   <div class="qr-panel-search">
     <i class="bx bx-search"></i>
     <input type="text" id="qrSurahSearch" placeholder="Cari nama atau nomor surah" autocomplete="off">
@@ -888,11 +1112,16 @@ function qr_arabic_num(int $n): string
 
 <!-- ── Juz picker panel (juz reader only) ── -->
 <?php if ($reader_type === 'juz'): ?>
-  <div class="qr-panel" id="qrJuzPanel" hidden>
-    <ul class="qr-panel-list">
+  <div class="qr-panel" id="qrJuzPanel" aria-hidden="true">
+    <div class="qr-panel-handle"><span></span></div>
+    <div class="qr-panel-search">
+      <i class="bx bx-search"></i>
+      <input type="search" id="qrJuzSearch" placeholder="Cari nomor juz, mis. 5 atau 30" autocomplete="off">
+    </div>
+    <ul class="qr-panel-list" id="qrJuzList">
       <?php for ($j = 1; $j <= 30; $j++): ?>
         <li class="qr-panel-item<?= ((int)$reader_number === $j) ? ' is-active' : ''; ?>"
-          data-search="juz <?= $j; ?> <?= $j; ?>">
+          data-search="juz <?= $j; ?>">
           <a href="<?= base_url('index.php/quran/juz/' . $j); ?>">
             Juz <?= $j; ?>
             <?php if ((int)$reader_number === $j): ?><i class="bx bx-check"></i><?php endif; ?>
@@ -905,7 +1134,9 @@ function qr_arabic_num(int $n): string
 
 <!-- ── Ayat search panel ── -->
 <?php if ($reader_verse_count > 0 && $reader_type !== 'juz'): ?>
-  <div class="qr-panel" id="qrAyatPanel" hidden>
+  <div class="qr-panel" id="qrAyatPanel" aria-hidden="true">
+    <div class="qr-panel-handle"><span></span></div>
+    <p class="qr-panel-title">Pilih Ayat</p>
     <div class="qr-panel-search">
       <i class="bx bx-search"></i>
       <input type="text" id="qrAyatSearch" placeholder="Cari nomor ayat" autocomplete="off">
@@ -927,13 +1158,13 @@ function qr_arabic_num(int $n): string
   <div class="qr-body">
 
     <!-- Surah / Juz header -->
-    <header class="qr-hdr">
-      <div class="qr-hdr-meta">
-        <span><?= htmlspecialchars($reader_subtitle); ?></span>
-        <?php if ($reader_type === 'surah'): ?>
+    <header class="qr-hdr<?= $reader_type === 'juz' ? ' qr-hdr--juz' : ''; ?>">
+      <?php if ($reader_type === 'surah'): ?>
+        <div class="qr-hdr-meta">
+          <span><?= htmlspecialchars($reader_subtitle); ?></span>
           <span>Juz <?= (int) $reader_juz; ?></span>
-        <?php endif; ?>
-      </div>
+        </div>
+      <?php endif; ?>
       <?php if ($reader_type === 'surah'): ?>
         <span class="qr-hdr-ar qr-hdr-ar--qbsml" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$reader_number - 1, 'UTF-8'); ?></span>
       <?php else: ?>
@@ -947,9 +1178,7 @@ function qr_arabic_num(int $n): string
 
     <!-- Bismillah (surah, not Al-Fatihah, not At-Tawbah) -->
     <?php if ($reader_type === 'surah' && $reader_number !== 1 && $reader_number !== 9): ?>
-      <div class="qr-bismillah" lang="ar" aria-label="Bismillahirrahmanirrahim">
-        بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
-      </div>
+      <div class="qr-bismillah" lang="ar" aria-label="Bismillahirrahmanirrahim">﷽</div>
     <?php endif; ?>
 
     <!-- Status -->
@@ -962,15 +1191,29 @@ function qr_arabic_num(int $n): string
         <?php /* Surah divider for juz view */ ?>
         <?php if ($reader_type === 'juz' && $last_surah_number !== $verse['surah_number']): ?>
           <div class="qr-divider">
-            <div class="qr-divider-info">
-              <span class="qr-divider-name"><?= htmlspecialchars($verse['surah_name']); ?></span>
-              <a class="qr-divider-link"
-                href="<?= base_url('index.php/quran/surah/' . (int)$verse['surah_number']); ?>">
-                Buka surah <i class="bx bx-link-external" style="font-size:.7rem;"></i>
-              </a>
+            <div class="qr-divider-ornament" aria-hidden="true"></div>
+            <div class="qr-divider-frame">
+              <div class="qr-dc qr-dc--tl" aria-hidden="true"></div>
+              <div class="qr-dc qr-dc--tr" aria-hidden="true"></div>
+              <div class="qr-dc qr-dc--bl" aria-hidden="true"></div>
+              <div class="qr-dc qr-dc--br" aria-hidden="true"></div>
+              <div class="qr-divider-panel">
+                <span class="qr-divider-name"><?= htmlspecialchars($verse['surah_name']); ?></span>
+                <span class="qr-divider-meaning"><?= htmlspecialchars($verse['surah_meaning']); ?></span>
+              </div>
+              <div class="qr-divider-body">
+                <span class="qr-divider-ar" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$verse['surah_number'] - 1, 'UTF-8'); ?></span>
+              </div>
+              <div class="qr-divider-panel qr-divider-panel--r">
+                <span class="qr-divider-num" lang="ar" dir="rtl"><?= qr_arabic_num((int)$verse['surah_number']); ?></span>
+                <span class="qr-divider-num-label">Surah ke</span>
+              </div>
             </div>
-            <span class="qr-divider-ar" lang="ar" dir="rtl"><?= mb_chr(0xF100 + (int)$verse['surah_number'] - 1, 'UTF-8'); ?></span>
+            <div class="qr-divider-ornament" aria-hidden="true"></div>
           </div>
+          <?php if ((int)$verse['surah_number'] !== 1 && (int)$verse['surah_number'] !== 9): ?>
+            <div class="qr-bismillah" lang="ar" aria-label="Bismillahirrahmanirrahim">﷽</div>
+          <?php endif; ?>
           <?php $last_surah_number = $verse['surah_number']; ?>
         <?php endif; ?>
 

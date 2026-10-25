@@ -86,7 +86,7 @@ $khawajagan_list = $khawajagan_list ?? [];
         text-align: center;
         font-size: .75rem;
         font-weight: 600;
-        color: #c8d0cc;
+        color: #fff;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -149,6 +149,54 @@ $khawajagan_list = $khawajagan_list ?? [];
         margin-bottom: 1.1rem;
     }
 
+    /* ── Section frame ── */
+    .kh-section {
+        margin: 1.75rem 0 1.25rem;
+        position: relative;
+    }
+    .kh-section-ornament {
+        height: 8px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpolygon points='7,0 13,4 7,8 1,4' fill='%23e8b84b' opacity='.55'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-size: 14px 8px;
+    }
+    .kh-section-frame {
+        position: relative;
+        border: 2px solid var(--kh-accent);
+        background: var(--kh-surf);
+        padding: .9rem 2rem;
+        text-align: center;
+    }
+    .kh-section-frame::after {
+        content: '';
+        position: absolute;
+        inset: 5px;
+        border: 1px solid rgba(232,184,75,.25);
+        pointer-events: none;
+    }
+    .kh-sc {
+        position: absolute;
+        width: 12px; height: 12px;
+        background: var(--kh-accent);
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        z-index: 1;
+    }
+    .kh-sc--tl { top: -6px; left: -6px; }
+    .kh-sc--tr { top: -6px; right: -6px; }
+    .kh-sc--bl { bottom: -6px; left: -6px; }
+    .kh-sc--br { bottom: -6px; right: -6px; }
+    .kh-section-arab {
+        display: block;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        font-weight: 700;
+        line-height: 1.8;
+        color: #fff;
+        direction: rtl;
+        position: relative;
+        z-index: 1;
+    }
+
     /* ── Bacaan block ── */
     .kh-bacaan {
         padding: 1.5rem 0;
@@ -173,9 +221,9 @@ $khawajagan_list = $khawajagan_list ?? [];
 
     .kh-bacaan-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.45rem, 4vw, 2rem);
-        line-height: 2.2;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 2.1;
         color: #fff;
         direction: rtl;
         text-align: right;
@@ -231,7 +279,7 @@ $khawajagan_list = $khawajagan_list ?? [];
     }
 
     @media (max-width: 575.98px) {
-        .kh-bacaan-arab { font-size: 1.35rem; line-height: 2.1; }
+        .kh-bacaan-arab { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 2.1; }
         .kh-hdr { padding-block: 1.5rem 1.25rem; }
     }
 </style>
@@ -256,12 +304,6 @@ $khawajagan_list = $khawajagan_list ?? [];
 
         <!-- Header -->
         <header class="kh-hdr">
-            <span class="kh-hdr-meta">
-                <span>Amalan</span>
-                <span style="opacity:.4;">·</span>
-                <span><?= count($khawajagan_list); ?> bacaan dzikir</span>
-            </span>
-
             <span class="kh-hdr-icon" aria-hidden="true">
                 <img src="<?= base_url('assets/frontend/icons/islamic/prayer-beads-tasbih.svg'); ?>" style="width:28px;height:28px;display:block;filter:brightness(0) invert(1);" alt="">
             </span>
@@ -272,10 +314,29 @@ $khawajagan_list = $khawajagan_list ?? [];
 
         <!-- Bacaan list -->
         <?php foreach ($khawajagan_list as $idx => $item): ?>
+            <?php
+            $_bare = preg_replace('/[\x{064B}-\x{065F}\x{0610}-\x{061A}\x{06D6}-\x{06ED}]/u', '', trim($item['arab']));
+            $_len = mb_strlen($_bare, 'UTF-8');
+            $_is_header = $_len >= 3 && $_len <= 6;
+            ?>
+            <?php if ($_is_header): ?>
+            <div class="kh-section" id="bacaan-<?= (int) $item['id']; ?>">
+                <div class="kh-section-ornament"></div>
+                <div class="kh-section-frame">
+                    <div class="kh-sc kh-sc--tl"></div>
+                    <div class="kh-sc kh-sc--tr"></div>
+                    <div class="kh-sc kh-sc--bl"></div>
+                    <div class="kh-sc kh-sc--br"></div>
+                    <span class="kh-section-arab" lang="ar" dir="rtl"><?= htmlspecialchars($item['arab'], ENT_QUOTES, 'UTF-8'); ?></span>
+                </div>
+                <div class="kh-section-ornament"></div>
+            </div>
+            <?php else: ?>
             <div class="kh-bacaan" id="bacaan-<?= (int) $item['id']; ?>">
                 <span class="kh-bacaan-num"><?= $idx + 1; ?></span>
                 <span class="kh-bacaan-arab" lang="ar" dir="rtl"><?= htmlspecialchars($item['arab'], ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
+            <?php endif; ?>
         <?php endforeach; ?>
 
         <!-- Footer -->
@@ -285,5 +346,6 @@ $khawajagan_list = $khawajagan_list ?? [];
             </a>
         </div>
 
+        <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Banner.php'; ?>
     </div>
 </main>

@@ -148,9 +148,9 @@ $maulid_nav          = $maulid_nav          ?? [];
     /* Rawi (prose) */
     .mdr-text-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.45rem, 4vw, 2rem);
-        line-height: 2.2;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 2.1;
         color: #fff;
         direction: rtl;
         text-align: right;
@@ -160,9 +160,9 @@ $maulid_nav          = $maulid_nav          ?? [];
 
     /* Verse (bari) — centered, larger */
     .mdr-section--bari .mdr-text-arab {
-        font-size: clamp(1.5rem, 4.5vw, 2.1rem);
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
         text-align: center;
-        line-height: 2.4;
+        line-height: 2.1;
     }
 
     /* Closing sholawat */
@@ -177,7 +177,7 @@ $maulid_nav          = $maulid_nav          ?? [];
     }
 
     .mdr-section--closing .mdr-text-arab {
-        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        font-size: clamp(1.4rem, 3.5vw, 1.85rem);
         text-align: center;
         color: #ffd9a8;
         margin-bottom: .4rem;
@@ -189,7 +189,7 @@ $maulid_nav          = $maulid_nav          ?? [];
         font-size: .78rem;
         color: #8aa09a;
         font-style: italic;
-        line-height: 1.7;
+        line-height: 2.1;
         margin-bottom: .4rem;
     }
 
@@ -198,7 +198,7 @@ $maulid_nav          = $maulid_nav          ?? [];
         display: block;
         font-size: .73rem;
         color: var(--mdr-muted);
-        line-height: 1.75;
+        line-height: 2.1;
         padding: .5rem .75rem;
         border-left: 2px solid rgba(232,184,75,.3);
         background: rgba(255,255,255,.02);
@@ -251,8 +251,8 @@ $maulid_nav          = $maulid_nav          ?? [];
     @media (min-width: 480px) { .mdr-fnav-label { display: inline; } }
 
     @media (max-width: 575.98px) {
-        .mdr-text-arab { font-size: 1.35rem; line-height: 2.1; }
-        .mdr-section--bari .mdr-text-arab { font-size: 1.4rem; }
+        .mdr-text-arab { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 2.1; }
+        .mdr-section--bari .mdr-text-arab { font-size: clamp(1.6rem, 4vw, 2.2rem); }
         .mdr-hdr { padding-block: 1.5rem 1.25rem; }
     }
 
@@ -260,17 +260,28 @@ $maulid_nav          = $maulid_nav          ?? [];
     .rdr-nav-trigger .rdr-chev { font-size: .85rem; margin-left: .15rem; transition: transform .15s; }
     .rdr-nav-trigger[aria-expanded="true"] .rdr-chev { transform: rotate(180deg); }
     .rdr-panel {
-        position: fixed; z-index: 250;
-        width: min(340px, 90vw); max-height: min(520px, 70vh);
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 400;
         display: flex; flex-direction: column;
-        background: #1a1d1c; border: 1px solid rgba(255,255,255,.1);
-        border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,.75);
+        max-height: 85vh;
+        background: #1a1d1c;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 40px rgba(0,0,0,.6);
+        transform: translateY(100%);
+        transition: transform .28s cubic-bezier(.32,.72,0,1);
         overflow: hidden;
     }
-    .rdr-panel[hidden] { display: none; }
+    .rdr-panel.is-open { transform: translateY(0); }
+    .rdr-panel-handle {
+        display: flex; justify-content: center;
+        padding: .7rem 0 .35rem; flex-shrink: 0; cursor: grab;
+    }
+    .rdr-panel-handle span {
+        width: 38px; height: 4px; border-radius: 99px;
+        background: rgba(255,255,255,.18);
+    }
     .rdr-panel-search {
         display: flex; align-items: center; gap: .55rem;
-        padding: .75rem 1rem; border-bottom: 1px solid rgba(255,255,255,.07);
+        padding: .5rem 1rem .75rem; border-bottom: 1px solid rgba(255,255,255,.07);
         flex-shrink: 0;
     }
     .rdr-panel-search i { color: #6d7e78; font-size: 1.1rem; }
@@ -280,7 +291,7 @@ $maulid_nav          = $maulid_nav          ?? [];
     }
     .rdr-panel-search input::placeholder { color: #6d7e78; }
     .rdr-panel-list {
-        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0;
+        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0 1.5rem;
         list-style: none; scrollbar-width: thin;
         scrollbar-color: rgba(255,255,255,.12) transparent;
     }
@@ -295,7 +306,10 @@ $maulid_nav          = $maulid_nav          ?? [];
     .rdr-panel-item.is-active a { color: #e8b84b; font-weight: 600; background: rgba(232,184,75,.07); }
     .rdr-panel-item.is-hidden { display: none; }
     .rdr-panel-item a i { color: #e8b84b; font-size: 1rem; }
-    .rdr-panel-back { display: none; position: fixed; inset: 0; z-index: 249; }
+    .rdr-panel-back {
+        display: none; position: fixed; inset: 0; z-index: 399;
+        background: rgba(0,0,0,.5);
+    }
     .rdr-panel-back.is-open { display: block; }
 </style>
 
@@ -339,7 +353,8 @@ $maulid_nav          = $maulid_nav          ?? [];
 </nav>
 
 <div class="rdr-panel-back" id="rdrPanelBack"></div>
-<div class="rdr-panel" id="rdrPanel" hidden>
+<div class="rdr-panel" id="rdrPanel" aria-hidden="true">
+    <div class="rdr-panel-handle"><span></span></div>
     <div class="rdr-panel-search">
         <i class="bx bx-search"></i>
         <input type="search" id="rdrPanelSearch" placeholder="Cari bacaan Maulid..." autocomplete="off">
@@ -436,6 +451,7 @@ $maulid_nav          = $maulid_nav          ?? [];
             </a>
         </nav>
 
+        <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Banner.php'; ?>
     </div>
 </main>
 <script>
@@ -445,15 +461,6 @@ $maulid_nav          = $maulid_nav          ?? [];
   var back    = document.getElementById('rdrPanelBack');
   var search  = document.getElementById('rdrPanelSearch');
   if (!trigger || !panel) return;
-  function position() {
-    var r = trigger.getBoundingClientRect();
-    var pw = Math.min(340, window.innerWidth * 0.9);
-    var mid = r.left + r.width / 2;
-    var left = Math.max(8, Math.min(mid - pw / 2, window.innerWidth - pw - 8));
-    panel.style.top  = (r.bottom + 4) + 'px';
-    panel.style.left = left + 'px';
-    panel.style.width = pw + 'px';
-  }
   function filter(q) {
     q = q.toLowerCase().trim();
     panel.querySelectorAll('.rdr-panel-item').forEach(function(li) {
@@ -462,16 +469,17 @@ $maulid_nav          = $maulid_nav          ?? [];
     });
   }
   function close() {
-    panel.setAttribute('hidden', '');
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
     trigger.setAttribute('aria-expanded', 'false');
     if (back) back.classList.remove('is-open');
     if (search) { search.value = ''; filter(''); }
   }
   trigger.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (panel.hasAttribute('hidden')) {
-      position();
-      panel.removeAttribute('hidden');
+    if (!panel.classList.contains('is-open')) {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
       trigger.setAttribute('aria-expanded', 'true');
       if (back) back.classList.add('is-open');
       var active = panel.querySelector('.rdr-panel-item.is-active a');

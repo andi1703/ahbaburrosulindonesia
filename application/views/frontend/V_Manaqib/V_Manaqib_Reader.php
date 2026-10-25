@@ -136,9 +136,9 @@ $all_sections = $all_sections ?? [];
 
     .mqr-hdr-doa {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.1rem, 3vw, 1.5rem);
-        line-height: 2.1; color: #b8d4cc;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.4rem, 3.5vw, 1.85rem);
+        line-height: 1.65; color: #b8d4cc;
         direction: rtl; text-align: center;
         white-space: pre-line;
         margin-top: 1rem;
@@ -163,9 +163,9 @@ $all_sections = $all_sections ?? [];
 
     .mqr-bacaan-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.45rem, 4vw, 2rem);
-        line-height: 2.2; color: #fff;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 2.1; color: #fff;
         direction: rtl; text-align: right;
         white-space: pre-line;
     }
@@ -213,25 +213,70 @@ $all_sections = $all_sections ?? [];
 
     .mqr-back:hover { color: var(--mqr-accent); border-color: rgba(232,184,75,.4); }
 
+    /* ── Closing sholawat card ── */
+    .mqr-closing {
+        margin: 1.5rem 0 .5rem;
+        padding: 1.5rem 1.4rem;
+        border: 1px solid rgba(232,184,75,.3);
+        border-radius: 12px;
+        background: rgba(232,184,75,.04);
+        text-align: center;
+    }
+
+    .mqr-closing-arab {
+        display: block;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+        line-height: 1.65;
+        color: var(--mqr-text);
+        direction: rtl;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .mqr-closing-id {
+        text-align: center;
+        color: var(--mqr-muted);
+        font-size: .78rem;
+        line-height: 2.1;
+    }
+
     @media (max-width: 575.98px) {
-        .mqr-bacaan-arab { font-size: 1.35rem; line-height: 2.1; }
+        .mqr-bacaan-arab { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 2.1; }
         .mqr-hdr { padding-block: 1.5rem 1.25rem; }
+        .mqr-closing-arab { font-size: 1.2rem; }
     }
 
     /* ── Nav Dropdown Panel ── */
     .rdr-nav-trigger .rdr-chev { font-size: .85rem; margin-left: .15rem; transition: transform .15s; }
     .rdr-nav-trigger[aria-expanded="true"] .rdr-chev { transform: rotate(180deg); }
     .rdr-panel {
-        position: fixed; z-index: 250;
-        width: min(340px, 90vw); max-height: min(520px, 70vh);
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 400;
         display: flex; flex-direction: column;
-        background: #1a1d1c; border: 1px solid rgba(255,255,255,.1);
-        border-radius: 14px; box-shadow: 0 16px 48px rgba(0,0,0,.75);
+        max-height: 85vh;
+        background: #1a1d1c;
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 40px rgba(0,0,0,.6);
+        transform: translateY(100%);
+        transition: transform .28s cubic-bezier(.32,.72,0,1);
         overflow: hidden;
     }
-    .rdr-panel[hidden] { display: none; }
+    .rdr-panel.is-open { transform: translateY(0); }
+    .rdr-panel-handle {
+        display: flex; justify-content: center;
+        padding: .7rem 0 .35rem; flex-shrink: 0; cursor: grab;
+    }
+    .rdr-panel-handle span {
+        width: 38px; height: 4px; border-radius: 99px;
+        background: rgba(255,255,255,.18);
+    }
+    .rdr-panel-title {
+        margin: 0 0 .4rem; padding: 0 1.2rem;
+        font-size: .68rem; font-weight: 700; letter-spacing: .07em;
+        text-transform: uppercase; color: #5d6e69; flex-shrink: 0;
+    }
     .rdr-panel-list {
-        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0;
+        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0 1.5rem;
         list-style: none; scrollbar-width: thin;
         scrollbar-color: rgba(255,255,255,.12) transparent;
     }
@@ -245,7 +290,10 @@ $all_sections = $all_sections ?? [];
     .rdr-panel-item a:hover { background: rgba(255,255,255,.06); color: #fff; }
     .rdr-panel-item.is-active a { color: #e8b84b; font-weight: 600; background: rgba(232,184,75,.07); }
     .rdr-panel-item a i { color: #e8b84b; font-size: 1rem; }
-    .rdr-panel-back { display: none; position: fixed; inset: 0; z-index: 249; }
+    .rdr-panel-back {
+        display: none; position: fixed; inset: 0; z-index: 399;
+        background: rgba(0,0,0,.5);
+    }
     .rdr-panel-back.is-open { display: block; }
 </style>
 
@@ -291,7 +339,9 @@ $all_sections = $all_sections ?? [];
 </nav>
 
 <div class="rdr-panel-back" id="rdrPanelBack"></div>
-<div class="rdr-panel" id="rdrPanel" hidden>
+<div class="rdr-panel" id="rdrPanel" aria-hidden="true">
+    <div class="rdr-panel-handle"><span></span></div>
+    <p class="rdr-panel-title">Pilih Bagian</p>
     <ul class="rdr-panel-list">
         <?php foreach ($all_sections as $s): ?>
             <li class="rdr-panel-item <?= (int)$s['seq'] === (int)$section_seq ? 'is-active' : ''; ?>">
@@ -320,10 +370,6 @@ $all_sections = $all_sections ?? [];
             </span>
 
             <h1 class="mqr-hdr-name"><?= htmlspecialchars($section_name, ENT_QUOTES, 'UTF-8'); ?></h1>
-
-            <?php if (!empty(trim($section_doa))): ?>
-                <span class="mqr-hdr-doa" lang="ar" dir="rtl"><?= htmlspecialchars(trim($section_doa), ENT_QUOTES, 'UTF-8'); ?></span>
-            <?php endif; ?>
         </header>
 
         <!-- Bacaan list -->
@@ -333,6 +379,15 @@ $all_sections = $all_sections ?? [];
                 <span class="mqr-bacaan-arab" lang="ar" dir="rtl"><?= htmlspecialchars($bacaan['arab'], ENT_QUOTES, 'UTF-8'); ?></span>
             </div>
         <?php endforeach; ?>
+
+        <!-- Closing sholawat (bab 1–10 only) -->
+        <?php if ((int)$section_seq <= 10): ?>
+        <div class="mqr-closing">
+            <span class="mqr-closing-arab" lang="ar" dir="rtl">اللَّهُمَّ انْشُرْ نَفَحَاتِ الرِّضْوَانِ عَلَيْهِ
+وَأَمِدَّنَا بِالْأَسْرَارِ الَّتِي أَوْدَعْتَهَا لَدَيْهِ</span>
+            <p class="mqr-closing-id">Ya Allah, sebarkan semerbak ridha-Mu atasnya, dan amaddkan kami dengan rahasia-rahasia yang Engkau titipkan padanya.</p>
+        </div>
+        <?php endif; ?>
 
         <!-- Footer nav -->
         <nav class="mqr-fnav" aria-label="Navigasi antar bab">
@@ -356,6 +411,7 @@ $all_sections = $all_sections ?? [];
             </a>
         </nav>
 
+        <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Banner.php'; ?>
     </div>
 </main>
 <script>
@@ -364,25 +420,17 @@ $all_sections = $all_sections ?? [];
   var panel   = document.getElementById('rdrPanel');
   var back    = document.getElementById('rdrPanelBack');
   if (!trigger || !panel) return;
-  function position() {
-    var r = trigger.getBoundingClientRect();
-    var pw = Math.min(340, window.innerWidth * 0.9);
-    var mid = r.left + r.width / 2;
-    var left = Math.max(8, Math.min(mid - pw / 2, window.innerWidth - pw - 8));
-    panel.style.top  = (r.bottom + 4) + 'px';
-    panel.style.left = left + 'px';
-    panel.style.width = pw + 'px';
-  }
   function close() {
-    panel.setAttribute('hidden', '');
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-hidden', 'true');
     trigger.setAttribute('aria-expanded', 'false');
     if (back) back.classList.remove('is-open');
   }
   trigger.addEventListener('click', function(e) {
     e.stopPropagation();
-    if (panel.hasAttribute('hidden')) {
-      position();
-      panel.removeAttribute('hidden');
+    if (!panel.classList.contains('is-open')) {
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
       trigger.setAttribute('aria-expanded', 'true');
       if (back) back.classList.add('is-open');
       var active = panel.querySelector('.rdr-panel-item.is-active a');

@@ -50,42 +50,31 @@
     var juzPanel     = document.getElementById('qrJuzPanel');
     var ayatPanel    = document.getElementById('qrAyatPanel');
     var surahSearch  = document.getElementById('qrSurahSearch');
+    var juzSearch    = document.getElementById('qrJuzSearch');
     var ayatSearch   = document.getElementById('qrAyatSearch');
     var panelBack    = document.getElementById('qrPanelBack');
 
     function openPanel(panel, trigger, searchInput) {
       closeAllPanels();
       if (!panel) return;
-      panel.removeAttribute('hidden');
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
       if (trigger) trigger.setAttribute('aria-expanded', 'true');
       if (panelBack) panelBack.classList.add('is-open');
-      /* Position panel under its trigger */
-      if (trigger) {
-        var rect = trigger.getBoundingClientRect();
-        var mid = rect.left + rect.width / 2;
-        var pw = Math.min(340, window.innerWidth * 0.9);
-        var left = Math.max(8, Math.min(mid - pw / 2, window.innerWidth - pw - 8));
-        panel.style.left = left + 'px';
-      }
       if (searchInput) {
         searchInput.value = '';
         filterPanel(panel, '');
-        setTimeout(function() {
-          searchInput.focus();
-        }, 60);
+        setTimeout(function() { searchInput.focus(); }, 60);
       }
-      /* Scroll active item into view */
       var active = panel.querySelector('.is-active');
       if (active) setTimeout(function() {
-        active.scrollIntoView({
-          block: 'nearest'
-        });
+        active.scrollIntoView({ block: 'nearest' });
       }, 80);
     }
 
     function closeAllPanels() {
       [surahPanel, juzPanel, ayatPanel].forEach(function(p) {
-        if (p) p.setAttribute('hidden', '');
+        if (p) { p.classList.remove('is-open'); p.setAttribute('aria-hidden', 'true'); }
       });
       [surahTrigger, juzTrigger, ayatTrigger].forEach(function(t) {
         if (t) t.setAttribute('aria-expanded', 'false');
@@ -104,42 +93,36 @@
     if (surahTrigger && surahPanel) {
       surahTrigger.addEventListener('click', function(e) {
         e.stopPropagation();
-        var open = surahPanel.hidden === false;
-        if (open) {
-          closeAllPanels();
-        } else {
-          openPanel(surahPanel, surahTrigger, surahSearch);
-        }
+        var open = surahPanel.classList.contains('is-open');
+        if (open) { closeAllPanels(); } else { openPanel(surahPanel, surahTrigger, surahSearch); }
       });
     }
 
     if (juzTrigger && juzPanel) {
       juzTrigger.addEventListener('click', function(e) {
         e.stopPropagation();
-        var open = juzPanel.hidden === false;
-        if (open) {
-          closeAllPanels();
-        } else {
-          openPanel(juzPanel, juzTrigger, null);
-        }
+        var open = juzPanel.classList.contains('is-open');
+        if (open) { closeAllPanels(); } else { openPanel(juzPanel, juzTrigger, juzSearch); }
       });
     }
 
     if (ayatTrigger && ayatPanel) {
       ayatTrigger.addEventListener('click', function(e) {
         e.stopPropagation();
-        var open = ayatPanel.hidden === false;
-        if (open) {
-          closeAllPanels();
-        } else {
-          openPanel(ayatPanel, ayatTrigger, ayatSearch);
-        }
+        var open = ayatPanel.classList.contains('is-open');
+        if (open) { closeAllPanels(); } else { openPanel(ayatPanel, ayatTrigger, ayatSearch); }
       });
     }
 
     if (surahSearch) {
       surahSearch.addEventListener('input', function() {
         filterPanel(surahPanel, this.value);
+      });
+    }
+
+    if (juzSearch) {
+      juzSearch.addEventListener('input', function() {
+        filterPanel(juzPanel, this.value);
       });
     }
 
@@ -413,6 +396,122 @@
           var btnEl = el.querySelector('[data-action="bookmark"]');
           if (btnEl) btnEl.classList.add('is-active');
         }
+      });
+    }
+
+    /* ─────────────────────────────────────────────
+       QURAN-SPECIFIC SETTINGS (tajwid + terjemahan)
+       Panel UI lives in V_Amalan_Subnav.php
+    ───────────────────────────────────────────── */
+    var LS_TAJWID = 'qr_tajwid';
+    var LS_TRANS  = 'qr_trans';
+
+    var tajwidToggle = document.getElementById('qrTajwidToggle');
+    var transToggle  = document.getElementById('qrTransToggle');
+
+    /* ── Terjemahan toggle ── */
+    function applyTrans(show) {
+      if (page) page.setAttribute('data-qr-trans', show ? '1' : '0');
+    }
+
+    var initTrans = lsGet(LS_TRANS);
+    if (initTrans === false) {
+      if (transToggle) transToggle.checked = false;
+      applyTrans(false);
+    }
+
+    if (transToggle) {
+      transToggle.addEventListener('change', function() {
+        var show = this.checked;
+        applyTrans(show);
+        lsSet(LS_TRANS, show);
+      });
+    }
+
+    /* ── Tajwid toggle ── */
+    var tajweedCache = {};
+
+    function loadTajweed() {
+      if (!page) return;
+      var surahNum = parseInt(page.dataset.surah, 10);
+      var pageType = page.dataset.type;
+      if (pageType === 'juz') {
+        var seen = [];
+        document.querySelectorAll('[data-reader-verse]').forEach(function(v) {
+          var n = parseInt(v.dataset.surahNum, 10);
+          if (n && seen.indexOf(n) < 0) { seen.push(n); fetchTajweed(n); }
+        });
+      } else if (surahNum) {
+        fetchTajweed(surahNum);
+      }
+    }
+
+    function fetchTajweed(surahNum) {
+      if (tajweedCache[surahNum]) { applyTajweedData(surahNum, tajweedCache[surahNum]); return; }
+      var ck = 'qr_tw_' + surahNum;
+      var stored = null;
+      try { stored = JSON.parse(sessionStorage.getItem(ck)); } catch(e) {}
+      if (stored) { tajweedCache[surahNum] = stored; applyTajweedData(surahNum, stored); return; }
+
+      fetch('https://api.quran.com/api/v4/verses/by_chapter/' + surahNum +
+            '?fields=text_uthmani_tajweed&per_page=300&page=1')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data || !data.verses) return;
+          var map = {};
+          data.verses.forEach(function(v) {
+            if (v.verse_number && v.text_uthmani_tajweed) {
+              map[v.verse_number] = v.text_uthmani_tajweed;
+            }
+          });
+          tajweedCache[surahNum] = map;
+          try { sessionStorage.setItem(ck, JSON.stringify(map)); } catch(e) {}
+          applyTajweedData(surahNum, map);
+        })
+        .catch(function() { /* API unavailable — silently skip */ });
+    }
+
+    function applyTajweedData(surahNum, map) {
+      document.querySelectorAll('[data-reader-verse]').forEach(function(verse) {
+        if (parseInt(verse.dataset.surahNum, 10) !== surahNum) return;
+        var verseNum = parseInt(verse.dataset.verseNum, 10);
+        var html = map[verseNum];
+        if (!html) return;
+        var arabEl = verse.querySelector('.qr-arabic');
+        if (!arabEl) return;
+        if (!arabEl.dataset.origHtml) arabEl.dataset.origHtml = arabEl.innerHTML;
+        arabEl.innerHTML = html;
+      });
+    }
+
+    function removeTajweed() {
+      document.querySelectorAll('[data-reader-verse]').forEach(function(verse) {
+        var arabEl = verse.querySelector('.qr-arabic');
+        if (!arabEl) return;
+        if (arabEl.dataset.origHtml) {
+          arabEl.innerHTML = arabEl.dataset.origHtml;
+          delete arabEl.dataset.origHtml;
+        } else {
+          var ornate = arabEl.querySelector('.qr-ornate');
+          var arabText = verse.dataset.arabic || '';
+          arabEl.innerHTML = '';
+          arabEl.appendChild(document.createTextNode(arabText + ' '));
+          if (ornate) arabEl.appendChild(ornate);
+        }
+      });
+    }
+
+    var initTajwid = lsGet(LS_TAJWID);
+    if (initTajwid === true) {
+      if (tajwidToggle) tajwidToggle.checked = true;
+      loadTajweed();
+    }
+
+    if (tajwidToggle) {
+      tajwidToggle.addEventListener('change', function() {
+        var on = this.checked;
+        lsSet(LS_TAJWID, on);
+        if (on) { loadTajweed(); } else { removeTajweed(); }
       });
     }
 

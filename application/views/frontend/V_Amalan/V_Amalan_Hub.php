@@ -4,7 +4,10 @@ $_ib = base_url('assets/frontend/icons/islamic/');
 ?>
 
 <style>
-    body { background: #0b0d0d; }
+    body {
+        background: #0b0d0d;
+    }
+
     /* (sub-nav moved to V_Amalan_Subnav.php) */
     .am-subnav {
         position: fixed;
@@ -146,9 +149,45 @@ $_ib = base_url('assets/frontend/icons/islamic/');
         --am-muted: #9aa5a1;
         --am-accent: #e8b84b;
         --am-gold: #e8b84b;
+        position: relative;
         padding-top: 1rem;
         color: var(--am-text);
         background: var(--am-bg);
+        isolation: isolate;
+        overflow: hidden;
+    }
+
+    /* Same 8-point star tile used by .an-hero above, carried down at low
+       opacity so the hub page reads as one continuous surface instead of
+       cutting from gold hero straight to flat black. */
+    .amalan-page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M20 3 L22.7 13.5 L32 8 L26.5 17.3 L37 20 L26.5 22.7 L32 32 L22.7 26.5 L20 37 L17.3 26.5 L8 32 L13.5 22.7 L3 20 L13.5 17.3 L8 8 L17.3 13.5 Z' fill='none' stroke='%23e8b84b' stroke-opacity='.5' stroke-width='0.7'/%3E%3C/svg%3E");
+        background-size: 40px 40px;
+        background-repeat: repeat;
+        opacity: .05;
+        pointer-events: none;
+    }
+
+    /* Vignette layer — a real element (not a 3rd pseudo-element, since
+       ::before/::after are already spoken for above) that fades the gold
+       hero tone into the dark surface as you scroll into the card grid. */
+    .amalan-glow {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background:
+            radial-gradient(ellipse 120% 55% at 50% 0%, rgba(232, 184, 75, .1), transparent 60%),
+            linear-gradient(180deg, rgba(11, 13, 13, .25) 0%, rgba(11, 13, 13, .75) 32%, var(--am-bg) 60%);
+        pointer-events: none;
+    }
+
+    .amalan-page>*:not(.amalan-glow) {
+        position: relative;
+        z-index: 1;
     }
 
     /* ── Hub Grid ── */
@@ -299,9 +338,18 @@ $_ib = base_url('assets/frontend/icons/islamic/');
         color: #e8b84b;
     }
 
+    .ic-tasbih {
+        background: rgba(232, 184, 75, .15);
+        color: #e8b84b;
+    }
+
     @media (max-width: 767.98px) {
         .amalan-cards {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .amalan-hub {
+            padding-block: 1.25rem 3rem;
         }
     }
 
@@ -319,6 +367,7 @@ $_ib = base_url('assets/frontend/icons/islamic/');
 <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
 
 <main class="amalan-page">
+    <div class="amalan-glow" aria-hidden="true"></div>
 
     <!-- Hub Menu -->
     <section class="amalan-hub">
@@ -341,7 +390,7 @@ $_ib = base_url('assets/frontend/icons/islamic/');
             <!-- Tahlil -->
             <a class="amalan-card" href="<?= base_url('index.php/tahlil'); ?>">
                 <span class="amalan-card-icon ic-tahlil">
-                    <img src="<?= $_ib ?>dua-hands.svg" class="amalan-icon-svg" alt="">
+                    <img src="<?= $_ib ?>islamic-cemetery.svg" class="amalan-icon-svg" alt="">
                 </span>
                 <span class="amalan-card-copy">
                     <span class="amalan-card-name">Tahlil</span>
@@ -422,6 +471,18 @@ $_ib = base_url('assets/frontend/icons/islamic/');
                 <i class="bx bx-chevron-right amalan-card-arrow"></i>
             </a>
 
+            <!-- Tasbih Digital -->
+            <a class="amalan-card" href="<?= base_url('index.php/tasbih'); ?>">
+                <span class="amalan-card-icon ic-tasbih">
+                    <img src="<?= $_ib ?>tasbih-ring.svg" class="amalan-icon-svg" alt="">
+                </span>
+                <span class="amalan-card-copy">
+                    <span class="amalan-card-name">Tasbih Digital</span>
+                    <span class="amalan-card-desc">Penghitung dzikir digital dengan suara, bead ring, dan dzikir kustom.</span>
+                </span>
+                <i class="bx bx-chevron-right amalan-card-arrow"></i>
+            </a>
+
             <!-- Jadwal Sholat -->
             <a class="amalan-card" href="<?= base_url('index.php/jadwal-sholat'); ?>">
                 <span class="amalan-card-icon ic-jadwal">
@@ -436,5 +497,4 @@ $_ib = base_url('assets/frontend/icons/islamic/');
 
         </div>
     </section>
-
 </main>

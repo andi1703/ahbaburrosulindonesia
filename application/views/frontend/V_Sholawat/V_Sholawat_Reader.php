@@ -195,9 +195,9 @@ $sh_all_list    = $sh_all_list    ?? [];
 
     .shr-hdr-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.5rem, 4vw, 2.2rem);
-        line-height: 1.9;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 1.6;
         color: #fff;
         direction: rtl;
         text-align: center;
@@ -227,9 +227,9 @@ $sh_all_list    = $sh_all_list    ?? [];
 
     .shr-verse-arab {
         display: block;
-        font-family: "LPMQ", "Amiri", serif;
-        font-size: clamp(1.45rem, 4vw, 1.95rem);
-        line-height: 2.3;
+        font-family: "LPMQ", serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        line-height: 2.1;
         color: #fff;
         direction: rtl;
         text-align: right;
@@ -242,7 +242,7 @@ $sh_all_list    = $sh_all_list    ?? [];
         font-size: .77rem;
         color: #8aa09a;
         font-style: italic;
-        line-height: 1.75;
+        line-height: 2.1;
         margin-bottom: .3rem;
     }
 
@@ -250,7 +250,7 @@ $sh_all_list    = $sh_all_list    ?? [];
         display: block;
         font-size: .72rem;
         color: var(--shr-muted);
-        line-height: 1.75;
+        line-height: 2.1;
         padding: .45rem .75rem;
         border-left: 2px solid rgba(232, 184, 75, .3);
         background: rgba(255, 255, 255, .018);
@@ -311,7 +311,7 @@ $sh_all_list    = $sh_all_list    ?? [];
 
     @media (max-width: 575.98px) {
         .shr-verse-arab {
-            font-size: 1.3rem;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
             line-height: 2.1;
         }
 
@@ -336,105 +336,57 @@ $sh_all_list    = $sh_all_list    ?? [];
     }
 
     .rdr-panel {
-        position: fixed;
-        z-index: 250;
-        width: min(340px, 90vw);
-        max-height: min(520px, 70vh);
-        display: flex;
-        flex-direction: column;
+        position: fixed; bottom: 0; left: 0; right: 0; z-index: 400;
+        display: flex; flex-direction: column;
+        max-height: 85vh;
         background: #1a1d1c;
-        border: 1px solid rgba(255, 255, 255, .1);
-        border-radius: 14px;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, .75);
+        border-radius: 20px 20px 0 0;
+        box-shadow: 0 -4px 40px rgba(0,0,0,.6);
+        transform: translateY(100%);
+        transition: transform .28s cubic-bezier(.32,.72,0,1);
         overflow: hidden;
     }
-
-    .rdr-panel[hidden] {
-        display: none;
+    .rdr-panel.is-open { transform: translateY(0); }
+    .rdr-panel-handle {
+        display: flex; justify-content: center;
+        padding: .7rem 0 .35rem; flex-shrink: 0; cursor: grab;
     }
-
+    .rdr-panel-handle span {
+        width: 38px; height: 4px; border-radius: 99px;
+        background: rgba(255,255,255,.18);
+    }
     .rdr-panel-search {
-        display: flex;
-        align-items: center;
-        gap: .55rem;
-        padding: .75rem 1rem;
-        border-bottom: 1px solid rgba(255, 255, 255, .07);
+        display: flex; align-items: center; gap: .55rem;
+        padding: .5rem 1rem .75rem; border-bottom: 1px solid rgba(255,255,255,.07);
         flex-shrink: 0;
     }
-
-    .rdr-panel-search i {
-        color: #6d7e78;
-        font-size: 1.1rem;
-    }
-
+    .rdr-panel-search i { color: #6d7e78; font-size: 1.1rem; }
     .rdr-panel-search input {
-        flex: 1;
-        background: transparent;
-        border: 0;
-        color: #eef1ee;
-        font: inherit;
-        font-size: .88rem;
-        outline: none;
+        flex: 1; background: transparent; border: 0;
+        color: #eef1ee; font: inherit; font-size: .88rem; outline: none;
     }
-
-    .rdr-panel-search input::placeholder {
-        color: #6d7e78;
-    }
-
+    .rdr-panel-search input::placeholder { color: #6d7e78; }
     .rdr-panel-list {
-        flex: 1;
-        overflow-y: auto;
-        margin: 0;
-        padding: .35rem 0;
-        list-style: none;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, .12) transparent;
+        flex: 1; overflow-y: auto; margin: 0; padding: .35rem 0 1.5rem;
+        list-style: none; scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,.12) transparent;
     }
-
     .rdr-panel-item a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: .65rem 1rem;
-        background: transparent;
-        color: #c4cec9;
-        font: inherit;
-        font-size: .88rem;
-        text-decoration: none;
-        transition: background .1s, color .1s;
+        display: flex; align-items: center; justify-content: space-between;
+        width: 100%; padding: .65rem 1rem;
+        background: transparent; color: #c4cec9;
+        font: inherit; font-size: .88rem;
+        text-decoration: none; transition: background .1s, color .1s;
     }
-
-    .rdr-panel-item a:hover {
-        background: rgba(255, 255, 255, .06);
-        color: #fff;
-    }
-
-    .rdr-panel-item.is-active a {
-        color: #e8b84b;
-        font-weight: 600;
-        background: rgba(232, 184, 75, .07);
-    }
-
-    .rdr-panel-item.is-hidden {
-        display: none;
-    }
-
-    .rdr-panel-item a i {
-        color: #e8b84b;
-        font-size: 1rem;
-    }
-
+    .rdr-panel-item a:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .rdr-panel-item.is-active a { color: #e8b84b; font-weight: 600; background: rgba(232,184,75,.07); }
+    .rdr-panel-item.is-hidden { display: none; }
+    .rdr-panel-item a i { color: #e8b84b; font-size: 1rem; }
     .rdr-panel-back {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 249;
+        display: none; position: fixed; inset: 0; z-index: 399;
+        background: rgba(0,0,0,.5);
     }
-
-    .rdr-panel-back.is-open {
-        display: block;
-    }
+    .rdr-panel-back.is-open { display: block; }
 </style>
 
 <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Subnav.php'; ?>
@@ -443,7 +395,7 @@ $sh_all_list    = $sh_all_list    ?? [];
 <nav class="shr-subnav" aria-label="Navigasi Sholawat">
     <div class="shr-subnav-inner">
         <div class="shr-subnav-left">
-            <a class="shr-pill" href="<?= base_url('index.php/sholawat/' . $sh_group); ?>" title="Daftar <?= htmlspecialchars($sh_group_title); ?>">
+            <a class="shr-pill" href="<?= base_url('index.php/sholawat'); ?>" title="Daftar Sholawat">
                 <i class="bx bx-grid-alt"></i>
             </a>
         </div>
@@ -477,7 +429,8 @@ $sh_all_list    = $sh_all_list    ?? [];
 </nav>
 
 <div class="rdr-panel-back" id="rdrPanelBack"></div>
-<div class="rdr-panel" id="rdrPanel" hidden>
+<div class="rdr-panel" id="rdrPanel" aria-hidden="true">
+    <div class="rdr-panel-handle"><span></span></div>
     <div class="rdr-panel-search">
         <i class="bx bx-search"></i>
         <input type="search" id="rdrPanelSearch" placeholder="Cari sholawat..." autocomplete="off">
@@ -546,9 +499,9 @@ $sh_all_list    = $sh_all_list    ?? [];
                 <span class="shr-fnav-label"><?= $prev_latin ? htmlspecialchars($prev_latin) : 'Sebelumnya'; ?></span>
             </a>
 
-            <a class="shr-fnav-btn" href="<?= base_url('index.php/sholawat/' . $sh_group); ?>">
+            <a class="shr-fnav-btn" href="<?= base_url('index.php/sholawat'); ?>">
                 <i class="bx bx-grid-alt"></i>
-                <span class="shr-fnav-label">Semua <?= htmlspecialchars($sh_group_title); ?></span>
+                <span class="shr-fnav-label">Semua Sholawat</span>
             </a>
 
             <a class="shr-fnav-btn"
@@ -559,6 +512,7 @@ $sh_all_list    = $sh_all_list    ?? [];
             </a>
         </nav>
 
+        <?php include VIEWPATH . 'frontend/V_Amalan/V_Amalan_Banner.php'; ?>
     </div>
 </main>
 <script>
@@ -569,16 +523,6 @@ $sh_all_list    = $sh_all_list    ?? [];
         var search = document.getElementById('rdrPanelSearch');
         if (!trigger || !panel) return;
 
-        function position() {
-            var r = trigger.getBoundingClientRect();
-            var pw = Math.min(340, window.innerWidth * 0.9);
-            var mid = r.left + r.width / 2;
-            var left = Math.max(8, Math.min(mid - pw / 2, window.innerWidth - pw - 8));
-            panel.style.top = (r.bottom + 4) + 'px';
-            panel.style.left = left + 'px';
-            panel.style.width = pw + 'px';
-        }
-
         function filter(q) {
             q = q.toLowerCase().trim();
             panel.querySelectorAll('.rdr-panel-item').forEach(function(li) {
@@ -588,30 +532,22 @@ $sh_all_list    = $sh_all_list    ?? [];
         }
 
         function close() {
-            panel.setAttribute('hidden', '');
+            panel.classList.remove('is-open');
+            panel.setAttribute('aria-hidden', 'true');
             trigger.setAttribute('aria-expanded', 'false');
             if (back) back.classList.remove('is-open');
-            if (search) {
-                search.value = '';
-                filter('');
-            }
+            if (search) { search.value = ''; filter(''); }
         }
         trigger.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (panel.hasAttribute('hidden')) {
-                position();
-                panel.removeAttribute('hidden');
+            if (!panel.classList.contains('is-open')) {
+                panel.classList.add('is-open');
+                panel.setAttribute('aria-hidden', 'false');
                 trigger.setAttribute('aria-expanded', 'true');
                 if (back) back.classList.add('is-open');
                 var active = panel.querySelector('.rdr-panel-item.is-active a');
-                if (active) setTimeout(function() {
-                    active.scrollIntoView({
-                        block: 'nearest'
-                    });
-                }, 30);
-                if (search) setTimeout(function() {
-                    search.focus();
-                }, 60);
+                if (active) setTimeout(function() { active.scrollIntoView({ block: 'nearest' }); }, 30);
+                if (search) setTimeout(function() { search.focus(); }, 60);
             } else {
                 close();
             }
